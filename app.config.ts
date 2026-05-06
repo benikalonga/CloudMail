@@ -41,7 +41,7 @@ const env = {
 const config: ExpoConfig = {
   name: env.appName,
   slug: env.appSlug,
-  version: "1.1.1",
+  version: "1.1.2",
   extra: {
     eas: {
       projectId: "00000000-0000-0000-0000-000000000000",
@@ -55,13 +55,13 @@ const config: ExpoConfig = {
   ios: {
     supportsTablet: true,
     bundleIdentifier: env.iosBundleId,
-    buildNumber: "15",
+    buildNumber: "16",
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
     },
   },
   android: {
-    versionCode: 15,
+    versionCode: 16,
     adaptiveIcon: {
       backgroundColor: "#F8F1E8",
       foregroundImage: "./assets/images/android-icon-foreground.png",
@@ -133,7 +133,7 @@ const config: ExpoConfig = {
   ],
   experiments: {
     typedRoutes: true,
-    reactCompiler: true,
+    reactCompiler: false,
   },
 };
 

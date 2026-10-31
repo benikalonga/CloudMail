@@ -8,3 +8,10 @@ This repository is a copy of **[Lur1N77777/CloudMail](https://github.com/Lur1N77
 - Full git history and original commit authorship are preserved.
 
 Please send issues and contributions to the original project.
+
+## Changes from the original
+
+- Secrets, API keys, account IDs and personal data (emails, phone numbers, names) were replaced with placeholders such as `your_email@fakeemail.com`, `0810000000`, `YOUR_NAME` and `00000000-0000-0000-0000-000000000000`, across the whole git history.
+- Personal email addresses in commit metadata were replaced with GitHub no-reply addresses or a placeholder. Author names are kept.
+- AI agent configuration files (`.claude/`, `.agents/`, `.codex/`, `AGENTS.md`, `CLAUDE.md`, `.mcp.json`) were removed.
+- The original LICENSE and its copyright notice are unchanged.

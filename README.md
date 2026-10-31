@@ -1,3 +1,5 @@
+> **Note:** This is a copy of [Lur1N77777/CloudMail](https://github.com/Lur1N77777/CloudMail), kept for AI code-review research. All credit goes to the original authors. Licensed under the original [MIT License](./LICENSE). See [UPSTREAM.md](./UPSTREAM.md) for details.
+
 # CloudMail
 
 <div align="center">

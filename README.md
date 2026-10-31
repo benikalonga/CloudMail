@@ -1,4 +1,4 @@
-> **Note:** This is a copy of [Lur1N77777/CloudMail](https://github.com/Lur1N77777/CloudMail), kept for AI code-review research. All credit goes to the original authors. Licensed under the original [MIT License](./LICENSE). See [UPSTREAM.md](./UPSTREAM.md) for details.
+> **Note:** This is a copy of [Lur1N77777/CloudMail](https://github.com/Lur1N77777/CloudMail). All credit goes to the original authors. Licensed under the original [MIT License](./LICENSE). See [UPSTREAM.md](./UPSTREAM.md) for details.
 
 <div align="center">
   <img src="./assets/images/icon.png" alt="CloudMail logo" width="96" height="96" />

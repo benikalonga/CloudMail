@@ -62,7 +62,7 @@ export function primeRuntimeConfigSnapshot(config: RuntimeConfigOverride & { ref
     workerUrl: normalizeWorkerUrl(config.workerUrl),
     adminPassword: config.adminPassword || "",
     sitePassword: config.sitePassword || "",
-    lang: config.lang || "zh",
+    lang: config.lang || "en",
     refreshInterval: config.refreshInterval,
   };
 }
@@ -220,7 +220,7 @@ function sanitizeWorkerProfile(
       : "unchecked";
   return {
     id,
-    name: String(value?.name || `账号 ${fallbackIndex + 1}`).trim() || `账号 ${fallbackIndex + 1}`,
+    name: String(value?.name || `Account ${fallbackIndex + 1}`).trim() || `Account ${fallbackIndex + 1}`,
     workerUrl,
     frontendUrl: typeof value?.frontendUrl === "string" ? value.frontendUrl.trim().replace(/\/+$/, "") : "",
     adminPassword: String(value?.adminPassword || ""),
@@ -406,7 +406,7 @@ async function getLegacyConfigValues() {
     adminPassword: adminPassword || "",
     sitePassword: sitePassword || "",
     refreshInterval: refreshInterval ? parseInt(refreshInterval, 10) : 30,
-    lang: lang || "zh",
+    lang: lang || "en",
   };
   if (!(await secureCredentialsAvailable())) return fallback;
 
@@ -480,7 +480,7 @@ async function writeActiveProfileCompat(profile: WorkerProfile | null) {
     workerUrl,
     adminPassword: profile.adminPassword || "",
     sitePassword: profile.sitePassword || "",
-    lang: runtimeConfigSnapshot?.lang || "zh",
+    lang: runtimeConfigSnapshot?.lang || "en",
   });
 }
 
@@ -535,7 +535,7 @@ export async function migrateSingleWorkerConfigToProfiles(): Promise<WorkerProfi
 
   const profile: WorkerProfile = {
     id: createWorkerProfileId(legacy.workerUrl),
-    name: "默认账号",
+    name: "Default account",
     workerUrl: legacy.workerUrl,
     frontendUrl: "",
     adminPassword: legacy.adminPassword,
@@ -617,7 +617,7 @@ export function buildWorkerDomainEntries(
       const normalizedDomain = domain.toLowerCase();
       return {
         domain,
-        label: label && label !== domain ? `${label}（${domain}）` : domain,
+        label: label && label !== domain ? `${label} (${domain})` : domain,
         workerProfileId: profile.id,
         workerName: profile.name,
         supportsRandom: !!profile.randomSubdomainDomains?.includes(domain),
@@ -641,7 +641,7 @@ export type ApiRuntimeOptions = {
 
 function runtimeConfigFromProfile(
   profile: WorkerProfile,
-  lang = "zh"
+  lang = "en"
 ): RuntimeConfigOverride {
   return {
     workerUrl: profile.workerUrl,
@@ -676,7 +676,7 @@ function getRuntimeConfigSnapshot() {
     refreshInterval: Number.isFinite(runtimeConfigSnapshot.refreshInterval)
       ? Number(runtimeConfigSnapshot.refreshInterval)
       : 30,
-    lang: runtimeConfigSnapshot.lang || "zh",
+    lang: runtimeConfigSnapshot.lang || "en",
   };
 }
 
@@ -748,7 +748,7 @@ export async function saveConfig(config: {
       adminPassword: config.adminPassword ?? runtimeConfigSnapshot.adminPassword,
       sitePassword: config.sitePassword ?? runtimeConfigSnapshot.sitePassword,
       refreshInterval: config.refreshInterval ?? runtimeConfigSnapshot.refreshInterval,
-      lang: config.lang ?? runtimeConfigSnapshot.lang ?? "zh",
+      lang: config.lang ?? runtimeConfigSnapshot.lang ?? "en",
     });
   }
 
@@ -764,7 +764,7 @@ export async function saveConfig(config: {
     if (workerUrl) {
       const nextProfile: WorkerProfile = {
         id: active?.id || createWorkerProfileId(workerUrl),
-        name: active?.name || "默认账号",
+        name: active?.name || "Default account",
         workerUrl,
         frontendUrl: active?.frontendUrl || "",
         adminPassword: config.adminPassword ?? active?.adminPassword ?? "",
@@ -975,7 +975,7 @@ function buildHeaders(options: {
   const { config, jwt, adminAuth, adminPasswordOverride } = options;
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    "x-lang": config.lang || "zh",
+    "x-lang": config.lang || "en",
   };
   if (config.sitePassword) {
     headers["x-custom-auth"] = config.sitePassword;
@@ -1018,10 +1018,10 @@ async function apiRequest<T>(
       options.configOverride?.adminPassword ?? storedConfig?.adminPassword ?? "",
     sitePassword:
       options.configOverride?.sitePassword ?? storedConfig?.sitePassword ?? "",
-    lang: options.configOverride?.lang ?? storedConfig?.lang ?? "zh",
+    lang: options.configOverride?.lang ?? storedConfig?.lang ?? "en",
   };
   if (!config.workerUrl) {
-    const err = new Error("请先配置 Worker 地址") as ApiError;
+    const err = new Error("Set the Worker URL first") as ApiError;
     err.path = path;
     throw err;
   }
@@ -1064,7 +1064,7 @@ async function apiRequest<T>(
       err?.name === "AbortError" ||
       String(err?.message || "").toLowerCase().includes("aborted");
     const wrapped = new Error(
-      isAbort ? "网络请求超时，请检查 Worker 地址或网络连接" : err?.message || "网络请求失败"
+      isAbort ? "Network request timed out, check the Worker URL or network connection" : err?.message || "Network request failed"
     ) as ApiError;
     wrapped.path = path;
     throw wrapped;
@@ -1141,7 +1141,7 @@ async function fetchSettingsWithFallback(
       lastError = error as Error;
     }
   }
-  throw lastError || new Error("获取设置失败");
+  throw lastError || new Error("Failed to get settings");
 }
 
 /** Fetch per-address user settings (address, auto_reply, send_balance). Requires JWT. */
@@ -1171,7 +1171,7 @@ export async function createAddress(params: {
     const profiles = await getWorkerProfiles();
     workerProfile = profiles.find((profile) => profile.id === params.workerProfileId);
     if (!workerProfile) {
-      throw new Error("未找到所选 Worker 配置，请重新选择域名");
+      throw new Error("The selected Worker configuration was not found. Please select the domain again");
     }
   }
   const configOverride = workerProfile
@@ -1183,7 +1183,7 @@ export async function createAddress(params: {
         adminPassword: configOverride.adminPassword || "",
         sitePassword: configOverride.sitePassword || "",
         refreshInterval: 30,
-        lang: configOverride.lang || "zh",
+        lang: configOverride.lang || "en",
       }
     : await getConfig();
   const body = {
@@ -1457,7 +1457,7 @@ export async function deleteMail(
 
     try {
       await fetchSingleMail(jwt, mailId, options);
-      lastError = new Error("邮件删除未生效，请稍后重试");
+      lastError = new Error("The email was not deleted. Please try again later");
     } catch (error) {
       if ((error as ApiError | undefined)?.status === 404) {
         return;
@@ -1466,7 +1466,7 @@ export async function deleteMail(
     }
   }
 
-  throw lastError || new Error("删除邮件失败");
+  throw lastError || new Error("Failed to delete the email");
 }
 
 /** Clear the entire inbox for the current address. */
@@ -1691,7 +1691,7 @@ function selectAdminLoginError(errors: unknown[]) {
       (error) => ![404, 405, 501].includes(Number(error?.status || 0))
     ) ||
     withStatus[0] ||
-    new Error("管理员密码校验失败")
+    new Error("Admin password verification failed")
   );
 }
 
@@ -1702,7 +1702,7 @@ export async function adminLogin(
 ): Promise<boolean> {
   const trimmedPassword = password.trim();
   if (!trimmedPassword) {
-    throw new Error("请输入管理员密码");
+    throw new Error("Enter the admin password");
   }
 
   const configOverride = resolveWorkerProfileConfigOverride(options);
@@ -1712,7 +1712,7 @@ export async function adminLogin(
         adminPassword: configOverride.adminPassword || "",
         sitePassword: configOverride.sitePassword || "",
         refreshInterval: 30,
-        lang: configOverride.lang || "zh",
+        lang: configOverride.lang || "en",
       }
     : await getConfig();
   const cacheKey = config.workerUrl;

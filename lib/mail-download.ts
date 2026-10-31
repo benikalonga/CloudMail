@@ -45,7 +45,7 @@ export function buildMailDownloadPayload(mail: MailDownloadInput): MailDownloadP
 
   return {
     filename: `${baseName}.txt`,
-    content: textBody || "(无内容)",
+    content: textBody || "(No content)",
     extension: "txt",
     mimeType: "text/plain;charset=utf-8",
   };
@@ -59,23 +59,23 @@ export async function shareMailBody(mail: MailDownloadInput): Promise<MailDownlo
   const result = await persistMailBody(mail, { saveToDownloads: false });
 
   if (Platform.OS === "web") {
-    throw new Error("当前平台不支持系统分享");
+    throw new Error("System sharing is not supported on this platform");
   }
 
   const shareUri = result.localUri || result.uri;
   if (!shareUri) {
-    throw new Error("未生成可分享的文件");
+    throw new Error("No shareable file was created");
   }
 
   const Sharing = await import("expo-sharing");
   const canShare = await Sharing.isAvailableAsync();
   if (!canShare) {
-    throw new Error("当前设备不支持系统分享");
+    throw new Error("System sharing is not supported on this device");
   }
 
   await Sharing.shareAsync(shareUri, {
     mimeType: normalizeMimeType(result.mimeType),
-    dialogTitle: `分享 ${result.filename}`,
+    dialogTitle: `Share ${result.filename}`,
     UTI: result.extension === "html" ? "public.html" : "public.plain-text",
   });
 
@@ -143,7 +143,7 @@ export async function openMailFile(result: MailDownloadResult): Promise<void> {
 
   const targetUri = result.localUri || result.uri;
   if (!targetUri) {
-    throw new Error("未生成可打开的文件");
+    throw new Error("No file was created to open");
   }
 
   if (Platform.OS === "android") {
@@ -186,7 +186,7 @@ async function getAndroidDownloadDirectoryUri(
     );
 
   if (!permission.granted) {
-    throw new Error("未授予系统 Downloads 目录权限");
+    throw new Error("Permission to the system Downloads folder was not granted");
   }
 
   await AsyncStorage.setItem(
@@ -217,7 +217,7 @@ async function createAndroidDownloadFileUri(
     }
   }
 
-  throw lastError || new Error("创建下载文件失败");
+  throw lastError || new Error("Failed to create the download file");
 }
 
 async function writeMailToLocalFile(
@@ -226,7 +226,7 @@ async function writeMailToLocalFile(
 ): Promise<string> {
   const directory = FileSystem.cacheDirectory || FileSystem.documentDirectory;
   if (!directory) {
-    throw new Error("设备文件目录不可用");
+    throw new Error("The device file directory is not available");
   }
 
   const localUri = `${directory}${payload.filename}`;

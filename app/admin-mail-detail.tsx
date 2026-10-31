@@ -45,14 +45,14 @@ import {
 import { formatShanghaiFullDateTime } from "@/lib/time";
 
 function getKindLabel(kind?: "inbox" | "sendbox" | "unknown") {
-  if (kind === "sendbox") return "管理员发件";
-  if (kind === "unknown") return "未创建地址收件";
-  return "管理员收件";
+  if (kind === "sendbox") return "Admin sent";
+  if (kind === "unknown") return "Received for an uncreated address";
+  return "Admin received";
 }
 
 function formatShanghaiDateTime(dateStr?: string) {
   const formatted = formatShanghaiFullDateTime(dateStr);
-  return formatted === "—" ? formatted : `${formatted} 上海时间`;
+  return formatted === "—" ? formatted : `${formatted} Shanghai time`;
 }
 
 
@@ -134,7 +134,7 @@ export default function AdminMailDetailScreen() {
     return (
       <ScreenContainer edges={["top", "bottom", "left", "right"]}>
         <View style={styles.emptyContainer}>
-          <Text style={[styles.emptyText, { color: colors.muted }]}>邮件未找到</Text>
+          <Text style={[styles.emptyText, { color: colors.muted }]}>Email not found</Text>
           <Pressable
             onPress={() => router.back()}
             style={({ pressed }) => [
@@ -142,7 +142,7 @@ export default function AdminMailDetailScreen() {
               { backgroundColor: colors.primary, opacity: pressed ? 0.8 : 1 },
             ]}
           >
-            <Text style={styles.backButtonAltText}>返回</Text>
+            <Text style={styles.backButtonAltText}>Back</Text>
           </Pressable>
         </View>
       </ScreenContainer>
@@ -150,10 +150,10 @@ export default function AdminMailDetailScreen() {
   }
 
   const handleDelete = () => {
-    Alert.alert("删除邮件", "确定删除这封管理员邮件吗？", [
-      { text: "取消", style: "cancel" },
+    Alert.alert("Delete email", "Delete this admin email?", [
+      { text: "Cancel", style: "cancel" },
       {
-        text: "删除",
+        text: "Delete",
         style: "destructive",
         onPress: async () => {
           try {
@@ -165,7 +165,7 @@ export default function AdminMailDetailScreen() {
             removeAdminMailEntry(cacheKey);
             router.back();
           } catch (err: any) {
-            Alert.alert("删除失败", err?.message || "邮件未删除，请稍后重试。");
+            Alert.alert("Delete failed", err?.message || "The email was not deleted. Please try again later.");
           }
         },
       },
@@ -178,26 +178,26 @@ export default function AdminMailDetailScreen() {
       if (Platform.OS === "android") {
         try {
           await openMailFile(result);
-          setMiniToastMessage(`已保存并打开 ${result.filename}`);
+          setMiniToastMessage(`Saved and opened ${result.filename}`);
           return;
         } catch {
-          setMiniToastMessage(`已保存 ${result.filename}`);
+          setMiniToastMessage(`Saved ${result.filename}`);
           return;
         }
       }
 
-      setMiniToastMessage(Platform.OS === "web" ? `已下载 ${result.filename}` : `已保存 ${result.filename}`);
+      setMiniToastMessage(Platform.OS === "web" ? `Downloaded ${result.filename}` : `Saved ${result.filename}`);
     } catch (err: any) {
-      Alert.alert("下载失败", err?.message || "邮件下载失败，请稍后重试。");
+      Alert.alert("Download failed", err?.message || "The email could not be downloaded. Please try again later.");
     }
   };
 
   const handleShare = async () => {
     try {
       const result = await shareMailBody(mail);
-      setMiniToastMessage(`已打开分享面板 · ${result.filename}`);
+      setMiniToastMessage(`Opened the share sheet · ${result.filename}`);
     } catch (err: any) {
-      Alert.alert("分享失败", err?.message || "无法打开系统分享面板。");
+      Alert.alert("Share failed", err?.message || "Could not open the system share sheet.");
     }
   };
 
@@ -208,9 +208,9 @@ export default function AdminMailDetailScreen() {
       if (mailState.workerUrl.trim()) {
         void markAdminMailRead(mailState.workerUrl, mail);
       }
-      setMiniToastMessage("验证码已复制");
+      setMiniToastMessage("Code copied");
     } else {
-      Alert.alert("复制失败", code);
+      Alert.alert("Copy failed", code);
     }
   };
 
@@ -220,26 +220,26 @@ export default function AdminMailDetailScreen() {
     if (isSpam) {
       void unblockAdminMailSender(mailState.workerUrl, spamSender)
         .then(() => {
-          setMiniToastMessage("已取消拒收");
+          setMiniToastMessage("Unblocked");
         })
         .catch((err: any) => {
-          Alert.alert("操作失败", err?.message || "取消拒收失败");
+          Alert.alert("Action failed", err?.message || "Unblock failed");
         });
       return;
     }
 
-    Alert.alert("拒收发件人", `以后来自 ${spamSender} 的邮件会进入垃圾信箱。`, [
-      { text: "取消", style: "cancel" },
+    Alert.alert("Block sender", `Future mail from ${spamSender} will go to spam.`, [
+      { text: "Cancel", style: "cancel" },
       {
-        text: "拒收",
+        text: "Block",
         style: "destructive",
         onPress: async () => {
           try {
             await blockAdminMailSender(mailState.workerUrl, mail);
             void markAdminMailRead(mailState.workerUrl, mail);
-            setMiniToastMessage("已加入垃圾信箱");
+            setMiniToastMessage("Moved to spam");
           } catch (err: any) {
-            Alert.alert("操作失败", err?.message || "拒收失败");
+            Alert.alert("Action failed", err?.message || "Block failed");
           }
         },
       },
@@ -258,7 +258,7 @@ export default function AdminMailDetailScreen() {
     if (canToggleSpam) {
       items.push({
         key: isSpam ? "unblock" : "block",
-        label: isSpam ? "取消拒收" : "拒收该发件人",
+        label: isSpam ? "Unblock" : "Block this sender",
         subtitle: spamSender,
         icon: isSpam ? "checkmark.circle.fill" : "xmark.circle.fill",
         destructive: !isSpam,
@@ -268,8 +268,8 @@ export default function AdminMailDetailScreen() {
 
     items.push({
       key: "delete",
-      label: "删除邮件",
-      subtitle: "从服务器移除",
+      label: "Delete email",
+      subtitle: "Remove from the server",
       icon: "trash.fill",
       destructive: true,
       onPress: handleDelete,
@@ -300,7 +300,7 @@ export default function AdminMailDetailScreen() {
           <IconSymbol name="arrow.left" size={22} color={colors.primary} />
         </Pressable>
         <View style={styles.headerMeta}>
-          <Text style={[styles.headerTitle, { color: colors.foreground }]}>邮件详情</Text>
+          <Text style={[styles.headerTitle, { color: colors.foreground }]}>Email details</Text>
           <Text style={[styles.headerSubtitle, { color: colors.muted }]} numberOfLines={1}>
             {kindLabel}
           </Text>
@@ -330,7 +330,7 @@ export default function AdminMailDetailScreen() {
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         <View style={styles.heroSection}>
           <Text style={[styles.subject, { color: colors.foreground }]}>
-            {mail.subject || "(无主题)"}
+            {mail.subject || "(No subject)"}
           </Text>
 
           <View
@@ -340,17 +340,17 @@ export default function AdminMailDetailScreen() {
             ]}
           >
             <SummaryRow
-              label="发件人"
+              label="From"
               value={fromCopyValue || fromDisplay}
               copyValue={fromCopyValue || undefined}
             />
             <SummaryRow
-              label="收件人"
+              label="To"
               value={toCopyValue || toDisplay}
               copyValue={toCopyValue || undefined}
               multiline
             />
-            <SummaryRow label="时间" value={shanghaiTime} />
+            <SummaryRow label="Time" value={shanghaiTime} />
           </View>
         </View>
 
@@ -371,7 +371,7 @@ export default function AdminMailDetailScreen() {
             ]}
           >
             <View style={styles.codeCardTextWrap}>
-              <Text style={[styles.codeLabel, { color: colors.primary }]}>验证码</Text>
+              <Text style={[styles.codeLabel, { color: colors.primary }]}>Verification code</Text>
               <Text style={[styles.codeValue, { color: colors.foreground }]}>{code}</Text>
             </View>
             <View style={[styles.codeCopyBtn, { backgroundColor: colors.primary }]}>
@@ -382,7 +382,7 @@ export default function AdminMailDetailScreen() {
 
         {mail.attachments && mail.attachments.length > 0 ? (
           <View style={styles.attachmentSection}>
-            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>附件</Text>
+            <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Attachments</Text>
             {mail.attachments.map((att, idx) => (
               <View
                 key={`${mail.id}-${idx}`}
@@ -393,7 +393,7 @@ export default function AdminMailDetailScreen() {
               >
                 <IconSymbol name="paperclip" size={16} color={colors.muted} />
                 <Text style={[styles.attachmentName, { color: colors.foreground }]} numberOfLines={1}>
-                  {att.filename || `附件 ${idx + 1}`}
+                  {att.filename || `Attachment ${idx + 1}`}
                 </Text>
                 {att.size ? (
                   <Text style={[styles.attachmentSize, { color: colors.muted }]}>
@@ -412,10 +412,10 @@ export default function AdminMailDetailScreen() {
               { backgroundColor: colors.surface, borderColor: colors.border },
             ]}
           >
-            <Text style={[styles.moreTitle, { color: colors.foreground }]}>更多信息</Text>
+            <Text style={[styles.moreTitle, { color: colors.foreground }]}>More info</Text>
             {mail.ownerAddress ? (
               <SummaryRow
-                label={isSentView ? "发件地址" : "系统地址"}
+                label={isSentView ? "From address" : "System address"}
                 value={mail.ownerAddress}
                 copyValue={mail.ownerAddress}
               />
@@ -423,7 +423,7 @@ export default function AdminMailDetailScreen() {
             {mail.messageId ? (
               <SummaryRow label="Message-ID" value={mail.messageId} multiline />
             ) : null}
-            <SummaryRow label="邮件类型" value={kindLabel} />
+            <SummaryRow label="Email type" value={kindLabel} />
           </View>
         ) : null}
         </ScrollView>

@@ -1,11 +1,11 @@
 > **Note:** This is a copy of [Lur1N77777/CloudMail](https://github.com/Lur1N77777/CloudMail), kept for AI code-review research. All credit goes to the original authors. Licensed under the original [MIT License](./LICENSE). See [UPSTREAM.md](./UPSTREAM.md) for details.
 
-# CloudMail
-
 <div align="center">
   <img src="./assets/images/icon.png" alt="CloudMail logo" width="96" height="96" />
 
-**V1.1.4 · 修复中文邮件乱码的 Cloudflare Temp Email 移动管理员 App**
+# CloudMail
+
+**V1.1.4 · Chinese email decoding fixes for the Cloudflare Temp Email mobile admin app**
 
 [![CI](https://github.com/Lur1N77777/CloudMail/actions/workflows/ci.yml/badge.svg)](https://github.com/Lur1N77777/CloudMail/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
@@ -13,198 +13,196 @@
 [![React Native](https://img.shields.io/badge/React%20Native-0.81-61DAFB.svg)](https://reactnative.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6.svg)](https://www.typescriptlang.org/)
 
-[简体中文](./README.md) · [English](./docs/README.en.md)
-
-[下载 APK](https://github.com/Lur1N77777/CloudMail/releases) · [从源码构建](./docs/BUILD.md) · [API 说明](./docs/mailbox-api-report.md)
+[Download APK](https://github.com/Lur1N77777/CloudMail/releases) · [Build from source](./docs/BUILD.md) · [API notes](./docs/mailbox-api-report.md)
 
 </div>
 
-## 项目定位
+## What CloudMail is
 
-CloudMail 是一个面向 **Cloudflare Temp Email / Cloudflare 临时邮箱** 的 Android 管理端 App，基于 Expo / React Native 开发，主要适配 [dreamhunter2333/cloudflare_temp_email](https://github.com/dreamhunter2333/cloudflare_temp_email) 及其兼容 API。
+CloudMail is an Android administrator app for **Cloudflare Temp Email** systems. It is built with Expo / React Native and targets [dreamhunter2333/cloudflare_temp_email](https://github.com/dreamhunter2333/cloudflare_temp_email) and compatible APIs.
 
-上游项目提供 Cloudflare Worker 邮箱后端、Web 管理端和邮箱收发能力；CloudMail 则把这些能力整理成更适合手机使用的管理员客户端。它不是新的邮箱后端，也不是 Cloudflare 官方产品，而是围绕 `cloudflare_temp_email` 项目生态开发的移动端管理工具。
+The upstream project provides the Cloudflare Worker mailbox backend, web admin UI, and mail delivery features. CloudMail packages those capabilities into a phone-friendly admin client. It is not a new mailbox backend and it is not an official Cloudflare product; it is a mobile management app built around the `cloudflare_temp_email` ecosystem.
 
-CloudMail 当前主流程是 **管理员优先**：首次启动进入管理员设置，配置并校验成功后直接进入管理员后台，普通用户欢迎页不再作为主入口。
+CloudMail is **administrator-first**: first launch opens admin setup, and a valid configuration opens the admin console directly.
 
-## V1.1.4 更新重点
+## What's new in V1.1.4
 
-V1.1.4 修复 [#17](https://github.com/Lur1N77777/CloudMail/issues/17) 中部分中文邮件在 HTML 和纯文本模式下显示乱码的问题。
+V1.1.4 fixes [#17](https://github.com/Lur1N77777/CloudMail/issues/17), where some Chinese emails displayed garbled characters in both HTML and plain-text views.
 
-- **中文编码兼容**：正确解析 GB2312、GBK、GB18030、Big5 等编码，覆盖邮件正文、主题、发件人名称和附件名称。
-- **旧缓存自动修复**：保留原文的邮箱缓存会重新解析，保留邮件标识和增量同步进度；无法恢复原文的管理员摘要会在联网刷新时重新获取。
-- **回归验证**：增加 Expo 原生解码环境下的多编码、附件和缓存迁移测试，防止同类乱码再次出现。
+- **Chinese charset support**: correctly decodes GB2312, GBK, GB18030, Big5, and other encodings in message bodies, subjects, sender names, and attachment names.
+- **Automatic cache repair**: reparses cached mail that retains its original source while preserving message IDs and incremental sync progress. Admin summaries without source data are fetched again during an online refresh.
+- **Regression coverage**: adds tests for multiple charsets, attachments, and cache migration using Expo's native decoder environment.
 
-## 功能亮点
+## Highlights
 
-- **Cloudflare Temp Email 移动管理员端**：连接你的 `cloudflare_temp_email` 兼容 Worker/API，在手机上管理临时邮箱系统。
-- **多 Cloudflare 账号 / 多 Worker**：本地保存多个 Worker 配置档案，适合账号 A 管 `1.com / 2.com / 3.com`、账号 B 管 `4.com / 5.com / 6.com` 这类部署。
-- **域名自动路由**：创建邮箱时按所选域名自动调用对应 Worker，减少手动切换和误操作。
-- **管理员后台**：统计、地址、收件、发件、未知收件和发送邮件集中管理。
-- **用户维度管理**：读取管理员用户列表，并查看某个用户名下绑定的邮箱地址。
-- **邮箱地址管理**：创建自定义邮箱、子域名邮箱、随机子域名邮箱，查看凭证、复制一键登录链接、清空收件箱、删除地址。
-- **批量操作**：可按当前筛选结果批量处理地址和地址下邮件，危险操作前提供预览与确认。
-- **本地分组**：给邮箱地址分组，并在地址和邮件列表中按分组筛选。
-- **收件 / 垃圾信箱**：在收件页内切换普通收件箱和垃圾信箱，通过长按邮件拒收或取消拒收发件人。
-- **收件 / 发件 / 未知地址**：查看系统收件、发件记录，以及发往未创建地址的邮件；未知地址可一键创建为正式邮箱。
-- **验证码快捷处理**：自动识别常见验证码，一键复制并显示成功提示。
-- **新邮件提醒**：本地记录新邮件/已读状态，历史邮件默认不打扰，新刷新出的邮件会显示轻量小圆点。
-- **HTML 邮件阅读**：支持富文本 HTML、纯文本、源文本和邮件详情查看。
-- **主题与夜间阅读**：支持浅色、普通深色、OLED 黑和跟随系统；深色快捷切换会记住你偏好的黑色类型。
-- **自托管友好**：邮箱服务由你自己部署和控制，移动端只连接你的 Worker/API。
+- **Cloudflare Temp Email mobile admin**: connect to your `cloudflare_temp_email` compatible Worker/API and manage temporary mailboxes from a phone.
+- **Multiple Cloudflare accounts / Workers**: store several local Worker profiles, useful when account A owns `1.com / 2.com / 3.com` and account B owns `4.com / 5.com / 6.com`.
+- **Domain-based routing**: address creation automatically calls the Worker that owns the selected domain, reducing manual switching mistakes.
+- **Admin console**: statistics, addresses, inbox mail, sent mail, unknown-recipient mail, and mail sending in one app.
+- **User-level management**: load admin users and view addresses bound to a selected user.
+- **Address management**: create custom, subdomain, and random-subdomain addresses; view credentials, copy one-tap login links, clear inboxes, and delete addresses.
+- **Batch operations**: process the current filtered address scope with preview/confirmation for destructive actions.
+- **Local grouping**: group mailbox addresses locally and filter address or mail views by group.
+- **Inbox and spam mailbox**: switch between normal inbox and spam inside the inbox page; long-press mail to block or unblock a sender.
+- **Inbox, sent mail, and unknown recipients**: browse normal mail, sent mail, and mail sent to uncreated addresses; create unknown addresses with one tap.
+- **Fast verification-code handling**: detect common verification codes, copy them quickly, and show clear copy feedback.
+- **New-mail indicators**: historical mail stays quiet; newly refreshed messages get a local unread dot.
+- **HTML and text mail reading**: preview rich HTML email, plain text, source text, and message details.
+- **Night-friendly themes**: light, dark, OLED black, and system themes are available; the dark quick toggle remembers your preferred dark variant.
+- **Self-host friendly**: keep your mailbox service under your own control; the app only talks to your Worker/API.
 
-## 截图
+## Main screens
 
-点击缩略图可以打开原图查看。
+- **Admin dashboard** — a compact overview of managed addresses, matched inbox mail, sent mail, and unknown-recipient messages.
+- **Compose mail** — send email from a selected mailbox identity with recipient, subject, and content fields organized for mobile use.
+- **Admin settings** — configure the Worker endpoint, admin password, site password, and auto-refresh interval.
+- **Appearance settings** — choose light, dark, OLED black, or system theme mode.
 
-| 预览                                                                                                                                         | 说明                                                                                                         |
-| -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| <a href="./docs/screenshots/admin-dashboard.jpg"><img src="./docs/screenshots/admin-dashboard.jpg" width="220" alt="管理员统计面板" /></a>   | **管理员统计面板**：集中展示可管理地址、收件、发件和未知地址收件数量，支持刷新和顶部标签切换。 |
-| <a href="./docs/screenshots/compose-mail.jpg"><img src="./docs/screenshots/compose-mail.jpg" width="220" alt="发件界面" /></a>               | **发送邮件**：选择发件身份，填写收件人、主题和正文。                                                         |
-| <a href="./docs/screenshots/settings-server.jpg"><img src="./docs/screenshots/settings-server.jpg" width="220" alt="服务器配置" /></a>       | **管理员设置**：配置 Worker 地址、Admin 密码、站点密码和自动刷新间隔。                                       |
-| <a href="./docs/screenshots/settings-appearance.jpg"><img src="./docs/screenshots/settings-appearance.jpg" width="220" alt="外观设置" /></a> | **外观设置**：选择浅色、深色、OLED 黑或跟随系统。                                                            |
+## Download
 
-## 下载与安装
+Download the latest APK from [GitHub Releases](https://github.com/Lur1N77777/CloudMail/releases).
 
-从 [GitHub Releases](https://github.com/Lur1N77777/CloudMail/releases) 下载最新版 APK。
+APK files are intentionally not committed to the source repository. This keeps the Git history small and makes releases easier to audit.
 
-APK 不直接提交到源码仓库，构建产物通过 GitHub Releases 分发，以保持 Git 历史干净。
+> **Upgrade notice for V1.1.2 and older**: legacy APKs were debug-signed. Releases from V1.1.3 onward use a production certificate and cannot replace those legacy installations directly. Before uninstalling, record your Worker settings and copy every mailbox credential you still need. Then uninstall the legacy app, install V1.1.4, and configure or import those credentials again.
 
-> **V1.1.2 及更早版本升级提示**：旧 APK 使用调试证书签名，V1.1.3 起改用生产证书，无法直接覆盖旧版安装。升级前请记录 Worker 配置，并逐个复制仍需保留的邮箱凭证；随后卸载旧版、安装 V1.1.4，再重新配置或导入。不要在未备份凭据时卸载旧版。
+## Use the app after downloading it
 
-## 使用方式
+### 1. Prepare your mailbox service
 
-### 1. 准备邮箱服务
+CloudMail needs one or more deployed `cloudflare_temp_email` compatible services, meaning your Cloudflare temporary mailbox Worker/API deployments. Prepare these values first:
 
-CloudMail 需要连接到一个或多个已经部署好的 `cloudflare_temp_email` 兼容服务，也就是你的 Cloudflare 临时邮箱 Worker/API。你需要准备：
+- **Worker URL**: for example, `https://worker-a.example.com` and `https://worker-b.example.com`.
+- **Admin password**: each Worker has its own admin password.
+- **Site password**: required if a Worker uses `PASSWORDS`.
+- **Domain ownership**: for example, account A owns `1.com / 2.com / 3.com`, while account B owns `4.com / 5.com / 6.com`.
 
-- **Worker 地址**：例如 `https://worker-a.example.com`、`https://worker-b.example.com`。
-- **Admin 密码**：每个 Worker 对应自己的管理员密码。
-- **站点密码**：如果某个 Worker 配置了 `PASSWORDS`，需要填写。
-- **域名归属**：例如账号 A 的 Worker 管理 `1.com / 2.com / 3.com`，账号 B 的 Worker 管理 `4.com / 5.com / 6.com`。
+If you have not deployed the backend yet, follow the upstream [cloudflare_temp_email](https://github.com/dreamhunter2333/cloudflare_temp_email) project first.
 
-如果还没有部署后端，请先参考上游项目 [cloudflare_temp_email](https://github.com/dreamhunter2333/cloudflare_temp_email)。
+### 2. First-time setup
 
-### 2. 首次配置
+1. Download and install the latest APK.
+2. Open CloudMail. The app opens directly to **Admin settings** on first launch.
+3. In **Workers configuration**, add one or more Worker profiles with name, Worker URL, admin password, and site password.
+4. Tap **Test connection / Refresh domains** to validate each Worker and cache its domain list.
+5. Pick the current default Worker and set the auto-refresh interval.
+6. Choose light, dark, OLED black, or system theme under **Appearance**.
+7. Save the configuration. CloudMail validates the current Worker admin password and opens the **Admin console** when it succeeds.
 
-1. 安装并打开 CloudMail。
-2. 首次启动会直接进入 **管理员设置**。
-3. 在 **Workers 配置** 中添加一个或多个 Worker 档案，填写名称、Worker 地址、Admin 密码和站点密码。
-4. 点击 **测试连接 / 刷新域名**，确认每个 Worker 可用并缓存域名列表。
-5. 选择当前默认 Worker，并设置自动刷新时间。
-6. 可在 **外观** 中选择浅色、深色、OLED 黑或跟随系统。
-7. 保存配置后，CloudMail 会校验当前 Worker 的管理员密码；成功后自动进入 **管理员后台**。
+### 3. Daily use
 
-### 3. 日常使用
+- Later launches open the admin console automatically if the saved configuration is still valid.
+- Tap **Settings** in the top-right corner of the admin console to edit Worker, password, refresh, and appearance settings.
+- The **frontend URL** in each Worker profile is used to generate one-tap login links; after configuring it, you can copy login links from the address list or address details.
+- Tap the Worker name in the admin header to switch the current management scope.
+- Use the top tabs to move between admin pages.
+- The theme quick toggle remembers your preferred dark variant. If you picked OLED black, switching from light back to dark returns to OLED black.
+- Newly refreshed mail shows a small dot until you open the detail page, copy a detected verification code, or mark all as read.
+- In the inbox page, tap the title dropdown to switch between inbox and spam.
+- Long-press mail for actions; long-press addresses to enter batch selection mode.
+- When creating an address, the domain picker labels the source Worker and routes the request automatically.
 
-- 再次打开应用时，如果配置仍有效，会直接进入管理员后台。
-- 在管理员后台右上角点击 **设置** 可随时回到管理员设置页。
-- Worker 档案里的 **前端地址** 用于生成一键登录链接；配置后可在地址列表或地址详情中直接复制登录链接。
-- 管理员顶部的 Worker 名称可快速切换当前管理范围。
-- 顶部标签支持点击切换。
-- 主题快捷按钮会记住你偏好的深色类型：如果你选择过 OLED 黑，浅色切回深色时会回到 OLED 黑，而不是普通深色。
-- 增量刷新出现的新邮件会显示小圆点；打开详情、复制验证码或全部已读后，小圆点会自动消失。
-- 在收件页点击标题处的下拉入口，可切换收件箱和垃圾信箱。
-- 长按邮件可打开操作菜单；长按地址可进入批量选择模式。
-- 创建邮箱时，域名选择器会标注来源 Worker；选择某个域名后会自动路由到对应 Worker。
+### 4. Admin pages
 
-### 4. 管理员页面说明
+- **Stats**: view address, inbox, sent mail, and unknown-recipient counts for the current Worker.
+- **Addresses**: search, create, group, filter by user, inspect credentials, clear inboxes, delete addresses, and batch manage mailboxes.
+- **Inbox**: view received mail, search, copy verification codes, see unread dots, use spam mailbox, and filter by local groups.
+- **Sent**: view sent mail records.
+- **Unknown**: view messages sent to addresses that have not been created yet, then create those addresses with one tap.
+- **Send**: send mail from a selected mailbox address within the current Worker scope.
 
-- **统计**：查看当前 Worker 的地址数、收件数、发件数和未知地址收件数。
-- **地址**：搜索、创建、分组、按用户筛选、查看凭证、清空收件箱、删除邮箱地址和批量管理。
-- **收件**：查看全部收件，支持搜索、验证码复制、新邮件标识、垃圾信箱和分组筛选。
-- **发件**：查看系统发件记录。
-- **未知**：查看发往未创建邮箱地址的邮件，并可一键创建对应邮箱。
-- **发送**：在当前 Worker 范围内选择发件身份并发送邮件。
-
-## 技术栈
+## Tech stack
 
 - Expo 54 / React Native 0.81
 - React 19 / TypeScript 5.9
 - Expo Router
 - React Native Reanimated / Gesture Handler
 - AsyncStorage / SecureStore
-- WebView 邮件预览
+- WebView-based mail preview
 - Vitest
-- 可选 Drizzle 后端工具
+- Optional Drizzle-backed server utilities
 
-## 本地开发
+## Get started for development
 
-安装依赖：
+Install dependencies:
 
 ```bash
 pnpm install
 ```
 
-启动完整开发环境：
+Run the development environment:
 
 ```bash
 pnpm dev
 ```
 
-只启动 Expo：
+Run only Expo:
 
 ```bash
 pnpm dev:metro
 ```
 
-提交前建议运行：
+Check the project before opening a pull request:
 
 ```bash
 pnpm check
 pnpm test
-pnpm lint
 ```
 
-## 构建 Android APK
+## Configure environment variables
 
-完整说明见 [BUILD.md](./docs/BUILD.md)。常用本地构建流程：
-
-```bash
-pnpm install
-EXPO_NO_DOTENV=1 NODE_ENV=production npx expo prebuild -p android --clean
-cd android
-NODE_ENV=production ./gradlew assembleRelease
-```
-
-本地 `assembleRelease` 只用于编译验证，默认仍可能使用调试证书。公开发布必须使用 EAS 中保存的生产密钥，详见 [BUILD.md](./docs/BUILD.md)。
-
-## 环境变量
-
-复制示例配置：
+Copy the example file:
 
 ```bash
 cp .env.example .env.local
 ```
 
-大多数邮箱连接配置都在应用内完成。环境变量主要用于本地开发、可选 OAuth / 服务端能力、数据库工具、Forge 集成和 AI 相关工具。
+Most mailbox connection settings are configured inside the app. Environment variables are mainly for local development, optional OAuth/server features, database tooling, Forge integrations, and AI-related utilities.
 
-不要提交真实密码、管理员 token、邮箱凭证、API key 或数据库连接串。
+Never commit real passwords, admin tokens, mailbox credentials, API keys, or database URLs.
 
-## 项目文档
+## Build Android APK
 
-- [构建与安装指南](./docs/BUILD.md)
-- [备份与双远程发布流程](./docs/BACKUP_AND_RELEASE.md)
-- [更新日志](./docs/CHANGELOG.md)
-- [隐私政策](./docs/PRIVACY.md)
-- [使用条款](./docs/TERMS.md)
-- [设计说明](./docs/design.md)
-- [邮箱 API 报告](./docs/mailbox-api-report.md)
-- [路线图](./docs/roadmap.md)
-- [安全策略](./.github/SECURITY.md)
-- [贡献指南](./.github/CONTRIBUTING.md)
+Read the full guide in [BUILD.md](./docs/BUILD.md). Common local build flow:
 
-## 致谢
+```bash
+pnpm install
+npx expo prebuild -p android --clean
+cd android
+./gradlew assembleRelease
+```
 
-CloudMail 基于 [dreamhunter2333/cloudflare_temp_email](https://github.com/dreamhunter2333/cloudflare_temp_email) 的 Cloudflare 临时邮箱项目生态开发。感谢 [dreamhunter2333](https://github.com/dreamhunter2333) 和上游项目贡献者提供邮箱后端、Web 管理能力和相关 API 行为。
+The generated APK should be uploaded to GitHub Releases instead of committed to Git.
 
-更多致谢信息见 [NOTICE](./docs/NOTICE.md)。
+## Project docs
 
-## 许可证
+- [Build and installation guide](./docs/BUILD.md)
+- [Backup and dual-remote release workflow](./docs/BACKUP_AND_RELEASE.md)
+- [Changelog](./docs/CHANGELOG.md)
+- [Design notes](./docs/design.md)
+- [Mailbox API report](./docs/mailbox-api-report.md)
+- [Roadmap](./docs/roadmap.md)
+- [Security policy](./.github/SECURITY.md)
+- [Contributing guide](./.github/CONTRIBUTING.md)
 
-CloudMail 使用 [MIT License](./LICENSE) 开源。请同时查看上游仓库的许可证和使用条款。
+## Upstream mailbox system
 
-## 友链 / Friendly Links
+CloudMail is built around the [dreamhunter2333/cloudflare_temp_email](https://github.com/dreamhunter2333/cloudflare_temp_email) Cloudflare Temp Email ecosystem.
 
-- [LinuxDo 社区](https://linux.do/)：认可并感谢 LinuxDo 社区对开源交流、开发者互助和中文技术社区建设的支持。
+Credit goes to [dreamhunter2333](https://github.com/dreamhunter2333) and contributors of the upstream project for the mailbox backend, web admin experience, and API behavior that this app targets.
+
+See [NOTICE](./docs/NOTICE.md) for attribution details.
+
+## Contributing
+
+Issues and pull requests are welcome. Keep changes focused, run checks before submitting, and do not include secrets or generated APK files in commits.
+
+## License
+
+CloudMail is released under the [MIT License](./LICENSE).
+
+The upstream mailbox system is [dreamhunter2333/cloudflare_temp_email](https://github.com/dreamhunter2333/cloudflare_temp_email). Check the upstream repository for its own license and terms.
+
+## Friendly Links
+
 - [LinuxDo Community](https://linux.do/): recognized with appreciation for its support of open-source discussion, developer collaboration, and the Chinese tech community.

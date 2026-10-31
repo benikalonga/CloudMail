@@ -3,12 +3,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { AdminAddress } from "./api";
 
 /**
- * 管理员地址列表持久化缓存。
+ * Persistent cache for the admin address list.
  *
- * 目标不是替代服务端数据，而是让地址页像收件/发件页一样：
- * 1. 进入页面先显示上次缓存，避免白屏；
- * 2. 后台再刷新第一页，同步服务端新增/删除；
- * 3. 按 worker / query / userId 隔离，多 Worker 不串数据。
+ * It does not replace server data; it makes the addresses page behave like the inbox/sent pages:
+ * 1. Show the last cached data on entry to avoid a blank screen;
+ * 2. Refresh the first page in the background to sync server additions/deletions;
+ * 3. Isolate by worker / query / userId so multiple Workers never mix data.
  */
 
 const PANEL_CACHE_PREFIX = "cloudmail_admin_address_panel_cache_v1";

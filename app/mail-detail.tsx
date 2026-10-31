@@ -47,7 +47,7 @@ export default function MailDetailScreen() {
       <ScreenContainer edges={["top", "bottom", "left", "right"]}>
         <View style={styles.emptyContainer}>
           <Text style={[styles.emptyText, { color: colors.muted }]}>
-            邮件未找到
+            Email not found
           </Text>
           <Pressable
             onPress={() => router.back()}
@@ -56,7 +56,7 @@ export default function MailDetailScreen() {
               { backgroundColor: colors.primary, opacity: pressed ? 0.8 : 1 },
             ]}
           >
-            <Text style={styles.backButtonAltText}>返回</Text>
+            <Text style={styles.backButtonAltText}>Back</Text>
           </Pressable>
         </View>
       </ScreenContainer>
@@ -69,7 +69,7 @@ export default function MailDetailScreen() {
     preferOwnerAddress: !isSent,
   });
   const primaryParty = isSent
-    ? formatMailboxDisplay(mail.to?.[0]) || recipients || "收件人"
+    ? formatMailboxDisplay(mail.to?.[0]) || recipients || "Recipient"
     : sender;
   const secondaryLine = isSent
     ? formatMailboxDisplay(mail.from) || mail.ownerAddress || activeAccount?.address || ""
@@ -84,10 +84,10 @@ export default function MailDetailScreen() {
     recipientAddresses.join(", ") || mail.ownerAddress || "";
 
   const handleDelete = () => {
-    Alert.alert("删除邮件", "确定要删除这封邮件吗？", [
-      { text: "取消", style: "cancel" },
+    Alert.alert("Delete email", "Delete this email?", [
+      { text: "Cancel", style: "cancel" },
       {
-        text: "删除",
+        text: "Delete",
         style: "destructive",
         onPress: async () => {
           const ok = isSent
@@ -97,7 +97,7 @@ export default function MailDetailScreen() {
           if (ok) {
             router.back();
           } else {
-            Alert.alert("删除失败", "邮件未删除，请稍后重试。");
+            Alert.alert("Delete failed", "The email was not deleted. Please try again later.");
           }
         },
       },
@@ -110,26 +110,26 @@ export default function MailDetailScreen() {
       if (Platform.OS === "android") {
         try {
           await openMailFile(result);
-          setMiniToastMessage(`已保存并打开 ${result.filename}`);
+          setMiniToastMessage(`Saved and opened ${result.filename}`);
           return;
         } catch {
-          setMiniToastMessage(`已保存 ${result.filename}`);
+          setMiniToastMessage(`Saved ${result.filename}`);
           return;
         }
       }
 
-      setMiniToastMessage(Platform.OS === "web" ? `已下载 ${result.filename}` : `已保存 ${result.filename}`);
+      setMiniToastMessage(Platform.OS === "web" ? `Downloaded ${result.filename}` : `Saved ${result.filename}`);
     } catch (err: any) {
-      Alert.alert("下载失败", err?.message || "邮件下载失败，请稍后重试。");
+      Alert.alert("Download failed", err?.message || "The email could not be downloaded. Please try again later.");
     }
   };
 
   const handleShare = async () => {
     try {
       const result = await shareMailBody(mail);
-      setMiniToastMessage(`已打开分享面板 · ${result.filename}`);
+      setMiniToastMessage(`Opened the share sheet · ${result.filename}`);
     } catch (err: any) {
-      Alert.alert("分享失败", err?.message || "无法打开系统分享面板。");
+      Alert.alert("Share failed", err?.message || "Could not open the system share sheet.");
     }
   };
 
@@ -191,7 +191,7 @@ export default function MailDetailScreen() {
       >
         {/* Subject */}
         <Text style={[styles.subject, { color: colors.foreground }]}>
-          {mail.subject || "(无主题)"}
+          {mail.subject || "(No subject)"}
         </Text>
 
         {/* Sender Info */}
@@ -206,19 +206,19 @@ export default function MailDetailScreen() {
               {primaryParty}
             </Text>
             <DetailMetaRow
-              label="发件人"
+              label="From"
               value={senderAddress || secondaryLine || "—"}
               copyValue={senderAddress || undefined}
               compact
             />
             <DetailMetaRow
-              label={isSent ? "送达至" : "收件人"}
+              label={isSent ? "Delivered to" : "To"}
               value={recipientLine || "—"}
               copyValue={recipientCopyValue || undefined}
               compact
               multiline
             />
-            <DetailMetaRow label="时间" value={date} compact />
+            <DetailMetaRow label="Time" value={date} compact />
           </View>
         </View>
 
@@ -226,7 +226,7 @@ export default function MailDetailScreen() {
         {mail.attachments && mail.attachments.length > 0 && (
           <View style={[styles.attachmentSection, { borderBottomColor: colors.border }]}>
             <Text style={[styles.attachmentTitle, { color: colors.foreground }]}>
-              附件 ({mail.attachments.length})
+              Attachments ({mail.attachments.length})
             </Text>
             {mail.attachments.map((att, idx) => (
               <View
@@ -238,7 +238,7 @@ export default function MailDetailScreen() {
                   style={[styles.attachmentName, { color: colors.foreground }]}
                   numberOfLines={1}
                 >
-                  {att.filename || `附件 ${idx + 1}`}
+                  {att.filename || `Attachment ${idx + 1}`}
                 </Text>
                 {att.size ? (
                   <Text style={[styles.attachmentSize, { color: colors.muted }]}>

@@ -640,7 +640,7 @@ function parseSendPayload(rawMail: RawMail): ParsedMail | null {
       decodeMimeWords(
         (typeof payload.subject === "string" && payload.subject.trim()) || rawMail.subject
       ) ||
-      "(无主题)",
+      "(No subject)",
     text: normalizePlainText(text),
     html: sanitizeMailHtml(html),
     raw: rawContent,
@@ -715,7 +715,7 @@ function parseMimeMail(rawMail: RawMail): ParsedMail {
   const fallbackTo = parseAddressList(fallbackToHeader);
 
   const fallbackSubject = decodeMimeWords(
-    extractHeaderValue(rawContent, "Subject") || rawMail.subject || "(无主题)"
+    extractHeaderValue(rawContent, "Subject") || rawMail.subject || "(No subject)"
   );
   const fallbackDate = extractHeaderValue(rawContent, "Date") || rawMail.created_at;
   const fallbackContent = extractMimeContentFallback(rawContent);
@@ -743,8 +743,8 @@ function parseMimeMail(rawMail: RawMail): ParsedMail {
 /**
  * Parse raw email content.
  *
- * - 收件邮件：优先按 RFC822/MIME 解析
- * - 发件箱记录：自动识别官方前端使用的 JSON raw 结构（v2 / sendgrid 风格）
+ * - Received mail: parsed as RFC822/MIME first
+ * - Sent records: automatically detects the JSON raw structure used by the official frontend (v2 / sendgrid style)
  */
 export async function parseMail(rawMail: RawMail): Promise<ParsedMail> {
   ensureMailTextDecoder();
@@ -764,7 +764,7 @@ export async function parseMail(rawMail: RawMail): Promise<ParsedMail> {
   if (!rawContent) {
     return {
       id: rawMail.id,
-      subject: rawMail.subject || "(无内容)",
+      subject: rawMail.subject || "(No content)",
       text: "",
       html: "",
       raw: "",
@@ -840,7 +840,7 @@ export async function parseMail(rawMail: RawMail): Promise<ParsedMail> {
             rawMail.subject ||
             extractHeaderValue(rawContent, "Subject")
         ) ||
-        "(无主题)",
+        "(No subject)",
       text,
       html,
       date:
@@ -907,8 +907,8 @@ export function getVerificationCode(mail: ParsedMail): string | null {
   const corpus = [mail.subject || "", bodyText].filter(Boolean).join("\n");
   const directSources = [bodyText, mail.subject || ""];
   const directPatterns = [
-    /(?:验证码|校验码|动态码|动态密码|验证代码|登录码|安全码)\s*(?:是|为|:|：)?\s*([A-Z0-9]{4,8})/i,
-    /(?:verification code|security code|one[- ]?time code|login code|passcode|otp)(?:\s+is|\s*[:：-])\s*([A-Z0-9]{4,8})/i,
+    /(?:\u9a8c\u8bc1\u7801|\u6821\u9a8c\u7801|\u52a8\u6001\u7801|\u52a8\u6001\u5bc6\u7801|\u9a8c\u8bc1\u4ee3\u7801|\u767b\u5f55\u7801|\u5b89\u5168\u7801)\s*(?:\u662f|\u4e3a|:|\uff1a)?\s*([A-Z0-9]{4,8})/i, // Chinese: verification/check/dynamic/login/security code, followed by "is" or a colon
+    /(?:verification code|security code|one[- ]?time code|login code|passcode|otp)(?:\s+is|\s*[:\uff1a-])\s*([A-Z0-9]{4,8})/i,
   ];
 
   for (const source of directSources) {
@@ -921,7 +921,7 @@ export function getVerificationCode(mail: ParsedMail): string | null {
   }
 
   if (
-    /(验证码|校验码|动态码|verification|security code|one[- ]?time|passcode|otp)/i.test(
+    /(\u9a8c\u8bc1\u7801|\u6821\u9a8c\u7801|\u52a8\u6001\u7801|verification|security code|one[- ]?time|passcode|otp)/i.test(
       corpus
     )
   ) {
@@ -942,9 +942,9 @@ export function getSenderDisplay(mail: ParsedMail): string {
   if (mail.from?.name) return mail.from.name;
   if (mail.from?.address) return mail.from.address;
   if (!mail.mailboxKind || mail.mailboxKind === "sendbox") {
-    return mail.ownerAddress || "未知发件人";
+    return mail.ownerAddress || "Unknown sender";
   }
-  return "未知发件人";
+  return "Unknown sender";
 }
 
 export { sanitizeMailHtml };

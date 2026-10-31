@@ -218,7 +218,7 @@ export async function createAddressGroup(
 ): Promise<AddressGroup> {
   const name = params.name.trim();
   if (!name) {
-    throw new Error("请输入分组名称");
+    throw new Error("Enter a group name");
   }
 
   const state = await loadAddressGroupState(workerUrl);
@@ -226,7 +226,7 @@ export async function createAddressGroup(
     (item) => item.name.trim().toLowerCase() === name.toLowerCase()
   );
   if (duplicate) {
-    throw new Error("分组名称已存在");
+    throw new Error("A group with this name already exists");
   }
 
   const now = new Date().toISOString();
@@ -276,12 +276,12 @@ export async function addAddressToGroup(
 ) {
   const normalizedAddress = normalizeAddress(address);
   if (!normalizedAddress) {
-    throw new Error("邮箱地址不能为空");
+    throw new Error("Email address cannot be empty");
   }
 
   const state = await loadAddressGroupState(workerUrl);
   if (!state.groups.some((item) => item.id === groupId)) {
-    throw new Error("分组不存在");
+    throw new Error("Group does not exist");
   }
 
   const currentIds = state.memberships[normalizedAddress] || [];

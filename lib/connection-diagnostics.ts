@@ -35,9 +35,9 @@ export function describeConnectionError(
   if ([404, 405, 501].includes(status)) {
     return {
       code: "unsupported_backend",
-      title: "后端接口不兼容",
-      message: "Worker 可以访问，但缺少 CloudMail 所需的兼容接口。",
-      suggestion: "确认 Worker 版本及部署来源，并重新部署与当前客户端兼容的版本。",
+      title: "Incompatible backend API",
+      message: "The Worker is reachable but is missing the compatible endpoints CloudMail needs.",
+      suggestion: "Check the Worker version and deployment source, and redeploy a version compatible with this client.",
     };
   }
 
@@ -45,63 +45,63 @@ export function describeConnectionError(
     if (stage === "settings") {
       return {
         code: "site_password_rejected",
-        title: "站点密码未通过",
-        message: "Worker 在读取公开设置阶段拒绝了请求。",
-        suggestion: "若 Worker 配置了 PASSWORDS，请填写站点密码；未配置时保持为空。",
+        title: "Site password rejected",
+        message: "The Worker rejected the request while reading public settings.",
+        suggestion: "If the Worker has PASSWORDS configured, enter the site password; otherwise leave it empty.",
       };
     }
     return {
       code: "admin_password_rejected",
-      title: "管理员密码未通过",
-      message: "公开设置读取成功，但管理员认证被 Worker 拒绝。",
-      suggestion: "请确认该档案的管理员密码与 Worker ADMIN_PASSWORDS 完全一致。",
+      title: "Admin password rejected",
+      message: "Public settings loaded, but the Worker rejected admin authentication.",
+      suggestion: "Make sure this profile's admin password exactly matches the Worker's ADMIN_PASSWORDS.",
     };
   }
 
   if (status === 429) {
     return {
       code: "rate_limited",
-      title: "请求过于频繁",
-      message: "Worker 暂时限制了连接测试请求。",
-      suggestion: "稍候再试，不要连续重复点击测试连接。",
+      title: "Too many requests",
+      message: "The Worker is temporarily rate-limiting connection tests.",
+      suggestion: "Wait a moment and try again; avoid tapping Test connection repeatedly.",
     };
   }
 
   if (
     lowerMessage.includes("timeout") ||
-    lowerMessage.includes("超时") ||
+    lowerMessage.includes("timed out") ||
     lowerMessage.includes("aborted")
   ) {
     return {
       code: "network_timeout",
-      title: "连接超时",
-      message: "在限定时间内没有收到 Worker 响应。",
-      suggestion: "检查网络、Worker 域名和 Cloudflare 服务状态后重试。",
+      title: "Connection timed out",
+      message: "No response from the Worker within the time limit.",
+      suggestion: "Check the network, the Worker domain and Cloudflare status, then try again.",
     };
   }
 
   if (status >= 500) {
     return {
       code: "worker_error",
-      title: "Worker 服务异常",
-      message: `Worker 返回 HTTP ${status}，请求已到达服务端但未正常完成。`,
-      suggestion: "检查最近的 Worker 部署、D1/KV 绑定和 Cloudflare 日志。",
+      title: "Worker error",
+      message: `The Worker returned HTTP ${status}; the request reached the server but did not complete normally.`,
+      suggestion: "Check recent Worker deployments, D1/KV bindings and Cloudflare logs.",
     };
   }
 
   if (!status) {
     return {
       code: "network_unreachable",
-      title: "无法连接 Worker",
-      message: "客户端未收到有效的 HTTP 响应。",
-      suggestion: "检查 Worker 地址、HTTPS 证书、网络和 DNS。",
+      title: "Cannot reach the Worker",
+      message: "The client did not receive a valid HTTP response.",
+      suggestion: "Check the Worker URL, HTTPS certificate, network and DNS.",
     };
   }
 
   return {
     code: "request_rejected",
-    title: "连接测试未通过",
-    message: `Worker 返回 HTTP ${status}。`,
-    suggestion: "检查 Worker 配置和版本后重试。",
+    title: "Connection test failed",
+    message: `The Worker returned HTTP ${status}.`,
+    suggestion: "Check the Worker configuration and version, then try again.",
   };
 }

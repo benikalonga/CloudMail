@@ -1,89 +1,89 @@
-# CloudMail 构建与安装指南
+# CloudMail Build and Installation Guide
 
-这是一个 Expo + React Native 项目。公开发布必须使用 **EAS 云端构建**保存的生产密钥；本地 Gradle 构建仅用于编译、Manifest 和兼容性验证。
+This is an Expo + React Native project. Public releases must use the production keys stored by **EAS cloud builds**; local Gradle builds are only for compilation, manifest and compatibility checks.
 
 ---
 
-## 方式一：EAS 云端构建（推荐，最简单）
+## Option 1: EAS cloud build (recommended, simplest)
 
-不用装任何 Android SDK / Java，Expo 在云端帮你打包。免费额度够个人用。
+No Android SDK or Java needed; Expo builds the package in the cloud. The free tier is enough for personal use.
 
-### 1. 安装 eas-cli
+### 1. Install eas-cli
 
 ```powershell
 npm install -g eas-cli
 ```
 
-### 2. 登录 Expo 账号
+### 2. Sign in to Expo
 
 ```powershell
 eas login
 ```
 
-没账号就去 [expo.dev](https://expo.dev) 免费注册一个。
+If you do not have an account, sign up for free at [expo.dev](https://expo.dev).
 
-### 3. 确认项目绑定
+### 3. Confirm the project link
 
 ```powershell
 cd cloudmail
 eas project:info
 ```
 
-当前仓库已绑定 `@your-expo-username/cloudmail`，Project ID 为 `00000000-0000-0000-0000-000000000000`。不要重新创建 EAS 项目或替换 `app.config.ts` 中的 Project ID。
+This repository is linked to `@your-expo-username/cloudmail` with Project ID `00000000-0000-0000-0000-000000000000`. Do not create a new EAS project or replace the Project ID in `app.config.ts`.
 
-### 4. 构建生产 AAB 与侧载 APK
+### 4. Build the production AAB and sideload APK
 
 ```powershell
 eas build --platform android --profile production --non-interactive --wait
 eas build --platform android --profile apk
 ```
 
-- `production` 生成 Google Play 所需 `.aab`。
-- `apk` 生成 GitHub Release/侧载所需 `.apk`，使用与 AAB 相同的 EAS 生产密钥。
-- 构建完成后必须核验包名、版本、权限和签名证书，再上传发行版。
+- `production` builds the `.aab` required by Google Play.
+- `apk` builds the `.apk` for GitHub Releases / sideloading, signed with the same EAS production key as the AAB.
+- After the build, verify the package name, version, permissions and signing certificate before uploading a release.
 
-### 5. 安装到手机
+### 5. Install on a phone
 
-把 APK 发到手机（微信/QQ/USB），点击安装。第一次会提示"来源不受信任"，允许即可。
+Send the APK to your phone (messaging app or USB) and tap to install. The first time, Android warns about an untrusted source; allow it.
 
 ---
 
-## 方式二：本地 Gradle 构建（需装 Android SDK）
+## Option 2: Local Gradle build (requires the Android SDK)
 
-如果你已经有 Android Studio，可以本地打包，速度更快。
+If you already have Android Studio, you can build locally, which is faster.
 
-### 前置：
+### Prerequisites
 
-1. 安装 Java JDK 17：https://adoptium.net/（选 Temurin 17 LTS）
-2. 安装 Android Studio：https://developer.android.com/studio
-3. 环境变量：
-   - `JAVA_HOME` 指向 JDK 安装路径
-   - `ANDROID_HOME` 指向 Android SDK 路径（通常 `<your-user-home>\\AppData\\Local\\Android\\Sdk`）
-   - `PATH` 里加 `%ANDROID_HOME%\platform-tools`
+1. Install Java JDK 17: https://adoptium.net/ (choose Temurin 17 LTS)
+2. Install Android Studio: https://developer.android.com/studio
+3. Environment variables:
+   - `JAVA_HOME` points to the JDK install path
+   - `ANDROID_HOME` points to the Android SDK path (usually `<your-user-home>\\AppData\\Local\\Android\\Sdk`)
+   - Add `%ANDROID_HOME%\platform-tools` to `PATH`
 
-### 步骤：
+### Steps
 
 ```powershell
 cd cloudmail
 
-# 1. 装依赖（首次必须）
+# 1. Install dependencies (required the first time)
 npm install -g pnpm
 pnpm install
 
-# 2. 生成原生 android 目录
+# 2. Generate the native android directory
 npx expo prebuild -p android --clean
 
-# 3. 构建 release APK
+# 3. Build the release APK
 cd android
 .\gradlew assembleRelease
 
-# 4. APK 位置
+# 4. APK location
 # android/app/build/outputs/apk/release/app-release.apk
 ```
 
-> **签名密钥**：managed prebuild 生成的本地 Release 默认使用 debug keystore。它只能作为 CI/本地验证制品，禁止上传为正式发行版。正式版使用 EAS 中已有的私有生产 keystore。
+> **Signing key**: local release builds from a managed prebuild use the debug keystore by default. They are only CI/local verification artifacts and must never be uploaded as official releases. Official releases use the private production keystore stored in EAS.
 
-### 验证 APK
+### Verify the APK
 
 ```powershell
 $buildTools = "$env:ANDROID_HOME\build-tools\36.0.0"
@@ -92,68 +92,67 @@ $buildTools = "$env:ANDROID_HOME\build-tools\36.0.0"
 & "$buildTools\apksigner.bat" verify --verbose --print-certs .\cloudmail-v1.1.4.apk
 ```
 
-应确认包名为 `space.manus.cloudmail.t20260418184046`，版本为 `1.1.4 (18)`，没有通知、录音、开机启动、唤醒锁、存储或悬浮窗权限，证书 SHA-256 与 V1.1.3 生产版一致：`5B:F4:BF:3A:49:73:2D:2A:5A:D1:F9:57:FB:D7:62:7F:E2:13:78:6E:1F:8B:35:7A:6E:E1:15:78:15:68:CE:EB`。
+Confirm that the package name is `space.manus.cloudmail.t20260418184046`, the version is `1.1.4 (18)`, there are no notification, recording, boot, wake lock, storage or overlay permissions, and the certificate SHA-256 matches the V1.1.3 production build: `5B:F4:BF:3A:49:73:2D:2A:5A:D1:F9:57:FB:D7:62:7F:E2:13:78:6E:1F:8B:35:7A:6E:E1:15:78:15:68:CE:EB`.
 
 ---
 
-## 开发调试（不打包，用 Expo Go 扫码跑）
+## Development (no build, run with Expo Go)
 
-如果你只想快速试一下改动、不想每次都重新打包：
+To try changes quickly without rebuilding every time:
 
 ```powershell
-# 1. 手机装 Expo Go（应用市场）
-# 2. 手机和电脑在同一 WiFi
-# 3. 启动开发服务器
+# 1. Install Expo Go on your phone (from the app store)
+# 2. Put the phone and computer on the same Wi-Fi
+# 3. Start the dev server
 cd cloudmail
-pnpm install   # 首次
+pnpm install   # first time only
 npx expo start
-# 4. 手机 Expo Go 扫描终端里的二维码
+# 4. Scan the QR code in the terminal with Expo Go
 ```
 
-> **注意**：Expo Go 不提供与生产包完全相同的 SecureStore 和原生构建环境。正式验收请使用 EAS APK 或 AAB 安装包。
+> **Note**: Expo Go does not provide exactly the same SecureStore and native build environment as production builds. Use an EAS APK or AAB for final acceptance testing.
 
 ---
 
-## 常见问题
+## Troubleshooting
 
-### 域名列表还是空
+### The domain list is still empty
 
-打开「设置 → 测试连接」。如果弹窗提示"连接成功但域名为空"：
+Open Settings → Test connection. If the dialog says "Connected, but no domains":
 
-1. 点「查看原始响应 JSON」，看看服务端返回了什么字段
-2. 到 Cloudflare Dashboard → Workers & Pages → 你的 Worker → Settings → Variables，检查：
-   - `DOMAINS` 是否存在，值是否是 JSON 数组：`["a.com","b.com"]`
-   - 不要写成 `a.com,b.com` 或单个字符串
+1. Tap "View raw response JSON" to see which fields the server returned
+2. In the Cloudflare Dashboard → Workers & Pages → your Worker → Settings → Variables, check:
+   - Whether `DOMAINS` exists and is a JSON array: `["a.com","b.com"]`
+   - Do not write it as `a.com,b.com` or a single string
 
-### 提示"发件余额为 0"
+### "Send balance is 0"
 
-到「发送」Tab，顶部横幅会出现"申请发件权限"按钮，点一下就好。
+Go to the Send tab. A banner at the top shows a "Request" button for send access; tap it.
 
-### 想在家人手机上用
+### Using it on a family member's phone
 
-两个办法：
-1. APK 直接分享给家人，他们装好后在「邮箱 → 导入」里粘入你导出的**邮箱凭证 (JWT)**（从「邮箱管理 → 🔑 图标」复制）
-2. 或者让他们自己创建新邮箱，各自独立用
+Two options:
+1. Share the APK with them. After installing, they paste the **mailbox credential (JWT)** you exported into Mailboxes → Import (copy it from Mailboxes → the 🔑 icon)
+2. Or let them create their own mailboxes and use them independently
 
 ---
 
-## 目录结构速览
+## Directory overview
 
 ```
 cloudmail/
-├── app/                  # Expo Router 路由（Tab 页面）
+├── app/                  # Expo Router routes (tab pages)
 │   ├── (tabs)/
-│   │   ├── index.tsx     # 收件箱 / 发件箱
-│   │   ├── compose.tsx   # 发送邮件
-│   │   ├── addresses.tsx # 邮箱管理、凭证导出/导入
-│   │   └── settings.tsx  # Worker 配置、账户、自动回复
-│   └── mail-detail.tsx   # 邮件详情
+│   │   ├── index.tsx     # Inbox / sent
+│   │   ├── compose.tsx   # Send email
+│   │   ├── addresses.tsx # Mailbox management, credential export/import
+│   │   └── settings.tsx  # Worker configuration, account, auto reply
+│   └── mail-detail.tsx   # Email details
 ├── lib/
-│   ├── api.ts            # API 客户端（所有后端接口）
-│   ├── mail-context.tsx  # 全局状态管理
-│   ├── mail-parser.ts    # MIME 邮件解析
-│   └── sha256.ts         # 纯 JS SHA-256（登录接口用）
-├── eas.json              # EAS 构建配置
-└── app.config.ts         # Expo 应用配置
+│   ├── api.ts            # API client (all backend endpoints)
+│   ├── mail-context.tsx  # Global state management
+│   ├── mail-parser.ts    # MIME email parsing
+│   └── sha256.ts         # Pure JS SHA-256 (used by the sign-in endpoint)
+├── eas.json              # EAS build configuration
+└── app.config.ts         # Expo app configuration
 ```
-

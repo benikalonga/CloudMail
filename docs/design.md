@@ -1,105 +1,105 @@
-# CloudMail 设计文档
+# CloudMail Design Document
 
-## 应用概述
+## Overview
 
-CloudMail 是一个基于 Cloudflare 临时邮箱后端的移动客户端应用。用户可以通过填入自己的 Cloudflare Worker 地址和认证信息，连接到自建的临时邮箱服务，实现邮件的收发和管理。
+CloudMail is a mobile client for the Cloudflare temporary email backend. Users enter their own Cloudflare Worker URL and credentials to connect to a self-hosted temporary email service and send, receive and manage mail.
 
-## 屏幕列表
+## Screens
 
-| 屏幕名称 | 描述 | Tab |
+| Screen | Description | Tab |
 |---------|------|-----|
-| 收件箱 (Inbox) | 邮件列表，支持下拉刷新和自动轮询 | Tab 1 |
-| 发送邮件 (Compose) | 撰写和发送邮件 | Tab 2 |
-| 邮箱管理 (Addresses) | 管理邮箱地址，创建新地址 | Tab 3 |
-| 设置 (Settings) | 服务器配置、应用设置 | Tab 4 |
-| 邮件详情 (Mail Detail) | 查看邮件正文、附件 | Stack Screen |
+| Inbox | Mail list with pull-to-refresh and automatic polling | Tab 1 |
+| Compose | Write and send email | Tab 2 |
+| Addresses | Manage email addresses, create new ones | Tab 3 |
+| Settings | Server configuration, app settings | Tab 4 |
+| Mail Detail | View the email body and attachments | Stack Screen |
 
-## 主要内容和功能
+## Main content and features
 
-### 收件箱 (Inbox)
-- 邮件列表卡片：发件人、主题、时间、摘要预览
-- 下拉刷新 + 自动轮询（可配置间隔 10/30/60 秒）
-- 左滑删除邮件
-- 点击进入邮件详情
-- 顶部显示当前邮箱地址，可快速切换
-- 空状态提示
+### Inbox
+- Mail list cards: sender, subject, time, preview
+- Pull-to-refresh + automatic polling (configurable interval of 10/30/60 seconds)
+- Swipe left to delete
+- Tap to open mail details
+- Current email address shown at the top, with quick switching
+- Empty state message
 
-### 邮件详情 (Mail Detail)
-- 邮件头信息：发件人、收件人、主题、时间
-- HTML 邮件正文渲染（WebView）
-- 纯文本邮件正文
-- 附件列表和下载
+### Mail Detail
+- Header info: sender, recipient, subject, time
+- HTML body rendering (WebView)
+- Plain-text body
+- Attachment list and download
 
-### 发送邮件 (Compose)
-- 发件人名称输入
-- 收件人地址和名称输入
-- 主题输入
-- 正文编辑（支持纯文本/HTML 切换）
-- 发送按钮
+### Compose
+- Sender name input
+- Recipient address and name input
+- Subject input
+- Body editor (plain text / HTML toggle)
+- Send button
 
-### 邮箱管理 (Addresses)
-- 当前活跃邮箱地址显示
-- 创建新邮箱地址（名称 + 域名选择）
-- 已保存的邮箱地址列表
-- 切换活跃邮箱
-- 删除邮箱地址
-- JWT 凭证显示/复制
+### Addresses
+- Shows the current active email address
+- Create a new address (name + domain)
+- List of saved addresses
+- Switch the active mailbox
+- Delete addresses
+- Show/copy JWT credentials
 
-### 设置 (Settings)
-- 服务器地址 (Worker URL)
-- Admin 密码（可选，用于 Admin API）
-- 站点访问密码（可选）
-- 自动刷新间隔设置
-- 深色/浅色模式切换
-- 关于信息
+### Settings
+- Server URL (Worker URL)
+- Admin password (optional, for the Admin API)
+- Site access password (optional)
+- Auto-refresh interval
+- Dark/light mode toggle
+- About
 
-## 关键用户流程
+## Key user flows
 
-### 首次使用
-1. 用户打开应用 → 设置页面
-2. 填入 Worker URL → 保存
-3. 可选填入 Admin 密码和站点密码
-4. 切换到邮箱管理 → 创建新邮箱
-5. 输入邮箱名称，选择域名 → 创建
-6. 自动切换到收件箱，开始接收邮件
+### First use
+1. The user opens the app → Settings
+2. Enters the Worker URL → Save
+3. Optionally enters the admin password and site password
+4. Switches to Addresses → creates a new mailbox
+5. Enters a mailbox name, picks a domain → Create
+6. The app switches to the inbox and starts receiving mail
 
-### 查看邮件
-1. 收件箱列表 → 点击邮件卡片
-2. 进入邮件详情页
-3. 查看邮件正文和附件
-4. 返回列表
+### Reading mail
+1. Inbox list → tap a mail card
+2. The mail detail page opens
+3. View the body and attachments
+4. Go back to the list
 
-### 发送邮件
-1. 点击发送邮件 Tab
-2. 填写收件人、主题、正文
-3. 点击发送 → 显示发送结果
+### Sending mail
+1. Tap the Compose tab
+2. Fill in the recipient, subject and body
+3. Tap Send → the result is shown
 
-### 切换邮箱
-1. 邮箱管理页 → 点击已有地址
-2. 切换为活跃邮箱
-3. 收件箱自动刷新该邮箱的邮件
+### Switching mailboxes
+1. Addresses page → tap a saved address
+2. It becomes the active mailbox
+3. The inbox refreshes with that mailbox's mail
 
-## 颜色方案
+## Color scheme
 
-| 用途 | 浅色模式 | 深色模式 |
+| Use | Light mode | Dark mode |
 |------|---------|---------|
-| Primary (品牌色) | #2563EB (蓝色) | #3B82F6 |
+| Primary (brand) | #2563EB (blue) | #3B82F6 |
 | Background | #F8FAFC | #0F172A |
-| Surface (卡片) | #FFFFFF | #1E293B |
-| Foreground (文字) | #0F172A | #F1F5F9 |
-| Muted (次要文字) | #64748B | #94A3B8 |
+| Surface (cards) | #FFFFFF | #1E293B |
+| Foreground (text) | #0F172A | #F1F5F9 |
+| Muted (secondary text) | #64748B | #94A3B8 |
 | Border | #E2E8F0 | #334155 |
 | Success | #10B981 | #34D399 |
 | Warning | #F59E0B | #FBBF24 |
 | Error | #EF4444 | #F87171 |
 
-设计采用 Slate 色系，搭配蓝色作为品牌主色调，营造专业、简洁的邮箱客户端感觉。
+The design uses the Slate palette with blue as the primary brand color for a professional, clean email client feel.
 
-## 交互设计
+## Interaction design
 
-- 邮件列表使用 FlatList，支持下拉刷新
-- 邮件卡片点击有 opacity 反馈
-- 发送邮件成功后有 haptic 反馈
-- 删除操作需要确认
-- 加载状态使用 ActivityIndicator
-- 错误状态使用 toast 提示
+- The mail list uses FlatList with pull-to-refresh
+- Mail cards give opacity feedback on tap
+- Haptic feedback after a successful send
+- Delete actions require confirmation
+- Loading states use ActivityIndicator
+- Error states use toast messages

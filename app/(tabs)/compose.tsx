@@ -98,10 +98,10 @@ export default function ComposeScreen() {
           <View style={styles.emptyContainer}>
             <IconSymbol name="gearshape.fill" size={56} color={colors.muted} />
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
-              请先配置服务器
+              Set up a server first
             </Text>
             <Text style={[styles.emptySubtitle, { color: colors.muted }]}>
-              在「设置」中填入 Worker 地址
+              Enter the Worker URL in Settings
             </Text>
           </View>
         </ScreenContainer>
@@ -116,10 +116,10 @@ export default function ComposeScreen() {
           <View style={styles.emptyContainer}>
             <IconSymbol name="at" size={56} color={colors.muted} />
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
-              请先创建邮箱
+              Create a mailbox first
             </Text>
             <Text style={[styles.emptySubtitle, { color: colors.muted }]}>
-              在「邮箱」中创建一个邮箱地址
+              Create an email address under Mailboxes
             </Text>
           </View>
         </ScreenContainer>
@@ -137,7 +137,7 @@ export default function ComposeScreen() {
         {/* Header */}
         <View style={[styles.header, { borderBottomColor: colors.border }]}>
           <Text style={[styles.headerTitle, { color: colors.foreground }]}>
-            发送邮件
+            Send email
           </Text>
           <Pressable
             onPress={handleSend}
@@ -158,7 +158,7 @@ export default function ComposeScreen() {
             ) : (
               <>
                 <IconSymbol name="paperplane.fill" size={16} color="#FFFFFF" />
-                <Text style={styles.sendButtonText}>发送</Text>
+                <Text style={styles.sendButtonText}>Send</Text>
               </>
             )}
           </Pressable>
@@ -183,7 +183,7 @@ export default function ComposeScreen() {
                 color={colors.warning}
               />
               <Text style={[styles.bannerText, { color: colors.foreground }]}>
-                服务器未启用发件功能（enableSendMail=false）
+                Sending is not enabled on the server (enableSendMail=false)
               </Text>
             </View>
           ) : needsRequestAccess ? (
@@ -195,7 +195,7 @@ export default function ComposeScreen() {
             >
               <IconSymbol name="info.circle.fill" size={16} color={colors.warning} />
               <Text style={[styles.bannerText, { color: colors.foreground }]}>
-                当前发件余额为 0，点击右侧申请发件权限
+                Your send balance is 0. Tap the button on the right to request send access
               </Text>
               <Pressable
                 onPress={handleRequestAccess}
@@ -211,7 +211,7 @@ export default function ComposeScreen() {
                 {isRequesting ? (
                   <ActivityIndicator size="small" color="#FFFFFF" />
                 ) : (
-                  <Text style={styles.bannerActionText}>申请</Text>
+                  <Text style={styles.bannerActionText}>Request</Text>
                 )}
               </Pressable>
             </View>
@@ -224,14 +224,14 @@ export default function ComposeScreen() {
             >
               <IconSymbol name="checkmark.circle.fill" size={16} color={colors.primary} />
               <Text style={[styles.bannerText, { color: colors.foreground }]}>
-                发件余额: {sendBalance}
+                Send balance: {sendBalance}
               </Text>
             </View>
           ) : null}
 
           {/* From */}
           <View style={[styles.fieldRow, { borderBottomColor: colors.border }]}>
-            <Text style={[styles.fieldLabel, { color: colors.muted }]}>发件人</Text>
+            <Text style={[styles.fieldLabel, { color: colors.muted }]}>From</Text>
             <Text style={[styles.fromAddress, { color: colors.foreground }]} numberOfLines={1}>
               {activeAccount.address}
             </Text>
@@ -239,12 +239,12 @@ export default function ComposeScreen() {
 
           {/* From Name */}
           <View style={[styles.fieldRow, { borderBottomColor: colors.border }]}>
-            <Text style={[styles.fieldLabel, { color: colors.muted }]}>发件名</Text>
+            <Text style={[styles.fieldLabel, { color: colors.muted }]}>From name</Text>
             <TextInput
               style={[styles.fieldInput, { color: colors.foreground }]}
               value={fromName}
               onChangeText={setFromName}
-              placeholder="显示名称（可选）"
+              placeholder="Display name (optional)"
               placeholderTextColor={colors.muted}
               returnKeyType="next"
             />
@@ -252,7 +252,7 @@ export default function ComposeScreen() {
 
           {/* To */}
           <View style={[styles.fieldRow, { borderBottomColor: colors.border }]}>
-            <Text style={[styles.fieldLabel, { color: colors.muted }]}>收件人</Text>
+            <Text style={[styles.fieldLabel, { color: colors.muted }]}>To</Text>
             <TextInput
               style={[styles.fieldInput, { color: colors.foreground }]}
               value={toMail}
@@ -268,12 +268,12 @@ export default function ComposeScreen() {
 
           {/* To Name */}
           <View style={[styles.fieldRow, { borderBottomColor: colors.border }]}>
-            <Text style={[styles.fieldLabel, { color: colors.muted }]}>收件名</Text>
+            <Text style={[styles.fieldLabel, { color: colors.muted }]}>To name</Text>
             <TextInput
               style={[styles.fieldInput, { color: colors.foreground }]}
               value={toName}
               onChangeText={setToName}
-              placeholder="收件人名称（可选）"
+              placeholder="Recipient name (optional)"
               placeholderTextColor={colors.muted}
               returnKeyType="next"
             />
@@ -281,12 +281,12 @@ export default function ComposeScreen() {
 
           {/* Subject */}
           <View style={[styles.fieldRow, { borderBottomColor: colors.border }]}>
-            <Text style={[styles.fieldLabel, { color: colors.muted }]}>主题</Text>
+            <Text style={[styles.fieldLabel, { color: colors.muted }]}>Subject</Text>
             <TextInput
               style={[styles.fieldInput, { color: colors.foreground }]}
               value={subject}
               onChangeText={setSubject}
-              placeholder="邮件主题"
+              placeholder="Email subject"
               placeholderTextColor={colors.muted}
               returnKeyType="next"
             />
@@ -295,7 +295,7 @@ export default function ComposeScreen() {
           {/* HTML Toggle */}
           <View style={[styles.toggleRow, { borderBottomColor: colors.border }]}>
             <Text style={[styles.toggleLabel, { color: colors.muted }]}>
-              HTML 格式
+              HTML format
             </Text>
             <Switch
               value={isHtml}
@@ -317,7 +317,7 @@ export default function ComposeScreen() {
             ]}
             value={content}
             onChangeText={setContent}
-            placeholder={isHtml ? "<p>HTML 邮件内容</p>" : "邮件正文..."}
+            placeholder={isHtml ? "<p>HTML email content</p>" : "Email body..."}
             placeholderTextColor={colors.muted}
             multiline
             textAlignVertical="top"

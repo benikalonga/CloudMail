@@ -34,19 +34,19 @@ import { useThemeContext, type ThemePreference } from "@/lib/theme-provider";
 import * as Haptics from "expo-haptics";
 
 const REFRESH_OPTIONS = [
-  { label: "10 秒", value: 10 },
-  { label: "30 秒", value: 30 },
-  { label: "60 秒", value: 60 },
-  { label: "2 分钟", value: 120 },
-  { label: "5 分钟", value: 300 },
-  { label: "关闭", value: 0 },
+  { label: "10 sec", value: 10 },
+  { label: "30 sec", value: 30 },
+  { label: "60 sec", value: 60 },
+  { label: "2 min", value: 120 },
+  { label: "5 min", value: 300 },
+  { label: "Off", value: 0 },
 ];
 
 const THEME_OPTIONS: { label: string; value: ThemePreference }[] = [
-  { label: "跟随系统", value: "system" },
-  { label: "浅色", value: "light" },
-  { label: "深色", value: "dark" },
-  { label: "OLED 黑", value: "oled" },
+  { label: "System", value: "system" },
+  { label: "Light", value: "light" },
+  { label: "Dark", value: "dark" },
+  { label: "OLED black", value: "oled" },
 ];
 
 const PRIVACY_POLICY_URL = String(
@@ -59,15 +59,15 @@ const TERMS_OF_SERVICE_URL = String(
 );
 
 function getThemeLabel(scheme: ThemePreference) {
-  if (scheme === "system") return "系统";
-  if (scheme === "oled") return "OLED 黑";
-  return scheme === "dark" ? "深色" : "浅色";
+  if (scheme === "system") return "system";
+  if (scheme === "oled") return "OLED black";
+  return scheme === "dark" ? "dark" : "light";
 }
 
 function createDraftWorkerProfile(index = 1): WorkerProfile {
   return {
     id: `draft_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-    name: `账号 ${index}`,
+    name: `Account ${index}`,
     workerUrl: "",
     frontendUrl: "",
     adminPassword: "",
@@ -83,7 +83,7 @@ function createDraftWorkerProfile(index = 1): WorkerProfile {
 function normalizeDraftWorkerProfile(profile: WorkerProfile): WorkerProfile {
   return {
     ...profile,
-    name: profile.name.trim() || "未命名账号",
+    name: profile.name.trim() || "Unnamed account",
     workerUrl: profile.workerUrl.trim().replace(/\/+$/, ""),
     frontendUrl: (profile.frontendUrl || "").trim().replace(/\/+$/, ""),
     adminPassword: profile.adminPassword.trim(),
@@ -180,13 +180,13 @@ export default function SettingsScreen() {
     try {
       await Linking.openURL(url);
     } catch {
-      Alert.alert("无法打开链接", `请稍后重试或前往项目仓库查看${title}`);
+      Alert.alert("Could not open link", `Please try again later or see ${title} in the project repository`);
     }
   }, []);
 
   const handleEnterAdmin = useCallback(async () => {
     if (!adminPwdInput.trim()) {
-      Alert.alert("提示", "请输入管理员密码");
+      Alert.alert("Notice", "Enter the admin password");
       return;
     }
     setIsEnteringAdmin(true);
@@ -217,7 +217,7 @@ export default function SettingsScreen() {
                 {
                   ...createDraftWorkerProfile(1),
                   id: "legacy_default",
-                  name: "默认账号",
+                  name: "Default account",
                   workerUrl: state.workerUrl,
                   adminPassword: state.adminPassword,
                   sitePassword: state.sitePassword,
@@ -276,14 +276,14 @@ export default function SettingsScreen() {
   const handleDeleteWorkerProfile = useCallback(
     (profileId: string) => {
       if (workerProfiles.length <= 1) {
-        Alert.alert("提示", "至少保留一个 Worker 配置");
+        Alert.alert("Notice", "At least one Worker configuration is required");
         return;
       }
       const profile = workerProfiles.find((item) => item.id === profileId);
-      Alert.alert("删除 Worker", `删除「${profile?.name || "该账号"}」配置？`, [
-        { text: "取消", style: "cancel" },
+      Alert.alert("Delete Worker", `Delete the "${profile?.name || "this account"}" configuration?`, [
+        { text: "Cancel", style: "cancel" },
         {
-          text: "删除",
+          text: "Delete",
           style: "destructive",
           onPress: () => {
             setWorkerProfiles((prev) => {
@@ -306,17 +306,17 @@ export default function SettingsScreen() {
       .filter((profile) => profile.workerUrl || profile.adminPassword || profile.sitePassword);
 
     if (cleanedProfiles.length === 0) {
-      Alert.alert("提示", "请至少配置一个 Worker");
+      Alert.alert("Notice", "Configure at least one Worker");
       return;
     }
 
     for (const profile of cleanedProfiles) {
       if (!profile.workerUrl) {
-        Alert.alert("提示", `请填入「${profile.name}」的 Worker 地址`);
+        Alert.alert("Notice", `Enter the Worker URL for "${profile.name}"`);
         return;
       }
       if (!profile.adminPassword) {
-        Alert.alert("提示", `请填入「${profile.name}」的管理员密码`);
+        Alert.alert("Notice", `Enter the admin password for "${profile.name}"`);
         return;
       }
     }
@@ -325,7 +325,7 @@ export default function SettingsScreen() {
     for (const profile of cleanedProfiles) {
       const key = profile.workerUrl.toLowerCase();
       if (urlSet.has(key)) {
-        Alert.alert("提示", `Worker 地址重复：${profile.workerUrl}`);
+        Alert.alert("Notice", `Duplicate Worker URL: ${profile.workerUrl}`);
         return;
       }
       urlSet.add(key);
@@ -362,11 +362,11 @@ export default function SettingsScreen() {
     const draft = normalizeDraftWorkerProfile(profile);
     const testFingerprint = getWorkerProfileTestFingerprint(draft);
     if (!draft.workerUrl) {
-      Alert.alert("提示", "请先填入 Worker 地址");
+      Alert.alert("Notice", "Enter the Worker URL first");
       return;
     }
     if (!draft.adminPassword) {
-      Alert.alert("提示", "请先填入管理员密码");
+      Alert.alert("Notice", "Enter the admin password first");
       return;
     }
     setTestingProfileId(profileId);
@@ -376,7 +376,7 @@ export default function SettingsScreen() {
         workerUrl: draft.workerUrl,
         adminPassword: draft.adminPassword,
         sitePassword: draft.sitePassword || "",
-        lang: "zh",
+        lang: "en",
       };
       const settings = await fetchWorkerSettings({ configOverride });
       testStage = "admin";
@@ -398,13 +398,13 @@ export default function SettingsScreen() {
       updateWorkerProfileDraft(profileId, checkedProfile);
       if (domainCount > 0) {
         Alert.alert(
-          "连接成功",
-          `「${draft.name}」检测到 ${domainCount} 个可用域名：\n${settings.domains?.join(", ")}`
+          "Connected",
+          `"${draft.name}" found ${domainCount} usable domains:\n${settings.domains?.join(", ")}`
         );
       } else {
         Alert.alert(
-          "连接成功但域名为空",
-          `「${draft.name}」响应正常，但 domains 为空。\n\n请检查该 Worker 的 DOMAINS 环境变量。`
+          "Connected, but no domains",
+          `"${draft.name}" responded normally, but domains is empty.\n\nCheck this Worker's DOMAINS environment variable.`
         );
       }
     } catch (err: any) {
@@ -416,7 +416,7 @@ export default function SettingsScreen() {
       updateWorkerProfileDraft(profileId, {
         status: "error",
         lastCheckedAt: new Date().toISOString(),
-        errorMessage: `${diagnostic.title}：${diagnostic.message}`,
+        errorMessage: `${diagnostic.title}: ${diagnostic.message}`,
       });
       Alert.alert(
         diagnostic.title,
@@ -436,7 +436,7 @@ export default function SettingsScreen() {
   }, [router]);
   const handleChangePassword = useCallback(async () => {
     if (!newPassword.trim()) {
-      Alert.alert("提示", "请输入新密码");
+      Alert.alert("Notice", "Enter a new password");
       return;
     }
     setIsChangingPwd(true);
@@ -464,7 +464,7 @@ export default function SettingsScreen() {
 
   const rawResponseText = state.settings?._raw
     ? JSON.stringify(state.settings._raw, null, 2)
-    : "(未获取)";
+    : "(Not fetched)";
 
   return (
     <ScreenContainer>
@@ -474,13 +474,13 @@ export default function SettingsScreen() {
           keyboardShouldPersistTaps="handled"
         >
         <Text style={[styles.headerTitle, { color: colors.foreground }]}>
-          管理员设置
+          Admin settings
         </Text>
 
         {/* Server Config Section */}
         <View style={styles.sectionHeaderRow}>
           <Text style={[styles.sectionTitle, styles.sectionTitleInline, { color: colors.muted }]}>
-            Workers 配置
+            Workers
           </Text>
           <Pressable
             onPress={handleAddWorkerProfile}
@@ -494,7 +494,7 @@ export default function SettingsScreen() {
             ]}
           >
             <IconSymbol name="plus.circle.fill" size={14} color={colors.primary} />
-            <Text style={[styles.smallPillButtonText, { color: colors.primary }]}>添加 Worker</Text>
+            <Text style={[styles.smallPillButtonText, { color: colors.primary }]}>Add Worker</Text>
           </Pressable>
         </View>
 
@@ -504,8 +504,8 @@ export default function SettingsScreen() {
           const domainText = profile.domains?.length
             ? profile.domains.join(", ")
             : profile.status === "connected"
-              ? "未检测到域名"
-              : "尚未刷新域名";
+              ? "No domains found"
+              : "Domains not refreshed yet";
           const statusColor =
             profile.status === "connected"
               ? colors.success
@@ -514,10 +514,10 @@ export default function SettingsScreen() {
                 : colors.muted;
           const statusLabel =
             profile.status === "connected"
-              ? "已连接"
+              ? "Connected"
               : profile.status === "error"
-                ? "连接失败"
-                : "未检测";
+                ? "Connection failed"
+                : "Not tested";
 
           return (
             <View
@@ -534,10 +534,10 @@ export default function SettingsScreen() {
               <View style={styles.workerProfileHeader}>
                 <View style={styles.workerProfileTitleWrap}>
                   <Text style={[styles.workerProfileTitle, { color: colors.foreground }]}>
-                    {profile.name?.trim() || `账号 ${index + 1}`}
+                    {profile.name?.trim() || `Account ${index + 1}`}
                   </Text>
                   <Text style={[styles.workerProfileStatus, { color: statusColor }]}>
-                    {isActive ? "当前 · " : ""}{statusLabel}
+                    {isActive ? "Current · " : ""}{statusLabel}
                   </Text>
                 </View>
                 <View style={styles.workerProfileActions}>
@@ -552,7 +552,7 @@ export default function SettingsScreen() {
                         },
                       ]}
                     >
-                      <Text style={[styles.workerTinyButtonText, { color: colors.primary }]}>设为当前</Text>
+                      <Text style={[styles.workerTinyButtonText, { color: colors.primary }]}>Make current</Text>
                     </Pressable>
                   ) : null}
                   <Pressable
@@ -574,7 +574,7 @@ export default function SettingsScreen() {
               <View style={[styles.fieldGroup, { borderBottomColor: colors.border }]}>
                 <View style={styles.fieldHeader}>
                   <IconSymbol name="person.crop.circle.fill" size={18} color={colors.primary} />
-                  <Text style={[styles.fieldLabel, { color: colors.foreground }]}>账号名称</Text>
+                  <Text style={[styles.fieldLabel, { color: colors.foreground }]}>Account name</Text>
                 </View>
                 <TextInput
                   style={[
@@ -589,7 +589,7 @@ export default function SettingsScreen() {
                   value={profile.name}
                   editable={!isTesting}
                   onChangeText={(text) => updateWorkerProfileDraft(profile.id, { name: text })}
-                  placeholder="例如：Cloudflare 账号 A"
+                  placeholder="e.g. Cloudflare account A"
                   placeholderTextColor={colors.muted}
                 />
               </View>
@@ -597,7 +597,7 @@ export default function SettingsScreen() {
               <View style={[styles.fieldGroup, { borderBottomColor: colors.border }]}>
                 <View style={styles.fieldHeader}>
                   <IconSymbol name="globe" size={18} color={colors.primary} />
-                  <Text style={[styles.fieldLabel, { color: colors.foreground }]}>Worker 地址</Text>
+                  <Text style={[styles.fieldLabel, { color: colors.foreground }]}>Worker URL</Text>
                 </View>
                 <TextInput
                   style={[
@@ -623,7 +623,7 @@ export default function SettingsScreen() {
               <View style={[styles.fieldGroup, { borderBottomColor: colors.border }]}>
                 <View style={styles.fieldHeader}>
                   <IconSymbol name="key.fill" size={18} color={colors.primary} />
-                  <Text style={[styles.fieldLabel, { color: colors.foreground }]}>管理员密码</Text>
+                  <Text style={[styles.fieldLabel, { color: colors.foreground }]}>Admin password</Text>
                 </View>
                 <TextInput
                   style={[
@@ -638,7 +638,7 @@ export default function SettingsScreen() {
                   value={profile.adminPassword}
                   editable={!isTesting}
                   onChangeText={(text) => updateWorkerProfileDraft(profile.id, { adminPassword: text, status: "unchecked" })}
-                  placeholder="管理员密码（必填）"
+                  placeholder="Admin password (required)"
                   placeholderTextColor={colors.muted}
                   secureTextEntry
                   autoCapitalize="none"
@@ -649,7 +649,7 @@ export default function SettingsScreen() {
               <View style={[styles.fieldGroup, { borderBottomColor: colors.border }]}>
                 <View style={styles.fieldHeader}>
                   <IconSymbol name="safari" size={18} color={colors.primary} />
-                  <Text style={[styles.fieldLabel, { color: colors.foreground }]}>前端地址</Text>
+                  <Text style={[styles.fieldLabel, { color: colors.foreground }]}>Frontend URL</Text>
                 </View>
                 <TextInput
                   style={[
@@ -664,21 +664,21 @@ export default function SettingsScreen() {
                   value={profile.frontendUrl || ""}
                   editable={!isTesting}
                   onChangeText={(text) => updateWorkerProfileDraft(profile.id, { frontendUrl: text })}
-                  placeholder="https://your-pages.pages.dev（可选）"
+                  placeholder="https://your-pages.pages.dev (optional)"
                   placeholderTextColor={colors.muted}
                   autoCapitalize="none"
                   autoCorrect={false}
                   keyboardType="url"
                 />
                 <Text style={[styles.fieldHint, { color: colors.muted }]}>
-                  网页版邮箱界面地址，用于生成一键登录链接
+                  URL of the web mailbox UI, used to generate one-tap sign-in links
                 </Text>
               </View>
 
               <View style={[styles.fieldGroup, { borderBottomColor: colors.border }]}>
                 <View style={styles.fieldHeader}>
                   <IconSymbol name="lock.fill" size={18} color={colors.primary} />
-                  <Text style={[styles.fieldLabel, { color: colors.foreground }]}>站点密码</Text>
+                  <Text style={[styles.fieldLabel, { color: colors.foreground }]}>Site password</Text>
                 </View>
                 <TextInput
                   style={[
@@ -693,7 +693,7 @@ export default function SettingsScreen() {
                   value={profile.sitePassword || ""}
                   editable={!isTesting}
                   onChangeText={(text) => updateWorkerProfileDraft(profile.id, { sitePassword: text, status: "unchecked" })}
-                  placeholder="站点访问密码（可选）"
+                  placeholder="Site access password (optional)"
                   placeholderTextColor={colors.muted}
                   secureTextEntry
                   autoCapitalize="none"
@@ -703,7 +703,7 @@ export default function SettingsScreen() {
 
               <View style={styles.workerDomainBox}>
                 <Text style={[styles.fieldHint, { color: colors.muted }]} numberOfLines={3}>
-                  域名：{domainText}
+                  Domains: {domainText}
                 </Text>
                 {profile.errorMessage ? (
                   <Text style={[styles.fieldHint, { color: colors.error }]} numberOfLines={2}>
@@ -724,7 +724,7 @@ export default function SettingsScreen() {
                   {isTesting ? (
                     <ActivityIndicator size="small" color="#FFFFFF" />
                   ) : (
-                    <Text style={styles.workerTestButtonText}>测试连接 / 刷新域名</Text>
+                    <Text style={styles.workerTestButtonText}>Test connection / refresh domains</Text>
                   )}
                 </Pressable>
               </View>
@@ -734,7 +734,7 @@ export default function SettingsScreen() {
 
         {/* Refresh Interval */}
         <Text style={[styles.sectionTitle, { color: colors.muted }]}>
-          自动刷新
+          Auto refresh
         </Text>
 
         <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}>
@@ -780,7 +780,7 @@ export default function SettingsScreen() {
         </View>
 
         <Text style={[styles.sectionTitle, { color: colors.muted }]}>
-          外观
+          Appearance
         </Text>
 
         <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}>
@@ -792,13 +792,13 @@ export default function SettingsScreen() {
                 color={colors.primary}
               />
               <Text style={[styles.fieldLabel, { color: colors.foreground }]}>
-                主题模式
+                Theme
               </Text>
             </View>
             <Text style={[styles.fieldHint, styles.themeHintInline, { color: colors.muted }]}>
-              当前为{getThemeLabel(colorScheme)}外观
-              {themePreference === "system" ? "（跟随系统）" : ""}
-              {themePreference === "oled" ? "（深色纯黑变体）" : ""}
+              Currently using the {getThemeLabel(colorScheme)} theme
+              {themePreference === "system" ? " (following the system)" : ""}
+              {themePreference === "oled" ? " (pure black dark variant)" : ""}
             </Text>
             <View style={styles.themeGrid}>
               {THEME_OPTIONS.map((option) => {
@@ -848,7 +848,7 @@ export default function SettingsScreen() {
             ]}
           >
             <Text style={styles.primaryButtonText}>
-              {isSaving ? "保存中..." : "保存并进入管理后台"}
+              {isSaving ? "Saving..." : "Save and open the admin console"}
             </Text>
           </Pressable>
         </View>
@@ -857,39 +857,39 @@ export default function SettingsScreen() {
         {state.settings && (
           <>
             <Text style={[styles.sectionTitle, { color: colors.muted }]}>
-              Workers 信息
+              Worker info
             </Text>
             <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}>
               {state.settings.title && (
-                <InfoRow label="站点标题" value={state.settings.title} colors={colors} />
+                <InfoRow label="Site title" value={state.settings.title} colors={colors} />
               )}
-              <InfoRow label="域名数量" value={`${state.settings.domains?.length || 0}`} colors={colors} />
+              <InfoRow label="Domain count" value={`${state.settings.domains?.length || 0}`} colors={colors} />
               {(state.settings.domains?.length || 0) > 0 && (
                 <InfoRow
-                  label="可用域名"
+                  label="Available domains"
                   value={state.settings.domains!.join(", ")}
                   colors={colors}
                 />
               )}
               <InfoRow
-                label="发送邮件"
-                value={state.settings.enableSendMail !== false ? "已启用" : "未启用"}
+                label="Send mail"
+                value={state.settings.enableSendMail !== false ? "Enabled" : "Disabled"}
                 colors={colors}
                 valueColor={state.settings.enableSendMail !== false ? colors.success : colors.error}
               />
               <InfoRow
-                label="自动回复"
-                value={state.settings.enableAutoReply ? "已启用" : "未启用"}
+                label="Auto reply"
+                value={state.settings.enableAutoReply ? "Enabled" : "Disabled"}
                 colors={colors}
               />
               <InfoRow
-                label="地址密码"
-                value={state.settings.enableAddressPassword ? "已启用" : "未启用"}
+                label="Address password"
+                value={state.settings.enableAddressPassword ? "Enabled" : "Disabled"}
                 colors={colors}
               />
               {(state.settings.randomSubdomainDomains?.length || 0) > 0 && (
                 <InfoRow
-                  label="随机子域名"
+                  label="Random subdomain"
                   value={state.settings.randomSubdomainDomains!.join(", ")}
                   colors={colors}
                 />
@@ -899,7 +899,7 @@ export default function SettingsScreen() {
                 style={styles.rawToggle}
               >
                 <Text style={{ color: colors.primary, fontSize: 13, fontWeight: "500" }}>
-                  {showRawResponse ? "收起" : "查看"}原始响应 JSON
+                  {showRawResponse ? "Hide" : "View"} raw response JSON
                 </Text>
               </Pressable>
               {showRawResponse && (
@@ -930,23 +930,23 @@ export default function SettingsScreen() {
         {activeAccount && (
           <>
             <Text style={[styles.sectionTitle, { color: colors.muted }]}>
-              当前邮箱：{activeAccount.address}
+              Current mailbox: {activeAccount.address}
             </Text>
 
             {/* Send balance */}
             <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}>
               <InfoRow
-                label="发件余额"
+                label="Send balance"
                 value={
                   state.userSettings?.send_balance !== undefined
                     ? `${state.userSettings.send_balance}`
-                    : "(未知)"
+                    : "(Unknown)"
                 }
                 colors={colors}
               />
               <InfoRow
-                label="已设置自动回复"
-                value={state.userSettings?.auto_reply?.enabled ? "是" : "否"}
+                label="Auto reply set"
+                value={state.userSettings?.auto_reply?.enabled ? "Yes" : "No"}
                 colors={colors}
               />
               <Pressable
@@ -954,7 +954,7 @@ export default function SettingsScreen() {
                 style={styles.rawToggle}
               >
                 <Text style={{ color: colors.primary, fontSize: 13, fontWeight: "500" }}>
-                  刷新账户信息
+                  Refresh account info
                 </Text>
               </Pressable>
             </View>
@@ -968,7 +968,7 @@ export default function SettingsScreen() {
               ]}
             >
               <Text style={{ color: colors.foreground, fontSize: 15, fontWeight: "600" }}>
-                修改地址密码
+                Change address password
               </Text>
               <IconSymbol
                 name={showPasswordSection ? "chevron.down" : "chevron.right"}
@@ -995,7 +995,7 @@ export default function SettingsScreen() {
                   ]}
                   value={oldPassword}
                   onChangeText={setOldPassword}
-                  placeholder="当前密码（若已设置过）"
+                  placeholder="Current password (if set)"
                   placeholderTextColor={colors.muted}
                   secureTextEntry
                   autoCapitalize="none"
@@ -1013,7 +1013,7 @@ export default function SettingsScreen() {
                   ]}
                   value={newPassword}
                   onChangeText={setNewPassword}
-                  placeholder="新密码"
+                  placeholder="New password"
                   placeholderTextColor={colors.muted}
                   secureTextEntry
                   autoCapitalize="none"
@@ -1031,7 +1031,7 @@ export default function SettingsScreen() {
                   ]}
                 >
                   <Text style={[styles.secondaryButtonText, { color: colors.primary }]}>
-                    {isChangingPwd ? "更新中..." : "更新密码"}
+                    {isChangingPwd ? "Updating..." : "Update password"}
                   </Text>
                 </Pressable>
               </View>
@@ -1052,7 +1052,7 @@ export default function SettingsScreen() {
                   ]}
                 >
                   <Text style={{ color: colors.foreground, fontSize: 15, fontWeight: "600" }}>
-                    自动回复
+                    Auto reply
                   </Text>
                   <IconSymbol
                     name={showAutoReplySection ? "chevron.down" : "chevron.right"}
@@ -1069,7 +1069,7 @@ export default function SettingsScreen() {
                   >
                     <View style={styles.autoReplyToggleRow}>
                       <Text style={{ color: colors.foreground, fontSize: 14 }}>
-                        启用自动回复
+                        Enable auto reply
                       </Text>
                       <Switch
                         value={arEnabled}
@@ -1090,7 +1090,7 @@ export default function SettingsScreen() {
                       ]}
                       value={arSubject}
                       onChangeText={setArSubject}
-                      placeholder="自动回复主题"
+                      placeholder="Auto reply subject"
                       placeholderTextColor={colors.muted}
                     />
                     <TextInput
@@ -1105,7 +1105,7 @@ export default function SettingsScreen() {
                       ]}
                       value={arName}
                       onChangeText={setArName}
-                      placeholder="显示名称（可选）"
+                      placeholder="Display name (optional)"
                       placeholderTextColor={colors.muted}
                     />
                     <TextInput
@@ -1120,7 +1120,7 @@ export default function SettingsScreen() {
                       ]}
                       value={arSourcePrefix}
                       onChangeText={setArSourcePrefix}
-                      placeholder="仅对特定发件人前缀生效（可选）"
+                      placeholder="Only for senders with this prefix (optional)"
                       placeholderTextColor={colors.muted}
                     />
                     <TextInput
@@ -1138,7 +1138,7 @@ export default function SettingsScreen() {
                       ]}
                       value={arMessage}
                       onChangeText={setArMessage}
-                      placeholder="自动回复正文"
+                      placeholder="Auto reply body"
                       placeholderTextColor={colors.muted}
                       multiline
                     />
@@ -1155,7 +1155,7 @@ export default function SettingsScreen() {
                       ]}
                     >
                       <Text style={[styles.secondaryButtonText, { color: colors.primary }]}>
-                        {isSavingAr ? "保存中..." : "保存自动回复"}
+                        {isSavingAr ? "Saving..." : "Save auto reply"}
                       </Text>
                     </Pressable>
                   </View>
@@ -1167,7 +1167,7 @@ export default function SettingsScreen() {
         {/* Admin status */}
         {state.isAdminMode && (
           <>
-            <Text style={[styles.sectionTitle, { color: colors.muted }]}>管理员</Text>
+            <Text style={[styles.sectionTitle, { color: colors.muted }]}>Admin</Text>
             <View
               style={[
                 styles.card,
@@ -1175,9 +1175,9 @@ export default function SettingsScreen() {
               ]}
             >
               <View style={[styles.infoRow, { borderBottomColor: colors.border }]}>
-                <Text style={{ color: colors.muted, fontSize: 14 }}>状态</Text>
+                <Text style={{ color: colors.muted, fontSize: 14 }}>Status</Text>
                 <Text style={{ color: colors.success, fontSize: 14, fontWeight: "600" }}>
-                  已连接管理后台
+                  Connected to the admin console
                 </Text>
               </View>
               <Pressable
@@ -1188,7 +1188,7 @@ export default function SettingsScreen() {
                 ]}
               >
                 <Text style={{ color: colors.primary, fontSize: 14, fontWeight: "600" }}>
-                  返回管理后台 →
+                  Back to the admin console →
                 </Text>
               </Pressable>
             </View>
@@ -1197,7 +1197,7 @@ export default function SettingsScreen() {
 
         {/* About */}
         <Text style={[styles.sectionTitle, { color: colors.muted }]}>
-          关于
+          About
         </Text>
         <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}>
           <Pressable onPress={handleLogoTap}>
@@ -1209,7 +1209,7 @@ export default function SettingsScreen() {
                 v{appVersion}
               </Text>
               <Text style={[styles.aboutDesc, { color: colors.muted }]}>
-                面向管理员的 CloudMail 管理客户端
+                CloudMail admin client for administrators
               </Text>
             </View>
           </Pressable>
@@ -1217,7 +1217,7 @@ export default function SettingsScreen() {
             <Pressable
               accessibilityRole="link"
               onPress={() =>
-                void handleOpenLegalDocument(PRIVACY_POLICY_URL, "隐私政策")
+                void handleOpenLegalDocument(PRIVACY_POLICY_URL, "the privacy policy")
               }
               style={({ pressed }) => [
                 styles.legalLink,
@@ -1228,7 +1228,7 @@ export default function SettingsScreen() {
               <View style={styles.legalLinkLabel}>
                 <IconSymbol name="lock.fill" size={18} color={colors.muted} />
                 <Text style={[styles.legalLinkText, { color: colors.foreground }]}>
-                  隐私政策
+                  Privacy policy
                 </Text>
               </View>
               <IconSymbol name="chevron.right" size={20} color={colors.muted} />
@@ -1236,7 +1236,7 @@ export default function SettingsScreen() {
             <Pressable
               accessibilityRole="link"
               onPress={() =>
-                void handleOpenLegalDocument(TERMS_OF_SERVICE_URL, "使用条款")
+                void handleOpenLegalDocument(TERMS_OF_SERVICE_URL, "the terms of use")
               }
               style={({ pressed }) => [
                 styles.legalLink,
@@ -1246,7 +1246,7 @@ export default function SettingsScreen() {
               <View style={styles.legalLinkLabel}>
                 <IconSymbol name="info.circle.fill" size={18} color={colors.muted} />
                 <Text style={[styles.legalLinkText, { color: colors.foreground }]}>
-                  使用条款
+                  Terms of use
                 </Text>
               </View>
               <IconSymbol name="chevron.right" size={20} color={colors.muted} />
@@ -1267,7 +1267,7 @@ export default function SettingsScreen() {
         <View style={stylesExtra.modalOverlay}>
           <View style={[stylesExtra.modalCard, { backgroundColor: colors.background }]}>
             <Text style={[stylesExtra.modalTitle, { color: colors.foreground }]}>
-              管理员登录
+              Admin sign-in
             </Text>
             <TextInput
               style={[
@@ -1280,7 +1280,7 @@ export default function SettingsScreen() {
               ]}
               value={adminPwdInput}
               onChangeText={setAdminPwdInput}
-              placeholder="管理员密码"
+              placeholder="Admin password"
               placeholderTextColor={colors.muted}
               secureTextEntry
               autoCapitalize="none"
@@ -1298,7 +1298,7 @@ export default function SettingsScreen() {
                 ]}
               >
                 <Text style={{ color: colors.foreground, fontWeight: "600" }}>
-                  取消
+                  Cancel
                 </Text>
               </Pressable>
               <Pressable
@@ -1315,7 +1315,7 @@ export default function SettingsScreen() {
                 {isEnteringAdmin ? (
                   <ActivityIndicator color="#FFF" />
                 ) : (
-                  <Text style={{ color: "#FFF", fontWeight: "600" }}>进入</Text>
+                  <Text style={{ color: "#FFF", fontWeight: "600" }}>Enter</Text>
                 )}
               </Pressable>
             </View>

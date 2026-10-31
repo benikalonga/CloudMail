@@ -81,9 +81,9 @@ const PAGE_SIZE = 30;
 const ADDRESS_SEGMENT_PADDING = 4;
 const ADDRESS_SEGMENT_ANIMATION_MS = 96;
 const ADDRESS_DETAIL_TABS: { key: AddressDetailTab; label: string }[] = [
-  { key: "inbox", label: "收件箱" },
-  { key: "sent", label: "发件箱" },
-  { key: "send", label: "发邮件" },
+  { key: "inbox", label: "Inbox" },
+  { key: "sent", label: "Sent" },
+  { key: "send", label: "Send" },
 ];
 
 export default function AdminAddressDetailScreen() {
@@ -134,7 +134,7 @@ export default function AdminAddressDetailScreen() {
     return (
       <ScreenContainer edges={["top", "bottom", "left", "right"]}>
         <View style={styles.emptyWrap}>
-          <Text style={[styles.emptyText, { color: colors.muted }]}>地址未找到</Text>
+          <Text style={[styles.emptyText, { color: colors.muted }]}>Address not found</Text>
           <Pressable
             onPress={() => router.back()}
             style={({ pressed }) => [
@@ -142,7 +142,7 @@ export default function AdminAddressDetailScreen() {
               { backgroundColor: colors.primary, opacity: pressed ? 0.8 : 1 },
             ]}
           >
-            <Text style={styles.primaryButtonText}>返回</Text>
+            <Text style={styles.primaryButtonText}>Back</Text>
           </Pressable>
         </View>
       </ScreenContainer>
@@ -165,7 +165,7 @@ export default function AdminAddressDetailScreen() {
           <IconSymbol name="arrow.left" size={22} color={colors.primary} />
         </Pressable>
         <View style={styles.headerTextWrap}>
-          <Text style={[styles.headerTitle, { color: colors.foreground }]}>单地址管理</Text>
+          <Text style={[styles.headerTitle, { color: colors.foreground }]}>Address management</Text>
           <Text
             numberOfLines={1}
             style={[styles.headerSubtitle, { color: colors.muted }]}
@@ -177,9 +177,9 @@ export default function AdminAddressDetailScreen() {
           onPress={async () => {
             const ok = await copyTextToClipboard(addressName);
             if (ok) {
-              setMiniToastMessage("地址已复制");
+              setMiniToastMessage("Address copied");
             } else {
-              Alert.alert("复制失败", addressName);
+              Alert.alert("Copy failed", addressName);
             }
           }}
           style={({ pressed }) => [styles.iconButton, { opacity: pressed ? 0.6 : 1 }]}
@@ -195,7 +195,7 @@ export default function AdminAddressDetailScreen() {
             { backgroundColor: colors.surface, borderColor: colors.border },
           ]}
         >
-          <Text style={[styles.summaryLabel, { color: colors.muted }]}>地址 ID</Text>
+          <Text style={[styles.summaryLabel, { color: colors.muted }]}>Address ID</Text>
           <Text style={[styles.summaryValue, { color: colors.foreground }]}>
             #{addressId || "—"}
           </Text>
@@ -206,7 +206,7 @@ export default function AdminAddressDetailScreen() {
             { backgroundColor: colors.surface, borderColor: colors.border },
           ]}
         >
-          <Text style={[styles.summaryLabel, { color: colors.muted }]}>当前地址</Text>
+          <Text style={[styles.summaryLabel, { color: colors.muted }]}>Current address</Text>
           <Text
             style={[styles.summaryValue, { color: colors.foreground }]}
             numberOfLines={1}
@@ -415,7 +415,7 @@ function AddressMailList({
           } catch {
             return {
               id: item.id,
-              subject: item.subject || "(解析失败)",
+              subject: item.subject || "(Parse failed)",
               raw: item.raw || item.source || "",
               createdAt: item.created_at,
               ownerAddress: item.address || address,
@@ -517,7 +517,7 @@ function AddressMailList({
         // Persist cache
         await writeMailboxCache(cacheKeyInput, nextData);
       } catch (err: any) {
-        Alert.alert("加载失败", err.message || "");
+        Alert.alert("Failed to load", err.message || "");
       } finally {
         setIsLoading(false);
       }
@@ -563,10 +563,10 @@ function AddressMailList({
 
   const handleDelete = useCallback(
     (mail: ParsedMail) => {
-      Alert.alert("删除邮件", mail.subject || "(无主题)", [
-        { text: "取消", style: "cancel" },
+      Alert.alert("Delete email", mail.subject || "(No subject)", [
+        { text: "Cancel", style: "cancel" },
         {
-          text: "删除",
+          text: "Delete",
           style: "destructive",
           onPress: async () => {
             try {
@@ -579,7 +579,7 @@ function AddressMailList({
               setData((prev) => prev.filter((item) => item.id !== mail.id));
               setCount((prev) => Math.max(0, prev - 1));
             } catch (err: any) {
-              Alert.alert("删除失败", err.message || "");
+              Alert.alert("Delete failed", err.message || "");
             }
           },
         },
@@ -590,12 +590,12 @@ function AddressMailList({
 
   const handleClear = useCallback(() => {
     Alert.alert(
-      kind === "inbox" ? "清空收件箱" : "清空发件箱",
-      `确定清空 ${address} 的${kind === "inbox" ? "收件箱" : "发件箱"}吗？`,
+      kind === "inbox" ? "Empty inbox" : "Empty sent folder",
+      `Empty the ${kind === "inbox" ? "inbox" : "sent folder"} of ${address}?`,
       [
-        { text: "取消", style: "cancel" },
+        { text: "Cancel", style: "cancel" },
         {
-          text: "确定",
+          text: "OK",
           style: "destructive",
           onPress: async () => {
             try {
@@ -604,9 +604,9 @@ function AddressMailList({
               setData([]);
               setCount(0);
               setOffset(0);
-              Alert.alert("已清空");
+              Alert.alert("Emptied");
             } catch (err: any) {
-              Alert.alert("操作失败", err.message || "");
+              Alert.alert("Action failed", err.message || "");
             }
           },
         },
@@ -619,9 +619,9 @@ function AddressMailList({
       const ok = await copyTextToClipboard(code);
       if (ok) {
         markMailReadLocally(mail);
-        onMiniToast("验证码已复制");
+        onMiniToast("Code copied");
       } else {
-        Alert.alert("复制失败", code);
+        Alert.alert("Copy failed", code);
       }
     },
     [markMailReadLocally, onMiniToast]
@@ -631,22 +631,22 @@ function AddressMailList({
     (mail: ParsedMail) => {
       const sender = getAdminMailSpamSender(mail);
       if (kind !== "inbox" || !sender || !readStateScope.trim()) {
-        Alert.alert("无法拒收", "这封邮件没有可识别的发件邮箱地址。");
+        Alert.alert("Cannot block", "This email has no recognizable sender address.");
         return;
       }
 
-      Alert.alert("拒收发件人", `以后来自 ${sender} 的邮件会进入垃圾信箱。`, [
-        { text: "取消", style: "cancel" },
+      Alert.alert("Block sender", `Future mail from ${sender} will go to spam.`, [
+        { text: "Cancel", style: "cancel" },
         {
-          text: "拒收",
+          text: "Block",
           style: "destructive",
           onPress: async () => {
             try {
               await blockAdminMailSender(readStateScope, mail);
               markMailReadLocally(mail);
-              onMiniToast("已加入垃圾信箱");
+              onMiniToast("Moved to spam");
             } catch (err: any) {
-              Alert.alert("操作失败", err?.message || "拒收失败");
+              Alert.alert("Action failed", err?.message || "Block failed");
             }
           },
         },
@@ -686,8 +686,8 @@ function AddressMailList({
         openMailActionMenu(event, [
           {
             key: "delete",
-            label: "删除邮件",
-            subtitle: "从发件箱移除",
+            label: "Delete email",
+            subtitle: "Remove from the sent folder",
             icon: "trash.fill",
             destructive: true,
             onPress: () => handleDelete(mail),
@@ -702,7 +702,7 @@ function AddressMailList({
       if (sender) {
         items.push({
           key: "block",
-          label: "拒收该发件人",
+          label: "Block this sender",
           subtitle: sender,
           icon: "xmark.circle.fill",
           destructive: true,
@@ -712,8 +712,8 @@ function AddressMailList({
 
       items.push({
         key: "delete",
-        label: "删除邮件",
-        subtitle: "从这个地址中移除",
+        label: "Delete email",
+        subtitle: "Remove from this address",
         icon: "trash.fill",
         destructive: true,
         onPress: () => handleDelete(mail),
@@ -750,7 +750,7 @@ function AddressMailList({
       ListHeaderComponent={
         <View style={styles.listHeader}>
           <Text style={[styles.listHeaderText, { color: colors.muted }]}>
-            共 {count} 封
+            {count} total
           </Text>
           <Pressable
             onPress={handleClear}
@@ -764,7 +764,7 @@ function AddressMailList({
             ]}
           >
             <Text style={[styles.secondaryButtonText, { color: colors.foreground }]}>
-              {kind === "inbox" ? "清空收件箱" : "清空发件箱"}
+              {kind === "inbox" ? "Empty inbox" : "Empty sent folder"}
             </Text>
           </Pressable>
         </View>
@@ -773,7 +773,7 @@ function AddressMailList({
         !isLoading ? (
           <View style={styles.emptyWrap}>
             <Text style={[styles.emptyText, { color: colors.muted }]}>
-              {kind === "inbox" ? "这个地址还没有收件" : "这个地址还没有发件"}
+              {kind === "inbox" ? "This address has not received any mail yet" : "This address has not sent any mail yet"}
             </Text>
           </View>
         ) : null
@@ -790,7 +790,7 @@ function AddressMailList({
       }}
       onEndReachedThreshold={0.5}
       renderItem={({ item }) => {
-        const preview = getMailPreview(item, 100) || "(无内容)";
+        const preview = getMailPreview(item, 100) || "(No content)";
         const code = getVerificationCode(item);
         const isUnread =
           kind === "inbox" && unreadMailKeys.has(buildAdminMailReadKey(item));
@@ -799,7 +799,7 @@ function AddressMailList({
             ? getSenderDisplay(item)
             : formatMailboxDisplay(item.to?.[0]) ||
               getMailRecipientsDisplay(item) ||
-              "收件人";
+              "Recipient";
 
         return (
           <Pressable
@@ -830,7 +830,7 @@ function AddressMailList({
                     numberOfLines={1}
                     style={[styles.mailCardSubject, { color: colors.foreground }]}
                   >
-                    {item.subject || "(无主题)"}
+                    {item.subject || "(No subject)"}
                   </Text>
                 </View>
                 <Text
@@ -861,7 +861,7 @@ function AddressMailList({
                 ]}
               >
                 <Text style={[styles.codeChipText, { color: colors.primary }]}>
-                  验证码 {code}
+                  Code {code}
                 </Text>
               </Pressable>
             ) : null}
@@ -911,7 +911,7 @@ function AddressSendPanel({
 
   const handleSend = useCallback(async () => {
     if (!fromMail.trim() || !toMail.trim() || !subject.trim() || !content.trim()) {
-      Alert.alert("请补全内容", "发件地址、收件地址、主题和正文都不能为空。");
+      Alert.alert("Missing fields", "From, to, subject and body are all required.");
       return;
     }
 
@@ -926,11 +926,11 @@ function AddressSendPanel({
         is_html: isHtml,
         content,
       });
-      Alert.alert("发送成功");
+      Alert.alert("Sent");
       setSubject("");
       setContent("");
     } catch (err: any) {
-      Alert.alert("发送失败", err.message || "");
+      Alert.alert("Send failed", err.message || "");
     } finally {
       setIsSending(false);
     }
@@ -961,19 +961,19 @@ function AddressSendPanel({
             { backgroundColor: colors.surface, borderColor: colors.border },
           ]}
         >
-          <Text style={[styles.formTitle, { color: colors.foreground }]}>地址发信</Text>
+          <Text style={[styles.formTitle, { color: colors.foreground }]}>Send from this address</Text>
           <Text style={[styles.formHint, { color: colors.muted }]}>
-            已按当前地址预设发件身份，收件人保持空白，方便直接填写目标。
+            The sender is preset to the current address; the recipient is left blank for you to fill in.
           </Text>
 
-          <Field label="发件地址" value={fromMail} onChangeText={setFromMail} colors={colors} />
-          <Field label="发件名称" value={fromName} onChangeText={setFromName} colors={colors} />
-          <Field label="收件地址" value={toMail} onChangeText={setToMail} colors={colors} />
-          <Field label="收件名称" value={toName} onChangeText={setToName} colors={colors} />
-          <Field label="主题" value={subject} onChangeText={setSubject} colors={colors} />
+          <Field label="From address" value={fromMail} onChangeText={setFromMail} colors={colors} />
+          <Field label="From name" value={fromName} onChangeText={setFromName} colors={colors} />
+          <Field label="To address" value={toMail} onChangeText={setToMail} colors={colors} />
+          <Field label="To name" value={toName} onChangeText={setToName} colors={colors} />
+          <Field label="Subject" value={subject} onChangeText={setSubject} colors={colors} />
 
           <View style={styles.switchRow}>
-            <Text style={[styles.switchLabel, { color: colors.foreground }]}>HTML 正文</Text>
+            <Text style={[styles.switchLabel, { color: colors.foreground }]}>HTML body</Text>
             <Switch
               value={isHtml}
               onValueChange={setIsHtml}
@@ -982,7 +982,7 @@ function AddressSendPanel({
             />
           </View>
 
-          <Text style={[styles.fieldLabel, { color: colors.muted }]}>正文</Text>
+          <Text style={[styles.fieldLabel, { color: colors.muted }]}>Body</Text>
           <SwipeSuspendView>
             <TextInput
               style={[
@@ -996,7 +996,7 @@ function AddressSendPanel({
               value={content}
               onChangeText={setContent}
               onFocus={scrollToBodyInput}
-              placeholder={isHtml ? "<p>输入 HTML 正文</p>" : "输入纯文本正文"}
+              placeholder={isHtml ? "<p>Enter the HTML body</p>" : "Enter the plain-text body"}
               placeholderTextColor={colors.muted}
               multiline
               textAlignVertical="top"
@@ -1017,7 +1017,7 @@ function AddressSendPanel({
             {isSending ? (
               <ActivityIndicator color="#FFFFFF" />
             ) : (
-              <Text style={styles.primaryButtonText}>立即发送</Text>
+              <Text style={styles.primaryButtonText}>Send now</Text>
             )}
           </Pressable>
         </View>

@@ -227,7 +227,7 @@ export function AddressGroupFilterSheet({
             { color: selected ? tone?.textColor || colors.primary : colors.muted },
           ]}
         >
-          {selected ? "已选" : "选择"}
+          {selected ? "Selected" : "Select"}
         </Text>
       </Pressable>
     );
@@ -255,13 +255,13 @@ export function AddressGroupFilterSheet({
         >
           <View style={styles.sheetHeader}>
             <View style={styles.sheetHeaderCopy}>
-              <Text style={[styles.sheetTitle, { color: colors.foreground }]}>筛选分组</Text>
+              <Text style={[styles.sheetTitle, { color: colors.foreground }]}>Filter by group</Text>
               <Text style={[styles.sheetSubtitle, { color: colors.muted }]}>
-                只显示属于指定邮箱分组的邮件。
+                Only show mail from mailboxes in the selected group.
               </Text>
             </View>
             <Pressable onPress={onClose}>
-              <Text style={[styles.sheetClose, { color: colors.muted }]}>关闭</Text>
+              <Text style={[styles.sheetClose, { color: colors.muted }]}>Close</Text>
             </Pressable>
           </View>
 
@@ -281,12 +281,12 @@ export function AddressGroupFilterSheet({
                 },
               ]}
             >
-              <Text style={[styles.cardTitle, { color: colors.foreground }]}>选择显示范围</Text>
-              {renderOption("all", "全部", "显示所有邮箱的邮件")}
+              <Text style={[styles.cardTitle, { color: colors.foreground }]}>Choose what to show</Text>
+              {renderOption("all", "All", "Show mail from all mailboxes")}
               {renderOption(
                 "ungrouped",
-                "未分组",
-                "只显示尚未加入任何分组的邮箱邮件",
+                "Ungrouped",
+                "Only show mail from mailboxes not in any group",
                 resolveAddressGroupTone("gray", colors)
               )}
               {sortedGroups.length > 0 ? (
@@ -294,13 +294,13 @@ export function AddressGroupFilterSheet({
                   renderOption(
                     group.id,
                     group.name,
-                    "只显示该分组下邮箱的邮件",
+                    "Only show mail from mailboxes in this group",
                     resolveAddressGroupTone(group.color, colors)
                   )
                 )
               ) : (
                 <Text style={[styles.emptyHint, { color: colors.muted }]}>
-                  还没有分组，可先去地址页创建分组。
+                  No groups yet. Create one on the addresses page first.
                 </Text>
               )}
             </View>
@@ -377,14 +377,14 @@ export function AddressGroupInlineFilterMenu({
         contentContainerStyle={styles.inlineFilterScrollContent}
         keyboardShouldPersistTaps="handled"
       >
-        {renderOption("all", "全部")}
-        {renderOption("ungrouped", "未分组", resolveAddressGroupTone("gray", colors))}
+        {renderOption("all", "All")}
+        {renderOption("ungrouped", "Ungrouped", resolveAddressGroupTone("gray", colors))}
         {sortedGroups.map((group) =>
           renderOption(group.id, group.name, resolveAddressGroupTone(group.color, colors))
         )}
         {sortedGroups.length === 0 ? (
           <Text style={[styles.inlineFilterEmptyText, { color: colors.muted }]}>
-            暂无分组
+            No groups yet
           </Text>
         ) : null}
       </ScrollView>
@@ -454,13 +454,13 @@ export function AddressGroupManagerSheet({
         >
           <View style={styles.sheetHeader}>
             <View style={styles.sheetHeaderCopy}>
-              <Text style={[styles.sheetTitle, { color: colors.foreground }]}>邮箱分组</Text>
+              <Text style={[styles.sheetTitle, { color: colors.foreground }]}>Mailbox groups</Text>
               <Text style={[styles.sheetSubtitle, { color: colors.muted }]}>
-                创建分组并维护邮箱分类，筛选时会更清晰。
+                Create groups and organize mailboxes to make filtering clearer.
               </Text>
             </View>
             <Pressable onPress={onClose}>
-              <Text style={[styles.sheetClose, { color: colors.muted }]}>关闭</Text>
+              <Text style={[styles.sheetClose, { color: colors.muted }]}>Close</Text>
             </Pressable>
           </View>
 
@@ -480,11 +480,11 @@ export function AddressGroupManagerSheet({
                 },
               ]}
             >
-              <Text style={[styles.cardTitle, { color: colors.foreground }]}>新建分组</Text>
+              <Text style={[styles.cardTitle, { color: colors.foreground }]}>New group</Text>
               <TextInput
                 value={name}
                 onChangeText={setName}
-                placeholder="例如：验证码、重点用户"
+                placeholder="e.g. Verification codes, Key users"
                 placeholderTextColor={colors.muted}
                 style={[
                   styles.input,
@@ -528,7 +528,7 @@ export function AddressGroupManagerSheet({
                 {isCreating ? (
                   <ActivityIndicator color="#FFFFFF" />
                 ) : (
-                  <Text style={styles.primaryButtonText}>创建分组</Text>
+                  <Text style={styles.primaryButtonText}>Create group</Text>
                 )}
               </Pressable>
             </View>
@@ -542,10 +542,10 @@ export function AddressGroupManagerSheet({
                 },
               ]}
             >
-              <Text style={[styles.cardTitle, { color: colors.foreground }]}>现有分组</Text>
+              <Text style={[styles.cardTitle, { color: colors.foreground }]}>Existing groups</Text>
               {sortedGroups.length === 0 ? (
                 <Text style={[styles.emptyHint, { color: colors.muted }]}>
-                  还没有分组，先创建一个吧。
+                  No groups yet. Create one first.
                 </Text>
               ) : (
                 sortedGroups.map((group) => {
@@ -568,7 +568,7 @@ export function AddressGroupManagerSheet({
                             {group.name}
                           </Text>
                           <Text style={[styles.groupRowMeta, { color: colors.muted }]}>
-                            {groupCounts[group.id] ?? 0} 个邮箱
+                            {groupCounts[group.id] ?? 0} mailboxes
                           </Text>
                         </View>
                       </View>
@@ -590,7 +590,7 @@ export function AddressGroupManagerSheet({
                         ]}
                       >
                         <Text style={[styles.ghostButtonText, { color: isDeleting ? colors.muted : colors.error }]}>
-                          {isDeleting ? "删除中" : "删除"}
+                          {isDeleting ? "Deleting" : "Delete"}
                         </Text>
                       </Pressable>
                     </View>
@@ -651,13 +651,13 @@ export function AddressGroupAssignmentSheet({
         >
           <View style={styles.sheetHeader}>
             <View style={styles.sheetHeaderCopy}>
-              <Text style={[styles.sheetTitle, { color: colors.foreground }]}>分组管理</Text>
+              <Text style={[styles.sheetTitle, { color: colors.foreground }]}>Manage groups</Text>
               <Text numberOfLines={1} style={[styles.sheetSubtitle, { color: colors.muted }]}>
                 {address}
               </Text>
             </View>
             <Pressable onPress={onClose}>
-              <Text style={[styles.sheetClose, { color: colors.muted }]}>完成</Text>
+              <Text style={[styles.sheetClose, { color: colors.muted }]}>Done</Text>
             </Pressable>
           </View>
 
@@ -677,10 +677,10 @@ export function AddressGroupAssignmentSheet({
                 },
               ]}
             >
-              <Text style={[styles.cardTitle, { color: colors.foreground }]}>选择分组</Text>
+              <Text style={[styles.cardTitle, { color: colors.foreground }]}>Choose a group</Text>
               {groups.length === 0 ? (
                 <Text style={[styles.emptyHint, { color: colors.muted }]}>
-                  还没有分组，先在下面创建一个。
+                  No groups yet. Create one below.
                 </Text>
               ) : (
                 groups.map((group) => {
@@ -714,7 +714,7 @@ export function AddressGroupAssignmentSheet({
                         </Text>
                       </View>
                       <Text style={[styles.assignmentText, { color: loading ? colors.muted : tone.textColor }]}>
-                        {loading ? "处理中" : selected ? "已加入" : "加入"}
+                        {loading ? "Working" : selected ? "Added" : "Add"}
                       </Text>
                     </Pressable>
                   );
@@ -731,11 +731,11 @@ export function AddressGroupAssignmentSheet({
                 },
               ]}
             >
-              <Text style={[styles.cardTitle, { color: colors.foreground }]}>新建并加入</Text>
+              <Text style={[styles.cardTitle, { color: colors.foreground }]}>Create and add</Text>
               <TextInput
                 value={name}
                 onChangeText={setName}
-                placeholder="输入新分组名称"
+                placeholder="Enter a new group name"
                 placeholderTextColor={colors.muted}
                 style={[
                   styles.input,
@@ -790,7 +790,7 @@ export function AddressGroupAssignmentSheet({
                 {busyKey === "__create__" ? (
                   <ActivityIndicator color="#FFFFFF" />
                 ) : (
-                  <Text style={styles.primaryButtonText}>创建并加入</Text>
+                  <Text style={styles.primaryButtonText}>Create and add</Text>
                 )}
               </Pressable>
             </View>

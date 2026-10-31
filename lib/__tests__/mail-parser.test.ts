@@ -50,27 +50,27 @@ describe("formatMailDate", () => {
     expect(formatMailDate(undefined)).toBe("");
   });
 
-  it("returns '刚刚' for very recent dates", () => {
+  it("returns 'just now' for very recent dates", () => {
     const now = new Date().toISOString();
-    expect(formatMailDate(now)).toBe("刚刚");
+    expect(formatMailDate(now)).toBe("just now");
   });
 
   it("returns minutes ago for recent dates", () => {
     const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
     const result = formatMailDate(fiveMinAgo);
-    expect(result).toMatch(/\d+ 分钟前/);
+    expect(result).toMatch(/\d+ min ago/);
   });
 
   it("returns hours ago for dates within a day", () => {
     const threeHoursAgo = new Date(Date.now() - 3 * 3600 * 1000).toISOString();
     const result = formatMailDate(threeHoursAgo);
-    expect(result).toMatch(/\d+ 小时前/);
+    expect(result).toMatch(/\d+ h ago/);
   });
 
   it("returns days ago for dates within a week", () => {
     const twoDaysAgo = new Date(Date.now() - 2 * 86400 * 1000).toISOString();
     const result = formatMailDate(twoDaysAgo);
-    expect(result).toMatch(/\d+ 天前/);
+    expect(result).toMatch(/\d+ d ago/);
   });
 });
 
@@ -95,13 +95,13 @@ describe("getSenderDisplay", () => {
     expect(getSenderDisplay(mail)).toBe("john@example.com");
   });
 
-  it("returns '未知发件人' if no from info", () => {
+  it("returns 'Unknown sender' if no from info", () => {
     const mail: ParsedMail = {
       id: 1,
       raw: "",
       createdAt: "2024-01-01T00:00:00Z",
     };
-    expect(getSenderDisplay(mail)).toBe("未知发件人");
+    expect(getSenderDisplay(mail)).toBe("Unknown sender");
   });
 });
 
@@ -115,7 +115,7 @@ describe("parseMail", () => {
         from_name: "CloudMail",
         to_name: "Alex Chen",
         to_mail: "alex@example.com",
-        subject: "验证码",
+        subject: "\u9a8c\u8bc1\u7801",
         is_html: true,
         content: "<p>Your code is <b>246810</b></p>",
       }),
@@ -125,7 +125,7 @@ describe("parseMail", () => {
 
     const parsed = await parseMail(rawMail);
 
-    expect(parsed.subject).toBe("验证码");
+    expect(parsed.subject).toBe("\u9a8c\u8bc1\u7801");
     expect(parsed.from?.address).toBe("noreply@example.com");
     expect(parsed.from?.name).toBe("CloudMail");
     expect(parsed.to?.[0]?.address).toBe("alex@example.com");
@@ -191,8 +191,8 @@ describe("parseMail", () => {
 
     expect(parsed.subject).toBe("HTML Mail");
     expect(parsed.from?.address).toBe("sender@example.com");
-    expect(parsed.text).toContain("哈哈哈");
-    expect(parsed.html).toContain("哈哈哈");
+    expect(parsed.text).toContain("\u54c8\u54c8\u54c8");
+    expect(parsed.html).toContain("\u54c8\u54c8\u54c8");
   });
 
   it("decodes MIME encoded-word subject lines", async () => {
@@ -214,7 +214,7 @@ describe("parseMail", () => {
 
     const parsed = await parseMail(rawMail);
 
-    expect(parsed.subject).toBe("哈哈哈");
+    expect(parsed.subject).toBe("\u54c8\u54c8\u54c8");
   });
 });
 
@@ -231,8 +231,8 @@ describe("mail display helpers", () => {
   it("prefers metadata ai_extract verification code before regex fallback", () => {
     const mail: ParsedMail = {
       id: 103,
-      subject: "欢迎登录",
-      text: "正文里没有明显验证码",
+      subject: "Welcome, sign in",
+      text: "The body has no obvious verification code",
       raw: "",
       createdAt: "2024-01-01T00:00:00Z",
       metadata: JSON.stringify({

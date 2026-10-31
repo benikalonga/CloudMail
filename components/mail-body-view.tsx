@@ -120,7 +120,7 @@ function clamp(value: number, min: number, max: number) {
 
 function formatHtmlSource(value: string): string {
   const normalized = value.replace(/\r\n/g, "\n").trim();
-  if (!normalized) return "(无 HTML 源码)";
+  if (!normalized) return "(No HTML source)";
   return normalized.replace(/>\s+</g, ">\n<");
 }
 
@@ -254,7 +254,7 @@ export function MailBodyView({
   );
   const htmlSource = useMemo(() => formatHtmlSource(mail.html || ""), [mail.html]);
   const textBody = useMemo(
-    () => getMailBodyText(mail) || "(无内容)",
+    () => getMailBodyText(mail) || "(No content)",
     [mail]
   );
   const hasHtml = !!htmlBody;
@@ -317,7 +317,7 @@ export function MailBodyView({
                       { color: selected ? "#FFFFFF" : colors.foreground },
                     ]}
                   >
-                    {item === "html" ? "HTML" : item === "text" ? "文本" : "源码"}
+                    {item === "html" ? "HTML" : item === "text" ? "Text" : "Source"}
                   </Text>
                 </Pressable>
               );

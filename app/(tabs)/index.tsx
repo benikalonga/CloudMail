@@ -82,12 +82,12 @@ export default function InboxScreen() {
   const handleLongPressMail = useCallback(
     (mail: ParsedMail) => {
       Alert.alert(
-        "删除邮件",
-        mail.subject || "(无主题)",
+        "Delete email",
+        mail.subject || "(No subject)",
         [
-          { text: "取消", style: "cancel" },
+          { text: "Cancel", style: "cancel" },
           {
-            text: "删除",
+            text: "Delete",
             style: "destructive",
             onPress: () =>
               tab === "inbox"
@@ -101,14 +101,14 @@ export default function InboxScreen() {
   );
 
   const handleClearAll = useCallback(() => {
-    const label = tab === "inbox" ? "收件箱" : "发件箱";
+    const label = tab === "inbox" ? "inbox" : "sent folder";
     Alert.alert(
-      `清空${label}`,
-      `确定要清空当前邮箱的${label}吗？此操作不可恢复。`,
+      `Empty ${label}`,
+      `Empty the ${label} of the current mailbox? This cannot be undone.`,
       [
-        { text: "取消", style: "cancel" },
+        { text: "Cancel", style: "cancel" },
         {
-          text: "清空",
+          text: "Empty",
           style: "destructive",
           onPress: () => (tab === "inbox" ? clearInbox() : clearSentItems()),
         },
@@ -123,7 +123,7 @@ export default function InboxScreen() {
           ? getSenderDisplay(item)
           : formatMailboxDisplay(item.to?.[0]) ||
             getMailRecipientsDisplay(item) ||
-            "收件人";
+            "Recipient";
       const preview = getMailPreview(item, 80);
       const date = formatMailDate(item.date || item.createdAt);
       const hasAttachments = (item.attachments?.length || 0) > 0;
@@ -163,14 +163,14 @@ export default function InboxScreen() {
               style={[styles.mailSubject, { color: colors.foreground }]}
               numberOfLines={1}
             >
-              {item.subject || "(无主题)"}
+              {item.subject || "(No subject)"}
             </Text>
             <View style={styles.mailFooter}>
               <Text
                 style={[styles.mailPreview, { color: colors.muted }]}
                 numberOfLines={1}
               >
-                {preview || "(无内容)"}
+                {preview || "(No content)"}
               </Text>
               {hasAttachments && (
                 <IconSymbol
@@ -196,10 +196,10 @@ export default function InboxScreen() {
           <View style={styles.emptyContainer}>
             <IconSymbol name="gearshape.fill" size={56} color={colors.muted} />
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
-              欢迎使用 CloudMail
+              Welcome to CloudMail
             </Text>
             <Text style={[styles.emptySubtitle, { color: colors.muted }]}>
-              请先在「设置」中配置 Worker 地址
+              Set the Worker URL in Settings first
             </Text>
           </View>
           <Toast message={state.error} type="error" onDismiss={clearError} />
@@ -216,10 +216,10 @@ export default function InboxScreen() {
           <View style={styles.emptyContainer}>
             <IconSymbol name="at" size={56} color={colors.muted} />
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
-              暂无邮箱
+              No mailboxes yet
             </Text>
             <Text style={[styles.emptySubtitle, { color: colors.muted }]}>
-              请在「邮箱」中创建一个邮箱地址
+              Create an email address under Mailboxes
             </Text>
           </View>
           <Toast message={state.error} type="error" onDismiss={clearError} />
@@ -238,7 +238,7 @@ export default function InboxScreen() {
       <View style={[styles.header, { borderBottomColor: colors.border }]}>
         <View style={styles.headerLeft}>
           <Text style={[styles.headerTitle, { color: colors.foreground }]}>
-            邮件
+            Mail
           </Text>
           {activeAccount && (
             <Text
@@ -298,7 +298,7 @@ export default function InboxScreen() {
                   },
                 ]}
               >
-                {t === "inbox" ? `收件箱 (${state.mails.length})` : `发件箱 (${state.sentMails.length})`}
+                {t === "inbox" ? `Inbox (${state.mails.length})` : `Sent (${state.sentMails.length})`}
               </Text>
             </Pressable>
           ))}
@@ -310,7 +310,7 @@ export default function InboxScreen() {
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.primary} />
           <Text style={[styles.loadingText, { color: colors.muted }]}>
-            加载邮件中...
+            Loading mail...
           </Text>
         </View>
       ) : (
@@ -342,10 +342,10 @@ export default function InboxScreen() {
                 color={colors.muted}
               />
               <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
-                {tab === "inbox" ? "收件箱为空" : "发件箱为空"}
+                {tab === "inbox" ? "Inbox is empty" : "Sent folder is empty"}
               </Text>
               <Text style={[styles.emptySubtitle, { color: colors.muted }]}>
-                {tab === "inbox" ? "下拉刷新或等待新邮件" : "在「发送」里发邮件，会在这里看到"}
+                {tab === "inbox" ? "Pull to refresh or wait for new mail" : "Mail you send from Send appears here"}
               </Text>
             </View>
           }

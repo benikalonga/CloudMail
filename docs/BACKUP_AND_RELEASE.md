@@ -1,74 +1,74 @@
-# CloudMail 备份与双远程发布流程
+# CloudMail Backup and Dual-Remote Release Workflow
 
-本文档用于把 CloudMail 同步到 **GitHub 主仓库 + Gitee 镜像仓库**，并保留每个版本可回滚的标签。
+This document describes how to sync CloudMail to a **GitHub main repository + a Gitee mirror repository** and keep a tag for every version so you can roll back.
 
-## 推荐结构
+## Recommended setup
 
-- **GitHub**：主仓库，保存源码、Tag、Release 和 APK。
-- **Gitee**：镜像备份仓库，保存源码和 Tag，便于国内访问和容灾。
-- **本地 `releases/`**：只保留最近 3 个 APK；长期安装包以 GitHub Release 为准。
+- **GitHub**: main repository for source, tags, releases and APKs.
+- **Gitee**: mirror backup repository for source and tags, for access from mainland China and disaster recovery.
+- **Local `releases/`**: keep only the latest 3 APKs; GitHub Releases is the long-term source of installers.
 
-APK 不提交到 Git 源码仓库，统一通过 GitHub Release 分发。
+APKs are not committed to the Git source repository; they are distributed through GitHub Releases.
 
-## 发布签名原则
+## Release signing rules
 
-- `android/app/build/outputs/apk/release/app-release.apk` 是本地/CI 编译验证制品，当前 managed prebuild 默认使用调试证书，不能作为长期公开发行包。
-- GitHub 正式 APK 和 Google Play AAB 必须通过 EAS 的 `production` keystore 构建，且必须核验签名指纹。
-- V1.1.2 及更早公开 APK 的证书 SHA-256 为 `fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c`（Android Debug）。
-- V1.1.3 起 EAS 生产证书 SHA-256 为 `5B:F4:BF:3A:49:73:2D:2A:5A:D1:F9:57:FB:D7:62:7F:E2:13:78:6E:1F:8B:35:7A:6E:E1:15:78:15:68:CE:EB`。
-- 两种证书无法覆盖安装。发布说明必须保留“先备份凭据、卸载旧版、安装新版、重新导入”的迁移步骤。
+- `android/app/build/outputs/apk/release/app-release.apk` is a local/CI verification artifact. The current managed prebuild uses the debug certificate by default, so it must not be published as a long-term public release.
+- Official GitHub APKs and Google Play AABs must be built with the EAS `production` keystore, and the signing fingerprint must be verified.
+- Public APKs for V1.1.2 and earlier use certificate SHA-256 `fac61745dc0903786fb9ede62a962b399f7348f0bb6f899b8332667591033b9c` (Android Debug).
+- From V1.1.3, the EAS production certificate SHA-256 is `5B:F4:BF:3A:49:73:2D:2A:5A:D1:F9:57:FB:D7:62:7F:E2:13:78:6E:1F:8B:35:7A:6E:E1:15:78:15:68:CE:EB`.
+- The two certificates cannot upgrade over each other. Release notes must keep the migration steps: back up credentials, uninstall the old version, install the new one, import again.
 
-## 第一次配置 Gitee 远程
+## Set up the Gitee remote for the first time
 
-先在 Gitee 创建一个空仓库，例如：
+Create an empty repository on Gitee first, for example:
 
 ```text
-https://gitee.com/<你的用户名>/CloudMail.git
+https://gitee.com/YOUR_USERNAME/CloudMail.git
 ```
 
-然后在本地仓库执行：
+Then run in the local repository:
 
 ```bash
-git remote add gitee https://gitee.com/<你的用户名>/CloudMail.git
+git remote add gitee https://gitee.com/YOUR_USERNAME/CloudMail.git
 git remote -v
 ```
 
-如果远程已经存在但地址需要调整：
+If the remote already exists but the URL needs changing:
 
 ```bash
-git remote set-url gitee https://gitee.com/<你的用户名>/CloudMail.git
+git remote set-url gitee https://gitee.com/YOUR_USERNAME/CloudMail.git
 ```
 
-## 日常同步源码和版本标签
+## Sync source and version tags day to day
 
-确认当前工作区干净：
+Make sure the working tree is clean:
 
 ```bash
 git status -sb
 ```
 
-同步到 GitHub 和 Gitee：
+Sync to GitHub and Gitee:
 
 ```bash
 git push origin main --tags
 git push gitee main --tags
 ```
 
-也可以使用项目脚本：
+Or use the project script:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/sync-remotes.ps1
 ```
 
-第一次使用脚本时可直接传入 Gitee 地址：
+The first time, you can pass the Gitee URL directly:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts/sync-remotes.ps1 -GiteeUrl "https://gitee.com/<你的用户名>/CloudMail.git"
+powershell -ExecutionPolicy Bypass -File scripts/sync-remotes.ps1 -GiteeUrl "https://gitee.com/YOUR_USERNAME/CloudMail.git"
 ```
 
-## 发布新版本标准流程
+## Standard release process
 
-以 `v1.1.3` 为例：
+Using `v1.1.3` as an example:
 
 ```bash
 pnpm install --frozen-lockfile
@@ -85,69 +85,69 @@ git push origin main --tags
 git push gitee main --tags
 ```
 
-然后：
+Then:
 
-1. 从已提交且已打 Tag 的源码执行 `eas build --platform android --profile production --non-interactive --wait`，生成 Google Play AAB。
-2. 执行 `eas build --platform android --profile apk --non-interactive --wait`，生成使用同一 EAS 生产密钥的侧载 APK。
-3. 下载后使用 `aapt2 dump badging`、`aapt2 dump permissions` 和 `apksigner verify --print-certs` 核验包名、`1.1.3 (17)`、权限和生产证书指纹。
-4. 生成 SHA-256 校验文件，在 GitHub Release 创建 `v1.1.3` 并上传正式 APK、AAB（按需）和校验文件。
-5. 使用 `scripts/publish-gitee-release.ps1` 在 Gitee Release 上传同一个 APK。
-6. 本地 `releases/` 只保留最近 3 个 APK。
+1. From the committed and tagged source, run `eas build --platform android --profile production --non-interactive --wait` to build the Google Play AAB.
+2. Run `eas build --platform android --profile apk --non-interactive --wait` to build the sideload APK with the same EAS production key.
+3. After downloading, use `aapt2 dump badging`, `aapt2 dump permissions` and `apksigner verify --print-certs` to verify the package name, `1.1.3 (17)`, permissions and the production certificate fingerprint.
+4. Generate a SHA-256 checksum file, create the `v1.1.3` GitHub Release and upload the official APK, the AAB (if needed) and the checksum file.
+5. Use `scripts/publish-gitee-release.ps1` to upload the same APK to a Gitee release.
+6. Keep only the latest 3 APKs in the local `releases/` folder.
 
-GitHub Actions 的 `Android production artifact` 工作流需要仓库 `production` Environment 中配置 `EXPO_TOKEN`。未配置时可由已登录的维护者在本机执行同样的 EAS 命令，但不能把本机登录凭据复制进仓库。
+The `Android production artifact` GitHub Actions workflow needs `EXPO_TOKEN` configured in the repository's `production` environment. Without it, a signed-in maintainer can run the same EAS commands locally, but must never copy local sign-in credentials into the repository.
 
-## 在 Gitee 创建发行版并上传 APK
+## Create a Gitee release and upload the APK
 
-Gitee 的 Release API 不会复用 Git HTTPS 登录状态，需要单独创建 **私人令牌**：
+The Gitee Release API does not reuse your Git HTTPS sign-in; you need a separate **personal access token**:
 
-1. 打开 <https://gitee.com/profile/personal_access_tokens>
-2. 创建令牌，至少勾选项目/仓库相关权限。
-3. 在当前 PowerShell 会话中设置临时环境变量：
+1. Open <https://gitee.com/profile/personal_access_tokens>
+2. Create a token with at least the project/repository permissions.
+3. Set a temporary environment variable in the current PowerShell session:
 
 ```powershell
-$env:GITEE_TOKEN="你的 Gitee 私人令牌"
+$env:GITEE_TOKEN="YOUR_GITEE_TOKEN"
 ```
 
-发布当前版本到 Gitee：
+Publish the current version to Gitee:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/publish-gitee-release.ps1
 ```
 
-发布其他版本时指定参数：
+To publish another version, pass parameters:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/publish-gitee-release.ps1 `
-  -Repo "lurin7/cloud-mail" `
+  -Repo "YOUR_USERNAME/cloud-mail" `
   -Tag "v1.1.3" `
   -Title "CloudMail V1.1.3" `
   -NotesFile "releases/v1.1.3-release-notes.md" `
   -AssetPath "releases/cloudmail-v1.1.3-secure.apk"
 ```
 
-> 注意：Gitee 发行版附件不建议提交到 Git；APK 仍然放在 Release 附件中。
+> Note: do not commit Gitee release attachments to Git; APKs belong in release attachments.
 
-## 回滚 / Rollback
+## Rollback
 
-查看版本：
+List versions:
 
 ```bash
 git tag --sort=-v:refname
 ```
 
-临时查看某个版本：
+Temporarily check out a version:
 
 ```bash
 git checkout v1.1.2
 ```
 
-从某个版本开修复分支：
+Start a fix branch from a version:
 
 ```bash
 git checkout -b fix/from-v1.1.2 v1.1.2
 ```
 
-如果需要把主分支回滚到某个版本，建议先创建备份分支，再操作：
+If you need to roll the main branch back to a version, create a backup branch first:
 
 ```bash
 git checkout main
@@ -157,21 +157,21 @@ git push origin main --force-with-lease
 git push gitee main --force-with-lease
 ```
 
-> 注意：强制推送会改写远程历史。公开仓库通常更推荐新建修复提交，而不是直接 reset 主分支。
+> Note: force pushing rewrites remote history. For public repositories, a new fix commit is usually better than resetting the main branch.
 
-## 不应该上传的内容
+## What not to upload
 
-不要提交：
+Do not commit:
 
 - `node_modules/`
-- `.env.local`、真实密码、Token、API Key
+- `.env.local`, real passwords, tokens, API keys
 - `.android-sdk/`
 - `.jdk17/`
 - `.expo/`
 - `.omx/`
 - `.playwright-mcp/`
 - `.trellis/`
-- Android build 临时目录
-- 根目录 APK
+- Temporary Android build directories
+- APKs in the repository root
 
-当前 `.gitignore` 已覆盖这些本地文件。
+The current `.gitignore` already covers these local files.

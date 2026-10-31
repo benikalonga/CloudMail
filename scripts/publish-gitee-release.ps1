@@ -1,5 +1,5 @@
 param(
-  [string]$Repo = "lurin7/cloud-mail",
+  [string]$Repo = "YOUR_USERNAME/cloud-mail",
   [string]$Tag = "v1.1.2",
   [string]$Title = "CloudMail V1.1.2",
   [string]$Branch = "main",
@@ -28,7 +28,7 @@ if (-not (Test-Path -LiteralPath $AssetPath)) {
 
 $parts = $Repo.Split("/", 2)
 if ($parts.Count -ne 2) {
-  throw "Repo must be owner/repo, for example lurin7/cloud-mail"
+  throw "Repo must be owner/repo, for example YOUR_USERNAME/cloud-mail"
 }
 $owner = [uri]::EscapeDataString($parts[0])
 $repoName = [uri]::EscapeDataString($parts[1])

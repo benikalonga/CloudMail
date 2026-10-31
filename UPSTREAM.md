@@ -14,4 +14,6 @@ Please send issues and contributions to the original project.
 - Secrets, API keys, account IDs and personal data (emails, phone numbers, names) were replaced with placeholders such as `your_email@fakeemail.com`, `0810000000`, `YOUR_NAME` and `00000000-0000-0000-0000-000000000000`, across the whole git history.
 - Personal email addresses in commit metadata were replaced with GitHub no-reply addresses or a placeholder. Author names are kept.
 - AI agent configuration files (`.claude/`, `.agents/`, `.codex/`, `AGENTS.md`, `CLAUDE.md`, `.mcp.json`) were removed.
+- All code comments, UI strings and documentation were translated to English. Non-English text that the code must match at runtime (for example server messages or test data for charset decoding) is kept as `\uXXXX` escapes with an English comment.
+- Screenshots, generated output folders and machine-specific scripts were removed, along with README references to them.
 - The original LICENSE and its copyright notice are unchanged.

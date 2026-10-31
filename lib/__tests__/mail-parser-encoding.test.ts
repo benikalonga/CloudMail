@@ -7,11 +7,11 @@ import type { RawMail } from "../api";
 
 const nativeTextDecoder = globalThis.TextDecoder;
 const encodings = [
-  { charset: "UTF-8", hex: "e4b8ade69687f09f9880", text: "中文😀" },
-  { charset: "GBK", hex: "d6d0cec4", text: "中文" },
-  { charset: "gb2312", hex: "d6d0cec4", text: "中文" },
-  { charset: "GB18030", hex: "d6d0cec495328236", text: "中文𠀀" },
-  { charset: "Big5", hex: "a4a4a4e5", text: "中文" },
+  { charset: "UTF-8", hex: "e4b8ade69687f09f9880", text: "\u4e2d\u6587\ud83d\ude00" },
+  { charset: "GBK", hex: "d6d0cec4", text: "\u4e2d\u6587" },
+  { charset: "gb2312", hex: "d6d0cec4", text: "\u4e2d\u6587" },
+  { charset: "GB18030", hex: "d6d0cec495328236", text: "\u4e2d\u6587\ud840\udc00" },
+  { charset: "Big5", hex: "a4a4a4e5", text: "\u4e2d\u6587" },
 ];
 
 function makeMail(

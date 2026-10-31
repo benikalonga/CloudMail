@@ -373,7 +373,7 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
         return {
           configOverride: {
             workerUrl: account.workerUrl,
-            lang: "zh",
+            lang: "en",
           },
         };
       }
@@ -397,7 +397,7 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
     if (matches.length === 1) return matches[0];
     if (matches.length > 1) {
       throw new Error(
-        `域名 ${domain} 同时存在于多个 Worker，请先在管理员设置中确认域名归属，或切换到明确的 Worker 后再导入。`
+        `Domain ${domain} exists on several Workers. Confirm which Worker owns it in admin settings, or switch to a specific Worker before importing.`
       );
     }
     return activeWorker;
@@ -430,7 +430,7 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
           adminPassword: "",
           sitePassword: "",
           refreshInterval: 30,
-          lang: "zh",
+          lang: "en",
         }),
         safeAwait(getActiveWorkerProfileId(), ""),
         safeAwait(getAccounts(), [] as MailAccount[]),
@@ -486,7 +486,7 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
           isAdminMode: false,
         },
       });
-      dispatch({ type: "SET_ERROR", payload: "初始化失败，请重新检查配置" });
+      dispatch({ type: "SET_ERROR", payload: "Initialization failed. Please check the configuration" });
     }
   }, []);
 
@@ -508,10 +508,10 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
           type: "SET_CONFIG",
           payload: { ...config, workerProfiles, activeWorkerProfileId },
         });
-        dispatch({ type: "SET_SUCCESS", payload: "配置已保存" });
+        dispatch({ type: "SET_SUCCESS", payload: "Configuration saved" });
       } catch {
-        dispatch({ type: "SET_ERROR", payload: "保存配置失败" });
-        throw new Error("保存配置失败");
+        dispatch({ type: "SET_ERROR", payload: "Failed to save the configuration" });
+        throw new Error("Failed to save the configuration");
       }
     },
     []
@@ -544,10 +544,10 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
           },
         });
         dispatch({ type: "SET_SETTINGS", payload: null });
-        dispatch({ type: "SET_SUCCESS", payload: "Workers 配置已保存" });
+        dispatch({ type: "SET_SUCCESS", payload: "Workers configuration saved" });
       } catch {
-        dispatch({ type: "SET_ERROR", payload: "保存 Workers 配置失败" });
-        throw new Error("保存 Workers 配置失败");
+        dispatch({ type: "SET_ERROR", payload: "Failed to save the Workers configuration" });
+        throw new Error("Failed to save the Workers configuration");
       }
     },
     []
@@ -561,7 +561,7 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
     const activeProfile =
       profiles.find((profile) => profile.id === activeProfileId) || profiles[0];
     if (!activeProfile?.workerUrl || !activeProfile.adminPassword) {
-      throw new Error("请先配置 Worker 地址和管理员密码");
+      throw new Error("Set the Worker URL and admin password first");
     }
 
     primeRuntimeConfigSnapshot({
@@ -569,7 +569,7 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
       adminPassword: activeProfile.adminPassword,
       sitePassword: activeProfile.sitePassword || "",
       refreshInterval,
-      lang: "zh",
+      lang: "en",
     });
 
     dispatch({
@@ -585,7 +585,7 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
     });
     dispatch({ type: "SET_SETTINGS", payload: null });
     dispatch({ type: "SET_ADMIN_MODE", payload: true });
-    dispatch({ type: "SET_SUCCESS", payload: "已进入管理员模式" });
+    dispatch({ type: "SET_SUCCESS", payload: "Entered admin mode" });
 
     void (async () => {
       try {
@@ -611,7 +611,7 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
       } catch {
         dispatch({
           type: "SET_ERROR",
-          payload: "配置已进入后台，本地持久化保存失败，请稍后在设置中再保存一次",
+          payload: "Opened the admin console, but saving locally failed. Please save again in Settings later",
         });
       }
     })();
@@ -653,10 +653,10 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
       sentMailsRef.current = [];
       dispatch({ type: "SET_MAILS", payload: [] });
       dispatch({ type: "SET_SENT_MAILS", payload: [] });
-      dispatch({ type: "SET_SUCCESS", payload: "已切换 Worker" });
+      dispatch({ type: "SET_SUCCESS", payload: "Switched Worker" });
     } catch {
-      dispatch({ type: "SET_ERROR", payload: "切换 Worker 失败" });
-      throw new Error("切换 Worker 失败");
+      dispatch({ type: "SET_ERROR", payload: "Failed to switch Worker" });
+      throw new Error("Failed to switch Worker");
     }
   }, []);
 
@@ -670,7 +670,7 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
       } catch (err: any) {
         dispatch({
           type: "SET_ERROR",
-          payload: err.message || "获取设置失败",
+          payload: err.message || "Failed to get settings",
         });
         if (options?.throwOnError) throw err;
         return null;
@@ -742,7 +742,7 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
         });
         dispatch({
           type: "SET_SUCCESS",
-          payload: `邮箱 ${result.address} 创建成功`,
+          payload: `Mailbox ${result.address} created`,
         });
         return {
           address: result.address,
@@ -752,7 +752,7 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
       } catch (err: any) {
         dispatch({
           type: "SET_ERROR",
-          payload: err.message || "创建邮箱失败",
+          payload: err.message || "Failed to create the mailbox",
         });
         throw err;
       }
@@ -811,7 +811,7 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
             } catch (err: any) {
               dispatch({
                 type: "SET_ERROR",
-                payload: `服务器删除失败: ${err.message || "未知错误"}（已从本地移除）`,
+                payload: `Server delete failed: ${err.message || "Unknown error"} (removed locally)`,
               });
             }
           }
@@ -827,9 +827,9 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
         sentMailsRef.current = [];
         dispatch({ type: "SET_MAILS", payload: [] });
         dispatch({ type: "SET_SENT_MAILS", payload: [] });
-        dispatch({ type: "SET_SUCCESS", payload: "邮箱已移除" });
+        dispatch({ type: "SET_SUCCESS", payload: "Mailbox removed" });
       } catch (err: any) {
-        dispatch({ type: "SET_ERROR", payload: err.message || "删除失败" });
+        dispatch({ type: "SET_ERROR", payload: err.message || "Delete failed" });
       }
     },
     [getAccountApiOptions]
@@ -909,7 +909,7 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
       } catch (err: any) {
         dispatch({
           type: "SET_ERROR",
-          payload: err.message || "加载邮件失败",
+          payload: err.message || "Failed to load mail",
         });
       } finally {
         dispatch({ type: "SET_LOADING_MAILS", payload: false });
@@ -1081,7 +1081,7 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
       } catch (err: any) {
         dispatch({
           type: "SET_ERROR",
-          payload: err.message || "加载发件箱失败",
+          payload: err.message || "Failed to load the sent folder",
         });
       } finally {
         dispatch({ type: "SET_LOADING_SENT", payload: false });
@@ -1196,12 +1196,12 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
         payload: nextMails,
       });
       await writeMailboxCache(getMailboxCacheInput(account, "inbox"), nextMails);
-      dispatch({ type: "SET_SUCCESS", payload: "邮件已删除" });
+      dispatch({ type: "SET_SUCCESS", payload: "Email deleted" });
       return true;
     } catch (err: any) {
       dispatch({
         type: "SET_ERROR",
-        payload: err.message || "删除邮件失败",
+        payload: err.message || "Failed to delete the email",
       });
       return false;
     }
@@ -1225,12 +1225,12 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
           payload: nextMails,
         });
         await writeMailboxCache(getMailboxCacheInput(account, "sent"), nextMails);
-        dispatch({ type: "SET_SUCCESS", payload: "已删除" });
+        dispatch({ type: "SET_SUCCESS", payload: "Deleted" });
         return true;
       } catch (err: any) {
         dispatch({
           type: "SET_ERROR",
-          payload: err.message || "删除失败",
+          payload: err.message || "Delete failed",
         });
         return false;
       }
@@ -1256,9 +1256,9 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
         address: account.address,
         box: "inbox",
       });
-      dispatch({ type: "SET_SUCCESS", payload: "收件箱已清空" });
+      dispatch({ type: "SET_SUCCESS", payload: "Inbox emptied" });
     } catch (err: any) {
-      dispatch({ type: "SET_ERROR", payload: err.message || "清空失败" });
+      dispatch({ type: "SET_ERROR", payload: err.message || "Failed to empty" });
     }
   }, [getAccountApiOptions, getMailboxCacheInput]);
 
@@ -1280,9 +1280,9 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
         address: account.address,
         box: "sent",
       });
-      dispatch({ type: "SET_SUCCESS", payload: "发件箱已清空" });
+      dispatch({ type: "SET_SUCCESS", payload: "Sent folder emptied" });
     } catch (err: any) {
-      dispatch({ type: "SET_ERROR", payload: err.message || "清空失败" });
+      dispatch({ type: "SET_ERROR", payload: err.message || "Failed to empty" });
     }
   }, [getAccountApiOptions, getMailboxCacheInput]);
 
@@ -1291,14 +1291,14 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
     const accounts = await getAccounts();
     const activeIndex = await getActiveAccountIndex();
     const account = accounts[activeIndex];
-    if (!account) throw new Error("请先选择邮箱地址");
+    if (!account) throw new Error("Select an email address first");
 
     try {
       const apiOptions = await getAccountApiOptions(account);
       await apiSendMail(account.jwt, payload, apiOptions);
-      dispatch({ type: "SET_SUCCESS", payload: "邮件发送成功" });
+      dispatch({ type: "SET_SUCCESS", payload: "Email sent" });
     } catch (err: any) {
-      dispatch({ type: "SET_ERROR", payload: err.message || "发送失败" });
+      dispatch({ type: "SET_ERROR", payload: err.message || "Send failed" });
       throw err;
     }
   }, [getAccountApiOptions]);
@@ -1308,15 +1308,15 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
     const accounts = await getAccounts();
     const activeIndex = await getActiveAccountIndex();
     const account = accounts[activeIndex];
-    if (!account) throw new Error("请先选择邮箱地址");
+    if (!account) throw new Error("Select an email address first");
     try {
       const apiOptions = await getAccountApiOptions(account);
       await apiRequestSendMailAccess(account.jwt, apiOptions);
-      dispatch({ type: "SET_SUCCESS", payload: "已申请发件权限" });
+      dispatch({ type: "SET_SUCCESS", payload: "Send access requested" });
     } catch (err: any) {
       dispatch({
         type: "SET_ERROR",
-        payload: err.message || "申请失败",
+        payload: err.message || "Request failed",
       });
       throw err;
     }
@@ -1332,7 +1332,7 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
       const userSettings = await fetchUserAddressSettings(jwt, apiOptions).catch(() => null);
       const address = userSettings?.address;
       if (!address) {
-        throw new Error("无法获取凭证对应的邮箱地址");
+        throw new Error("Could not get the email address for this credential");
       }
       const newAccount: MailAccount = {
         address,
@@ -1351,11 +1351,11 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
           activeIndex: idx >= 0 ? idx : accounts.length - 1,
         },
       });
-      dispatch({ type: "SET_SUCCESS", payload: `已导入 ${address}` });
+      dispatch({ type: "SET_SUCCESS", payload: `Imported ${address}` });
     } catch (err: any) {
       dispatch({
         type: "SET_ERROR",
-        payload: err.message || "凭证导入失败",
+        payload: err.message || "Credential import failed",
       });
       throw err;
     }
@@ -1386,11 +1386,11 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
             activeIndex: idx >= 0 ? idx : accounts.length - 1,
           },
         });
-        dispatch({ type: "SET_SUCCESS", payload: `已导入 ${email}` });
+        dispatch({ type: "SET_SUCCESS", payload: `Imported ${email}` });
       } catch (err: any) {
         dispatch({
           type: "SET_ERROR",
-          payload: err.message || "登录失败",
+          payload: err.message || "Sign-in failed",
         });
         throw err;
       }
@@ -1404,7 +1404,7 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
       const accounts = await getAccounts();
       const activeIndex = await getActiveAccountIndex();
       const account = accounts[activeIndex];
-      if (!account) throw new Error("请先选择邮箱地址");
+      if (!account) throw new Error("Select an email address first");
       try {
         const apiOptions = await getAccountApiOptions(account);
         await apiChangeAddressPassword(account.jwt, {
@@ -1419,11 +1419,11 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
           type: "SET_ACCOUNTS",
           payload: { accounts: next, activeIndex },
         });
-        dispatch({ type: "SET_SUCCESS", payload: "密码已更新" });
+        dispatch({ type: "SET_SUCCESS", payload: "Password updated" });
       } catch (err: any) {
         dispatch({
           type: "SET_ERROR",
-          payload: err.message || "密码更新失败",
+          payload: err.message || "Password update failed",
         });
         throw err;
       }
@@ -1436,7 +1436,7 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
     const accounts = await getAccounts();
     const activeIndex = await getActiveAccountIndex();
     const account = accounts[activeIndex];
-    if (!account) throw new Error("请先选择邮箱地址");
+    if (!account) throw new Error("Select an email address first");
     try {
       const apiOptions = await getAccountApiOptions(account);
       await apiSetAutoReply(account.jwt, autoReply, apiOptions);
@@ -1448,11 +1448,11 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
           fetched: true,
         },
       });
-      dispatch({ type: "SET_SUCCESS", payload: "自动回复已保存" });
+      dispatch({ type: "SET_SUCCESS", payload: "Auto reply saved" });
     } catch (err: any) {
       dispatch({
         type: "SET_ERROR",
-        payload: err.message || "自动回复保存失败",
+        payload: err.message || "Failed to save auto reply",
       });
       throw err;
     }
@@ -1468,16 +1468,16 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
   // ── Admin Mode ──
   const enterAdminMode = useCallback(async (password: string) => {
     if (!password.trim()) {
-      throw new Error("请输入管理员密码");
+      throw new Error("Enter the admin password");
     }
     try {
       const trimmedPassword = password.trim();
-      // 给登录加 20 秒兜底超时，避免 settings 保存按钮永远卡在"保存中"。
+      // Add a 20s fallback timeout to sign-in so the settings save button never gets stuck on "Saving".
       await Promise.race([
         apiAdminLogin(trimmedPassword),
         new Promise((_, reject) =>
           setTimeout(
-            () => reject(new Error("管理员登录超时，请检查 Worker 地址或网络")),
+            () => reject(new Error("Admin sign-in timed out. Check the Worker URL or network")),
             20000
           )
         ),
@@ -1501,12 +1501,12 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
         },
       });
       dispatch({ type: "SET_ADMIN_MODE", payload: true });
-      dispatch({ type: "SET_SUCCESS", payload: "已进入管理员模式" });
+      dispatch({ type: "SET_SUCCESS", payload: "Entered admin mode" });
       void saveConfig({ adminPassword: trimmedPassword }).catch(() => {});
     } catch (err: any) {
       dispatch({
         type: "SET_ERROR",
-        payload: err.message || "管理员密码校验失败",
+        payload: err.message || "Admin password verification failed",
       });
       throw err;
     }
@@ -1520,7 +1520,7 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
     ]);
     const nextAdminPassword = (password || latestConfig.adminPassword || state.adminPassword).trim();
     if (!latestConfig.workerUrl || !nextAdminPassword) {
-      throw new Error("请先配置 Worker 地址和管理员密码");
+      throw new Error("Set the Worker URL and admin password first");
     }
     dispatch({
       type: "SET_CONFIG",
@@ -1536,19 +1536,19 @@ export function MailProvider({ children }: { children: React.ReactNode }) {
       },
     });
     dispatch({ type: "SET_ADMIN_MODE", payload: true });
-    dispatch({ type: "SET_SUCCESS", payload: "已进入管理员模式" });
+    dispatch({ type: "SET_SUCCESS", payload: "Entered admin mode" });
   }, [state.adminPassword, state.refreshInterval]);
 
   const exitAdminMode = useCallback(() => {
     dispatch({ type: "SET_ADMIN_MODE", payload: false });
-    dispatch({ type: "SET_SUCCESS", payload: "已退出管理员模式" });
+    dispatch({ type: "SET_SUCCESS", payload: "Left admin mode" });
   }, []);
 
   // ── Initialize on mount ──
   useEffect(() => {
     let cancelled = false;
-    // 兜底：无论 initialize 内部发生什么，最多 8 秒后强制让应用进入可用状态，
-    // 避免因 storage/IO 卡住导致 splash 永久白屏。
+    // Fallback: whatever happens inside initialize, force the app into a usable state after at most 8 seconds,
+    // so a stuck storage/IO call never leaves the splash screen blank forever.
     const timeoutId = setTimeout(() => {
       if (cancelled) return;
       dispatch({

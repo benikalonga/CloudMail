@@ -150,8 +150,8 @@ describe("mail cache", () => {
     expect(cached[0]).toMatchObject({
       id: 42,
       messageId: "message-42",
-      subject: "中文",
-      text: "中文",
+      subject: "\u4e2d\u6587",
+      text: "\u4e2d\u6587",
       raw,
       createdAt: mail.createdAt,
       ownerAddress: scope.address,
@@ -159,12 +159,12 @@ describe("mail cache", () => {
       mailboxKind: "inbox",
       metadata: mail.metadata,
     });
-    expect(cached[0].html?.trim()).toBe("<p>中文</p>");
+    expect(cached[0].html?.trim()).toBe("<p>\u4e2d\u6587</p>");
     expect(await getSyncAnchor(scope)).toEqual(anchor);
-    expect(JSON.parse(storage.get(cacheKey)!).mails[0].text).toBe("中文");
+    expect(JSON.parse(storage.get(cacheKey)!).mails[0].text).toBe("\u4e2d\u6587");
     // The persisted migration is reused on the next read, without another write.
     vi.mocked(AsyncStorage.setItem).mockClear();
-    expect((await readMailboxCache(scope))[0].text).toBe("中文");
+    expect((await readMailboxCache(scope))[0].text).toBe("\u4e2d\u6587");
     expect(AsyncStorage.setItem).not.toHaveBeenCalled();
   });
 
@@ -181,14 +181,14 @@ describe("mail cache", () => {
 
     const cached = await readMailboxCache({ address: "demo@example.com", box: "inbox" });
 
-    expect(cached[0].text).toBe("中文");
+    expect(cached[0].text).toBe("\u4e2d\u6587");
   });
 
   it("discards legacy admin summaries and offsets so page zero can be refetched", async () => {
     const mail: ParsedMail = {
       id: 42,
-      subject: "中文",
-      text: "中文",
+      subject: "\u4e2d\u6587",
+      text: "\u4e2d\u6587",
       raw: "original MIME",
       createdAt: "2026-01-01T00:00:00Z",
     };
@@ -206,7 +206,7 @@ describe("mail cache", () => {
     expect(await readAdminMailCache("inbox", scope)).toMatchObject({
       count: 80,
       offset: 1,
-      mails: [{ id: 42, subject: "中文", raw: "" }],
+      mails: [{ id: 42, subject: "\u4e2d\u6587", raw: "" }],
     });
   });
 });

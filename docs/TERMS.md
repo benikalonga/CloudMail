@@ -1,46 +1,46 @@
-# CloudMail 使用条款
+# CloudMail Terms of Use
 
-生效日期：2026-07-15
+Effective date: 2026-07-15
 
-使用 CloudMail 即表示您同意以下条款。如果您不同意，请不要安装或使用本软件。
+By using CloudMail you agree to the following terms. If you do not agree, do not install or use the software.
 
-## 1. 软件用途
+## 1. Purpose of the software
 
-CloudMail 是连接自建 Cloudflare 临时邮箱服务的开源管理客户端。软件按现状提供，不包含托管邮箱服务，也不承诺任何 Worker、域名或第三方服务持续可用。
+CloudMail is an open-source admin client for connecting to self-hosted Cloudflare temporary email services. The software is provided as is. It does not include a hosted mail service and makes no promise that any Worker, domain or third-party service will remain available.
 
-## 2. 授权使用
+## 2. Authorized use
 
-您只能连接自己拥有、管理或获得明确授权使用的 Worker、邮箱、域名和账户。您不得使用 CloudMail：
+You may only connect to Workers, mailboxes, domains and accounts that you own, manage or are explicitly authorized to use. You may not use CloudMail to:
 
-- 未经授权访问他人的系统、邮箱或凭据。
-- 发送垃圾邮件、欺诈内容、恶意软件或违法内容。
-- 绕过服务限制、干扰服务运行或侵犯第三方权益。
-- 从事适用法律法规禁止的其他活动。
+- Access other people's systems, mailboxes or credentials without authorization.
+- Send spam, fraudulent content, malware or illegal content.
+- Bypass service limits, disrupt service operation or infringe the rights of third parties.
+- Engage in any other activity prohibited by applicable laws and regulations.
 
-## 3. 账户与凭据安全
+## 3. Account and credential security
 
-您负责保护管理员密码、站点密码、JWT、邮箱密码、设备和浏览器配置。请使用 HTTPS、可信设备和足够强的独立密码。因共享、泄露或错误配置凭据造成的损失由相应服务部署者和使用者承担。
+You are responsible for protecting your admin password, site password, JWTs, mailbox passwords, devices and browser profiles. Use HTTPS, trusted devices and strong, unique passwords. Losses caused by sharing, leaking or misconfiguring credentials are borne by the relevant service deployer and user.
 
-## 4. 第三方服务
+## 4. Third-party services
 
-CloudMail 可能与 Cloudflare、GitHub、Expo、操作系统分享面板及用户自行选择的邮件服务交互。您同时受这些第三方的条款、隐私政策、配额和可接受使用政策约束。
+CloudMail may interact with Cloudflare, GitHub, Expo, the operating system's share sheet and mail services chosen by the user. You are also bound by those third parties' terms, privacy policies, quotas and acceptable use policies.
 
-## 5. 数据与备份
+## 5. Data and backups
 
-您负责 Worker 数据库、邮件、域名配置、签名密钥和发布产物的备份与恢复。升级或删除应用前，请先导出仍需保留的邮箱凭据。
+You are responsible for backing up and restoring Worker databases, mail, domain configuration, signing keys and release artifacts. Before upgrading or deleting the app, export any mailbox credentials you still need.
 
-## 6. 开源许可
+## 6. Open-source license
 
-CloudMail 源代码依据仓库中的 LICENSE 文件授权。第三方依赖和上游项目分别适用其自身许可证。
+CloudMail source code is licensed under the LICENSE file in the repository. Third-party dependencies and upstream projects are subject to their own licenses.
 
-## 7. 免责声明
+## 7. Disclaimer
 
-在适用法律允许的最大范围内，软件按现状提供，不对适销性、特定用途适用性、不中断运行或数据完整性作明示或默示保证。维护者不对因使用或无法使用本软件造成的间接、附带或后果性损失承担责任。
+To the maximum extent permitted by applicable law, the software is provided as is, without express or implied warranties of merchantability, fitness for a particular purpose, uninterrupted operation or data integrity. The maintainers are not liable for any indirect, incidental or consequential damages arising from the use of or inability to use the software.
 
-## 8. 条款更新
+## 8. Changes to these terms
 
-条款变更会通过本仓库提交记录和发行说明公布。继续使用更新后的版本表示您接受更新后的条款。
+Changes to these terms are published through this repository's commit history and release notes. Continuing to use an updated version means you accept the updated terms.
 
-## 9. 联系方式
+## 9. Contact
 
-安全问题请使用 GitHub 的[私密安全报告](https://github.com/Lur1N77777/CloudMail/security/advisories/new)。一般问题可通过项目仓库提出，但请先移除密码、JWT、私有地址和邮件内容。
+For security issues, use GitHub's [private security reporting](https://github.com/Lur1N77777/CloudMail/security/advisories/new). General questions can be raised in the project repository, but please remove passwords, JWTs, private addresses and mail content first.

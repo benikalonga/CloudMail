@@ -1,50 +1,50 @@
-# CloudMail 隐私政策
+# CloudMail Privacy Policy
 
-生效日期：2026-07-15
+Effective date: 2026-07-15
 
-CloudMail 是用于连接用户自行配置的 Cloudflare 临时邮箱 Worker 的开源客户端。本政策说明 CloudMail 如何处理数据，以及用户在使用自建 Worker 时承担的责任。
+CloudMail is an open-source client for connecting to Cloudflare temporary email Workers that users configure themselves. This policy explains how CloudMail handles data and the responsibilities users take on when using a self-hosted Worker.
 
-## 1. 我们处理的数据
+## 1. Data we process
 
-CloudMail 仅处理完成邮箱管理功能所需的数据，包括：
+CloudMail only processes the data needed for mailbox management, including:
 
-- 用户填写的 Worker 地址、前端地址和刷新设置。
-- Worker 管理员密码、站点密码、邮箱 JWT 和邮箱密码。
-- 用户通过所配置 Worker 收取、查看、发送或删除的邮件及附件。
-- 本地界面偏好、邮箱列表和连接状态。
+- The Worker URL, frontend URL and refresh settings entered by the user.
+- The Worker admin password, site password, mailbox JWTs and mailbox passwords.
+- Mail and attachments the user receives, views, sends or deletes through the configured Worker.
+- Local UI preferences, mailbox lists and connection status.
 
-CloudMail 不包含广告、行为分析、第三方统计 SDK 或开发者遥测服务。
+CloudMail contains no ads, behavioral analytics, third-party analytics SDKs or developer telemetry.
 
-## 2. 数据存储
+## 2. Data storage
 
-- 在 Android 和 iOS 原生应用中，密码和令牌存储在操作系统保护的 SecureStore 中；非敏感配置和索引保存在应用本地存储中。
-- 在 Web 版本中，浏览器不提供与原生 SecureStore 等同的系统密钥库，相关配置会保存在当前浏览器站点存储中。请仅在受信任设备和浏览器配置中使用 Web 版本。
-- CloudMail 运营者不提供集中式 CloudMail 账户，也不会从应用中接收或备份这些本地数据。
+- In the native Android and iOS apps, passwords and tokens are stored in the operating system's protected SecureStore; non-sensitive settings and indexes are stored in the app's local storage.
+- In the web version, browsers do not offer a system keystore equivalent to the native SecureStore, so settings are stored in the current browser's site storage. Only use the web version on trusted devices and browser profiles.
+- The CloudMail maintainers do not offer a central CloudMail account and do not receive or back up this local data from the app.
 
-操作系统可能按照自身规则处理 Keychain、备份或卸载后的数据。出售、转让或共用设备前，请先删除 CloudMail 内的 Worker 和邮箱配置，并清除应用数据。
+The operating system may handle the Keychain, backups or data after uninstall according to its own rules. Before selling, transferring or sharing a device, delete the Worker and mailbox configurations in CloudMail and clear the app data.
 
-## 3. 网络传输
+## 3. Network transmission
 
-CloudMail 将请求直接发送到用户填写的 Worker 或前端地址。邮件、密码和令牌的传输及服务端保留规则由该 Worker 的部署者控制。请仅连接您拥有、管理或获得明确授权使用的服务，并使用有效 HTTPS 地址。
+CloudMail sends requests directly to the Worker or frontend URL entered by the user. The transmission and server-side retention of mail, passwords and tokens are controlled by whoever deployed that Worker. Only connect to services you own, manage or are explicitly authorized to use, and use valid HTTPS URLs.
 
-打开隐私政策、使用条款或项目主页时，系统浏览器会访问 GitHub；GitHub 会按照其自身隐私政策处理访问日志。
+When you open the privacy policy, terms of use or project page, the system browser visits GitHub; GitHub handles access logs under its own privacy policy.
 
-## 4. 系统权限
+## 4. System permissions
 
-CloudMail 需要互联网访问权限。下载或分享附件时，应用可能调用操作系统的文件选择器或分享面板。当前版本不申请位置、联系人、麦克风、相机、悬浮窗或通知权限。
+CloudMail needs internet access. When downloading or sharing attachments, the app may use the operating system's file picker or share sheet. The current version does not request location, contacts, microphone, camera, overlay or notification permissions.
 
-## 5. 数据删除
+## 5. Data deletion
 
-用户可在应用内删除邮箱和 Worker 配置。也可通过操作系统的“清除应用数据”功能删除本地数据。由于 CloudMail 不能控制用户自建 Worker，服务端邮件和日志应由该 Worker 的管理员按照其部署规则删除。
+Users can delete mailboxes and Worker configurations in the app, or delete local data with the operating system's "Clear app data" option. Because CloudMail cannot control a user's self-hosted Worker, server-side mail and logs must be deleted by that Worker's administrator according to its deployment rules.
 
-## 6. 儿童隐私
+## 6. Children's privacy
 
-CloudMail 是面向自建服务管理员的技术工具，不面向儿童设计，也不会主动收集儿童个人信息。
+CloudMail is a technical tool for administrators of self-hosted services. It is not designed for children and does not knowingly collect children's personal information.
 
-## 7. 政策更新
+## 7. Policy updates
 
-政策变更会通过本仓库提交记录和发行说明公布。重大变更将在新版本发布前更新生效日期。
+Policy changes are published through this repository's commit history and release notes. For significant changes, the effective date is updated before the new version is released.
 
-## 8. 联系方式
+## 8. Contact
 
-隐私或安全问题请通过 GitHub 的[私密安全报告](https://github.com/Lur1N77777/CloudMail/security/advisories/new)联系维护者。请勿在公开 Issue 中提交真实密码、JWT、邮件内容或其他敏感信息。
+For privacy or security issues, contact the maintainers through GitHub's [private security reporting](https://github.com/Lur1N77777/CloudMail/security/advisories/new). Do not post real passwords, JWTs, mail content or other sensitive information in public issues.

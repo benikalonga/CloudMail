@@ -1,11 +1,11 @@
-# 致谢与归属说明
+# Acknowledgements and Attribution
 
-CloudMail 是面向以下项目兼容 API 开发的移动端管理员 App：
+CloudMail is a mobile admin app built for APIs compatible with the following project:
 
-- 项目：cloudflare_temp_email
-- 仓库：https://github.com/dreamhunter2333/cloudflare_temp_email
-- 作者：dreamhunter2333 及上游项目贡献者
+- Project: cloudflare_temp_email
+- Repository: https://github.com/dreamhunter2333/cloudflare_temp_email
+- Author: dreamhunter2333 and the upstream project contributors
 
-上游项目提供了 Cloudflare 临时邮箱系统的后端、Web 管理能力和相关 API 行为。CloudMail 在这个生态之上补充了 React Native / Expo 移动端管理员体验，包括本地分组、移动端邮件阅读、验证码快捷复制、OLED 黑主题和 Android 安装包发布。
+The upstream project provides the backend, web admin features and API behavior of the Cloudflare temporary email system. CloudMail builds on this ecosystem with a React Native / Expo mobile admin experience, including local groups, mobile mail reading, quick verification-code copying, an OLED black theme and Android package releases.
 
-如果你将 CloudMail 与上游邮箱系统一起使用，请同时遵守上游项目的许可证、部署文档和使用说明。
+If you use CloudMail together with the upstream mail system, please also follow the upstream project's license, deployment docs and usage instructions.

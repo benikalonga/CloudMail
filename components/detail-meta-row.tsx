@@ -104,7 +104,7 @@ export function DetailMetaRow({
             ]}
           >
             <Text style={[styles.inlineToastText, { color: colors.foreground }]}>
-              已复制
+              Copied
             </Text>
           </View>
         ) : null}

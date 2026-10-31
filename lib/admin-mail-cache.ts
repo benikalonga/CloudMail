@@ -3,8 +3,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { ParsedAttachment, ParsedMail } from "./api";
 
 /**
- * 持久化缓存：保存 admin 模式下的 inbox/sendbox/unknown/spam 列表
- * 软件被杀掉后再次打开时，先从这里读出来立即显示，再走增量刷新。
+ * Persistent cache: stores the inbox/sendbox/unknown/spam lists in admin mode
+ * After the app is killed and reopened, read from here to show immediately, then refresh incrementally.
  */
 
 const CACHE_PREFIX = "cloudmail_admin_mail_cache_v1";

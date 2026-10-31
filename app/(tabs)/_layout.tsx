@@ -40,7 +40,7 @@ export default function TabLayout() {
         name="index"
         options={{
           href: null,
-          title: "收件箱",
+          title: "Inbox",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={26} name="tray.fill" color={color} />
           ),
@@ -50,7 +50,7 @@ export default function TabLayout() {
         name="compose"
         options={{
           href: null,
-          title: "发送",
+          title: "Send",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={26} name="paperplane.fill" color={color} />
           ),
@@ -60,7 +60,7 @@ export default function TabLayout() {
         name="addresses"
         options={{
           href: null,
-          title: "邮箱",
+          title: "Mailboxes",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={26} name="at" color={color} />
           ),
@@ -70,7 +70,7 @@ export default function TabLayout() {
         name="settings"
         options={{
           href: null,
-          title: "设置",
+          title: "Settings",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={26} name="gearshape.fill" color={color} />
           ),

@@ -62,7 +62,7 @@ describe("sha256Hex", () => {
       "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
     );
     // Handle UTF-8 input
-    expect(sha256Hex("中文密码")).toHaveLength(64);
+    expect(sha256Hex("\u4e2d\u6587\u5bc6\u7801")).toHaveLength(64); // non-ASCII input
   });
 });
 
@@ -78,7 +78,7 @@ describe("getConfig", () => {
     expect(config.adminPassword).toBe("");
     expect(config.sitePassword).toBe("");
     expect(config.refreshInterval).toBe(30);
-    expect(config.lang).toBe("zh");
+    expect(config.lang).toBe("en");
   });
 
   it("returns stored values", async () => {
@@ -153,7 +153,7 @@ describe("worker profiles", () => {
 
     expect(profiles).toHaveLength(1);
     expect(profiles[0]).toMatchObject({
-      name: "默认账号",
+      name: "Default account",
       workerUrl: "https://worker-a.example.com",
       adminPassword: "admin-a",
       sitePassword: "site-a",
@@ -168,7 +168,7 @@ describe("worker profiles", () => {
     const profiles = [
       {
         id: "a",
-        name: "账号 A",
+        name: "Account A",
         workerUrl: "https://worker-a.example.com",
         adminPassword: "pass-a",
         sitePassword: "",
@@ -177,7 +177,7 @@ describe("worker profiles", () => {
       },
       {
         id: "b",
-        name: "账号 B",
+        name: "Account B",
         workerUrl: "https://worker-b.example.com",
         adminPassword: "pass-b",
         sitePassword: "site-b",
@@ -211,7 +211,7 @@ describe("worker profiles", () => {
     const entries = buildWorkerDomainEntries([
       {
         id: "a",
-        name: "账号 A",
+        name: "Account A",
         workerUrl: "https://worker-a.example.com",
         frontendUrl: "",
         adminPassword: "pass-a",
@@ -221,7 +221,7 @@ describe("worker profiles", () => {
       },
       {
         id: "b",
-        name: "账号 B",
+        name: "Account B",
         workerUrl: "https://worker-b.example.com",
         frontendUrl: "",
         adminPassword: "pass-b",
@@ -242,7 +242,7 @@ describe("worker profiles", () => {
     let storedProfiles = JSON.stringify([
       {
         id: "worker-a",
-        name: "账号 A",
+        name: "Account A",
         workerUrl: "https://worker-a.example.com",
         frontendUrl: "",
         adminPassword: "admin-secret",
@@ -284,7 +284,7 @@ describe("worker profiles", () => {
     const originalProfiles = JSON.stringify([
       {
         id: "worker-a",
-        name: "账号 A",
+        name: "Account A",
         workerUrl: "https://worker-a.example.com",
         frontendUrl: "",
         adminPassword: "still-readable",
@@ -312,7 +312,7 @@ describe("worker profiles", () => {
     const storedProfiles = JSON.stringify([
       {
         id: "worker-a",
-        name: "账号 A",
+        name: "Account A",
         workerUrl: "https://worker-a.example.com",
         frontendUrl: "",
         domains: [],
@@ -320,7 +320,7 @@ describe("worker profiles", () => {
       },
       {
         id: "worker-b",
-        name: "账号 B",
+        name: "Account B",
         workerUrl: "https://worker-b.example.com",
         frontendUrl: "",
         domains: [],
@@ -353,7 +353,7 @@ describe("worker profiles", () => {
     const storedProfiles = JSON.stringify([
       {
         id: "worker-a",
-        name: "账号 A",
+        name: "Account A",
         workerUrl: "https://worker-a.example.com",
         frontendUrl: "",
         domains: [],
@@ -361,7 +361,7 @@ describe("worker profiles", () => {
       },
       {
         id: "worker-b",
-        name: "账号 B",
+        name: "Account B",
         workerUrl: "https://worker-b.example.com",
         frontendUrl: "",
         domains: [],
@@ -378,7 +378,7 @@ describe("worker profiles", () => {
     await saveWorkerProfiles([
       {
         id: "worker-a",
-        name: "账号 A",
+        name: "Account A",
         workerUrl: "https://worker-a.example.com",
         frontendUrl: "",
         adminPassword: "admin-a",
@@ -657,7 +657,7 @@ describe("fetchSettings", () => {
       expect.objectContaining({
         method: "GET",
         headers: expect.objectContaining({
-          "x-lang": "zh",
+          "x-lang": "en",
         }),
       })
     );
@@ -747,7 +747,7 @@ describe("fetchSettings", () => {
     const headers = (global.fetch as any).mock.calls[0][1].headers;
     expect(headers["Authorization"]).toBe("Bearer jwt-token");
     expect(headers["x-user-token"]).toBe("jwt-token");
-    expect(headers["x-lang"]).toBe("zh");
+    expect(headers["x-lang"]).toBe("en");
   });
 });
 
@@ -767,7 +767,7 @@ describe("createAddress multi-worker routing", () => {
     const profiles = [
       {
         id: "a",
-        name: "账号 A",
+        name: "Account A",
         workerUrl: "https://worker-a.example.com",
         adminPassword: "pass-a",
         sitePassword: "",
@@ -776,7 +776,7 @@ describe("createAddress multi-worker routing", () => {
       },
       {
         id: "b",
-        name: "账号 B",
+        name: "Account B",
         workerUrl: "https://worker-b.example.com",
         adminPassword: "pass-b",
         sitePassword: "site-b",
@@ -1136,7 +1136,7 @@ describe("account scoped API routing", () => {
       configOverride: {
         workerUrl: "https://account-worker.example.com",
         sitePassword: "site-b",
-        lang: "zh",
+        lang: "en",
       },
     });
 
@@ -1169,7 +1169,7 @@ describe("account scoped API routing", () => {
         workerUrl: "https://account-worker.example.com",
         adminPassword: "account-admin",
         sitePassword: "site-b",
-        lang: "zh",
+        lang: "en",
       },
     });
 

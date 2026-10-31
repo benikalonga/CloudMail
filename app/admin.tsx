@@ -177,12 +177,12 @@ const FULL_SEARCH_PAGE_SIZE = 100;
 const SEARCH_DATASET_TTL = 30_000;
 const ADMIN_PANEL_STALE_TTL = 60_000;
 const ADMIN_TABS: { key: AdminTab; label: string }[] = [
-  { key: "stats", label: "统计" },
-  { key: "addresses", label: "地址" },
-  { key: "mails", label: "收件" },
-  { key: "sendbox", label: "发件" },
-  { key: "unknown", label: "未知" },
-  { key: "send", label: "发送" },
+  { key: "stats", label: "Stats" },
+  { key: "addresses", label: "Addresses" },
+  { key: "mails", label: "Inbox" },
+  { key: "sendbox", label: "Sent" },
+  { key: "unknown", label: "Unknown" },
+  { key: "send", label: "Send" },
 ];
 const ADMIN_INITIAL_TAB: AdminTab = "mails";
 const ADMIN_INITIAL_TAB_INDEX = Math.max(
@@ -216,46 +216,46 @@ const ADDRESS_BULK_ACTIONS: {
 }[] = [
   {
     action: "clear_inbox",
-    label: "清空收件",
-    subtitle: "删除选中/当前范围内地址的收件邮件",
+    label: "Empty inbox",
+    subtitle: "Delete received mail for the selected addresses / current scope",
     icon: "tray.fill",
   },
   {
     action: "clear_sent",
-    label: "清空发件",
-    subtitle: "删除这些地址下的发件记录",
+    label: "Empty sent",
+    subtitle: "Delete sent records for these addresses",
     icon: "paperplane.fill",
   },
   {
     action: "clear_all",
-    label: "清空全部邮件",
-    subtitle: "同时清空收件和发件",
+    label: "Empty all mail",
+    subtitle: "Empty both received and sent mail",
     icon: "envelope.open.fill",
     destructive: true,
   },
   {
     action: "delete_empty",
-    label: "删除空邮箱",
-    subtitle: "只删除当前范围中没有收发邮件的地址",
+    label: "Delete empty mailboxes",
+    subtitle: "Only delete addresses in the current scope with no mail",
     icon: "trash.fill",
     destructive: true,
   },
   {
     action: "add_group",
-    label: "加入分组",
-    subtitle: "把选中/当前范围地址加入本地分组",
+    label: "Add to group",
+    subtitle: "Add the selected / current-scope addresses to a local group",
     icon: "plus.circle.fill",
   },
   {
     action: "remove_group",
-    label: "移出分组",
-    subtitle: "从本地分组中移除这些地址",
+    label: "Remove from group",
+    subtitle: "Remove these addresses from a local group",
     icon: "xmark.circle.fill",
   },
   {
     action: "delete_addresses",
-    label: "删除地址",
-    subtitle: "删除地址本身，执行前会再次确认",
+    label: "Delete addresses",
+    subtitle: "Delete the addresses themselves; you will be asked to confirm",
     icon: "trash.fill",
     destructive: true,
   },
@@ -316,7 +316,7 @@ function buildAddressSearchFields(item: AdminAddress) {
     item.user_name,
     item.username,
     item.user_email,
-    item.user_id !== undefined ? `用户${item.user_id}` : "",
+    item.user_id !== undefined ? `User ${item.user_id}` : "",
     item.created_at,
     item.updated_at,
     String(item.mail_count ?? 0),
@@ -331,7 +331,7 @@ function getAdminAddressUserId(item: AdminAddress) {
 }
 
 function getAdminUserDisplayName(user?: AdminUser | null) {
-  if (!user) return "未知用户";
+  if (!user) return "Unknown user";
   return (
     user.name ||
     user.username ||
@@ -339,7 +339,7 @@ function getAdminUserDisplayName(user?: AdminUser | null) {
     user.user_email ||
     user.openId ||
     user.openid ||
-    `用户 #${user.id}`
+    `User #${user.id}`
   );
 }
 
@@ -445,34 +445,34 @@ function getGroupFilterLabel(
   filter: "all" | "ungrouped" | string,
   groups: AddressGroup[]
 ) {
-  if (filter === "all") return "全部";
-  if (filter === "ungrouped") return "未分组";
-  return groups.find((group) => group.id === filter)?.name || "全部";
+  if (filter === "all") return "All";
+  if (filter === "ungrouped") return "Ungrouped";
+  return groups.find((group) => group.id === filter)?.name || "All";
 }
 
 function isAddressAlreadyExistsError(error: unknown) {
   const message = String((error as any)?.message || error || "").toLowerCase();
-  return /already|exists|duplicate|已存在|重复/.test(message);
+  return /already|exists|duplicate|\u5df2\u5b58\u5728|\u91cd\u590d/.test(message); // also matches Chinese server messages for "already exists" / "duplicate"
 }
 
 function getAddressBulkActionLabel(action: AddressBulkActionKind) {
   switch (action) {
     case "add_group":
-      return "加入分组";
+      return "Add to group";
     case "remove_group":
-      return "移出分组";
+      return "Remove from group";
     case "delete_addresses":
-      return "删除地址";
+      return "Delete addresses";
     case "clear_inbox":
-      return "清空收件";
+      return "Empty inbox";
     case "clear_sent":
-      return "清空发件";
+      return "Empty sent";
     case "clear_all":
-      return "清空全部邮件";
+      return "Empty all mail";
     case "delete_empty":
-      return "删除空邮箱";
+      return "Delete empty mailboxes";
     default:
-      return "批量操作";
+      return "Bulk action";
   }
 }
 
@@ -608,13 +608,13 @@ function formatAdminPanelRefreshTime(date = new Date()) {
 
 function getAddressDisplayTimestamp(item: AdminAddress) {
   if (item.latest_mail_at) {
-    return { label: "最新邮件", value: item.latest_mail_at };
+    return { label: "Latest mail", value: item.latest_mail_at };
   }
   if (item.created_at) {
-    return { label: "创建于", value: item.created_at };
+    return { label: "Created", value: item.created_at };
   }
   if (item.updated_at) {
-    return { label: "更新于", value: item.updated_at };
+    return { label: "Updated", value: item.updated_at };
   }
   return null;
 }
@@ -669,7 +669,7 @@ async function parseAdminMailRowsCached(
       } catch {
         const parsedMail = {
           id: m.id,
-          subject: m.subject || "(解析失败)",
+          subject: m.subject || "(Parse failed)",
           raw: m.raw || m.source || "",
           createdAt: m.created_at,
           ownerAddress: m.address,
@@ -846,7 +846,7 @@ export default function AdminScreen() {
     [state.activeWorkerProfileId, state.workerProfiles]
   );
   const activeWorkerLabel =
-    activeWorkerProfile?.name || (state.workerUrl ? "当前 Worker" : "未配置");
+    activeWorkerProfile?.name || (state.workerUrl ? "Current Worker" : "Not configured");
 
   const segmentMetrics = useMemo(() => {
     if (!segmentTrackWidth) return { width: 0 };
@@ -1138,26 +1138,26 @@ export default function AdminScreen() {
     setThemePreference(nextScheme);
     setMiniToastMessage(
       nextScheme === "oled"
-        ? "已切到 OLED 黑"
+        ? "Switched to OLED black"
         : nextScheme === "dark"
-          ? "已切到深色"
-          : "已切到浅色"
+          ? "Switched to dark"
+          : "Switched to light"
     );
   }, [colorScheme, lastDarkPreference, setThemePreference]);
 
   const handleThemeSystemMode = useCallback(() => {
     setThemePreference("system");
-    setMiniToastMessage("已跟随系统");
+    setMiniToastMessage("Following the system");
   }, [setThemePreference]);
 
   const themeButtonLabel =
     themePreference === "system"
-      ? "系统"
+      ? "System"
       : colorScheme === "oled"
         ? "OLED"
         : colorScheme === "dark"
-          ? "深色"
-          : "浅色";
+          ? "Dark"
+          : "Light";
 
   const handleOpenSettings = useCallback(() => {
     router.push("/settings");
@@ -1172,7 +1172,7 @@ export default function AdminScreen() {
       if (!profileId || profileId === state.activeWorkerProfileId) return;
       clearAllAdminPanelCaches();
       await switchWorkerProfile(profileId);
-      setMiniToastMessage("已切换 Worker");
+      setMiniToastMessage("Switched Worker");
       void loadSettings();
     },
     [loadSettings, state.activeWorkerProfileId, switchWorkerProfile]
@@ -1187,7 +1187,7 @@ export default function AdminScreen() {
         key: profile.id,
         label:
           profile.id === state.activeWorkerProfileId
-            ? `${profile.name} · 当前`
+            ? `${profile.name} · current`
             : profile.name,
         subtitle:
           profile.domains?.length > 0
@@ -1305,7 +1305,7 @@ export default function AdminScreen() {
     return (
       <ScreenContainer edges={["top", "bottom", "left", "right"]}>
         <View style={styles.centerAll}>
-          <Text style={{ color: colors.muted }}>跳转中...</Text>
+          <Text style={{ color: colors.muted }}>Redirecting...</Text>
         </View>
       </ScreenContainer>
     );
@@ -1323,7 +1323,7 @@ export default function AdminScreen() {
       <View style={[styles.header, { borderBottomColor: colors.border }]}>
         <View style={styles.headerLeft}>
           <Text style={[styles.headerTitle, { color: colors.foreground }]}>
-            管理员系统
+            Admin console
           </Text>
           <View ref={workerSwitchRef} collapsable={false}>
             <Pressable
@@ -1362,7 +1362,7 @@ export default function AdminScreen() {
           >
             <IconSymbol name="gearshape.fill" size={16} color={colors.primary} />
             <Text style={[styles.headerIconText, { color: colors.foreground }]}>
-              设置
+              Settings
             </Text>
           </Pressable>
           <View collapsable={false}>
@@ -1598,7 +1598,7 @@ function StatsPanel({
       setError(null);
     } catch (err: any) {
       if (!statsRef.current) {
-        setError(err.message || "加载失败");
+        setError(err.message || "Failed to load");
         setHasLoadedOnce(true);
       }
     } finally {
@@ -1662,7 +1662,7 @@ function StatsPanel({
         <View style={styles.inlineStatusRow}>
           {lastUpdated ? (
             <Text style={[styles.statsUpdatedText, { color: colors.muted }]}>
-              更新于 {lastUpdated}
+              Updated {lastUpdated}
             </Text>
           ) : null}
         </View>
@@ -1681,7 +1681,7 @@ function StatsPanel({
         >
           <IconSymbol name="arrow.clockwise" size={14} color={colors.primary} />
           <Text style={[styles.inlineRefreshText, { color: colors.primary }]}>
-            刷新
+            Refresh
           </Text>
         </Pressable>
       </View>
@@ -1691,16 +1691,16 @@ function StatsPanel({
           colors={colors}
           loading
           icon="arrow.clockwise"
-          title="正在加载统计"
-          subtitle="请稍候"
+          title="Loading stats"
+          subtitle="Please wait"
         />
       ) : error && !stats ? (
         <PanelStateCard
           colors={colors}
           icon="exclamationmark.circle.fill"
-          title="统计加载失败"
+          title="Failed to load stats"
           subtitle={error}
-          actionLabel="重新加载"
+          actionLabel="Reload"
           onAction={() => load()}
           accentColor={colors.error}
         />
@@ -1710,33 +1710,33 @@ function StatsPanel({
             <AdminMetricTile
               colors={colors}
               icon="at"
-              label="地址"
+              label="Addresses"
               value={addressCount}
-              helper="可管理地址数"
+              helper="Manageable addresses"
               onPress={() => onNavigate("addresses")}
             />
             <AdminMetricTile
               colors={colors}
               icon="tray.fill"
-              label="收件"
+              label="Received"
               value={inboxCount}
-              helper="已匹配地址收件"
+              helper="Mail to known addresses"
               onPress={() => onNavigate("mails")}
             />
             <AdminMetricTile
               colors={colors}
               icon="paperplane.fill"
-              label="发件"
+              label="Sent"
               value={sendCount}
-              helper="系统发件总数"
+              helper="Total sent by the system"
               onPress={() => onNavigate("sendbox")}
             />
             <AdminMetricTile
               colors={colors}
               icon="questionmark.circle"
-              label="未知"
+              label="Unknown"
               value={unknownCount}
-              helper="未知地址收件"
+              helper="Mail to unknown addresses"
               onPress={() => onNavigate("unknown")}
             />
           </View>
@@ -1745,9 +1745,9 @@ function StatsPanel({
         <PanelStateCard
           colors={colors}
           icon="tray.fill"
-          title="暂无统计数据"
-          subtitle="稍后再刷新看看"
-          actionLabel="刷新"
+          title="No stats yet"
+          subtitle="Try refreshing later"
+          actionLabel="Refresh"
           onAction={() => load()}
         />
       ) : (
@@ -1755,8 +1755,8 @@ function StatsPanel({
           colors={colors}
           loading
           icon="arrow.clockwise"
-          title="正在准备统计"
-          subtitle="统计数据正在后台预热。"
+          title="Preparing stats"
+          subtitle="Stats are warming up in the background."
         />
       )}
     </ScrollView>
@@ -1892,9 +1892,9 @@ function AddressesPanel({
     );
   }, [addressIndexData, adminUsers, data]);
   const selectedUserLabel = useMemo(() => {
-    if (selectedUserId === "all") return "全部用户";
+    if (selectedUserId === "all") return "All users";
     const user = usersById.get(selectedUserId);
-    return user ? getAdminUserDisplayName(user) : `用户 #${selectedUserId}`;
+    return user ? getAdminUserDisplayName(user) : `User #${selectedUserId}`;
   }, [selectedUserId, usersById]);
   const decorateAddressRows = useCallback(
     (items: AdminAddress[]) =>
@@ -2034,7 +2034,7 @@ function AddressesPanel({
     const randomDomains = mailState.settings?.randomSubdomainDomains || [];
     return domains.map((domain, index) => ({
       domain,
-      label: labels[index] && labels[index] !== domain ? `${labels[index]}（${domain}）` : domain,
+      label: labels[index] && labels[index] !== domain ? `${labels[index]} (${domain})` : domain,
       workerProfileId: activeWorkerProfile.id,
       workerName: activeWorkerProfile.name,
       supportsRandom: randomDomains.includes(domain),
@@ -2291,7 +2291,7 @@ function AddressesPanel({
         ) {
           return;
         }
-        const message = err.message || "加载失败";
+        const message = err.message || "Failed to load";
         if (freshOffset === 0 && dataRef.current.length === 0) {
           setError(message);
           setData([]);
@@ -2299,7 +2299,7 @@ function AddressesPanel({
           setOffset(0);
           setHasLoadedOnce(true);
         } else if (!silent) {
-          Alert.alert("加载失败", message);
+          Alert.alert("Failed to load", message);
         }
       } finally {
         if (addressRefreshingRequestIdRef.current === requestId) {
@@ -2387,7 +2387,7 @@ function AddressesPanel({
       } catch (err: any) {
         if (requestId !== addressIndexRequestIdRef.current) return;
         setAddressIndexStatus("error");
-        setAddressIndexError(err?.message || "地址索引补全失败");
+        setAddressIndexError(err?.message || "Failed to complete the address index");
       }
     },
     [addressIndexStatus, addressWorkerScope, mailState.isConfigured]
@@ -2602,12 +2602,12 @@ function AddressesPanel({
 
   const handleDelete = useCallback((item: AdminAddress) => {
     Alert.alert(
-      "删除地址",
-      `确定要从服务器删除 ${item.name}? 该操作不可恢复。`,
+      "Delete address",
+      `Delete ${item.name} from the server? This cannot be undone.`,
       [
-        { text: "取消", style: "cancel" },
+        { text: "Cancel", style: "cancel" },
         {
-          text: "删除",
+          text: "Delete",
           style: "destructive",
           onPress: async () => {
             try {
@@ -2631,10 +2631,10 @@ function AddressesPanel({
                 next.delete(item.id);
                 return next;
               });
-              onMiniToast("地址已删除");
+              onMiniToast("Address deleted");
               void load(0, queryRef.current, nextData.length > 0 ? { background: true } : undefined);
             } catch (err: any) {
-              Alert.alert("删除失败", err.message || "");
+              Alert.alert("Delete failed", err.message || "");
             }
           },
         },
@@ -2643,10 +2643,10 @@ function AddressesPanel({
   }, [commitPanelState, load, onMiniToast]);
 
   const handleClearInbox = useCallback((item: AdminAddress) => {
-    Alert.alert("清空收件箱", `清空 ${item.name} 的收件箱？`, [
-      { text: "取消", style: "cancel" },
+    Alert.alert("Empty inbox", `Empty the inbox of ${item.name}?`, [
+      { text: "Cancel", style: "cancel" },
       {
-        text: "确定",
+        text: "OK",
         style: "destructive",
         onPress: async () => {
           try {
@@ -2664,10 +2664,10 @@ function AddressesPanel({
             setAddressIndexData((prev) =>
               prev.map((row) => (row.id === item.id ? { ...row, mail_count: 0 } : row))
             );
-            onMiniToast("收件箱已清空");
+            onMiniToast("Inbox emptied");
             void load(0, queryRef.current, nextData.length > 0 ? { background: true } : undefined);
           } catch (err: any) {
-            Alert.alert("失败", err.message || "");
+            Alert.alert("Failed", err.message || "");
           }
         },
       },
@@ -2677,18 +2677,18 @@ function AddressesPanel({
   const handleShowCredential = useCallback(async (item: AdminAddress) => {
     try {
       const cred = await adminShowAddressCredential(item.id);
-      // 快速路径：直接复制 JWT 并 toast 提示，不再弹全屏页面
-      // 一般场景就是要拿来登录或者绑别的设备，不需要再点一道"复制"按钮
+      // Fast path: copy the JWT directly and show a toast instead of opening a full-screen page
+      // The usual goal is to sign in or bind another device, so an extra "Copy" tap is unnecessary
       const value = cred.jwt || cred.password;
       if (!value) {
-        onMiniToast("没有可用的凭证");
+        onMiniToast("No credential available");
         return;
       }
       const ok = await copyTextToClipboard(value);
       if (ok) {
-        onMiniToast(cred.jwt ? "JWT 已复制" : "密码已复制");
+        onMiniToast(cred.jwt ? "JWT copied" : "Password copied");
       } else {
-        // 剪贴板失败时再退化到详情 Modal，便于用户手动复制
+        // If the clipboard fails, fall back to the details modal so the user can copy manually
         setShowCred({
           address: item.name,
           jwt: cred.jwt,
@@ -2696,7 +2696,7 @@ function AddressesPanel({
         });
       }
     } catch (err: any) {
-      Alert.alert("获取凭证失败", err.message || "");
+      Alert.alert("Failed to get credential", err.message || "");
     }
   }, [onMiniToast]);
 
@@ -2704,7 +2704,7 @@ function AddressesPanel({
     try {
       const cred = await adminShowAddressCredential(item.id);
       if (!cred.jwt) {
-        onMiniToast("没有可用的 JWT 凭证");
+        onMiniToast("No JWT credential available");
         return;
       }
       const activeProfile = mailState.workerProfiles.find(
@@ -2712,18 +2712,18 @@ function AddressesPanel({
       ) || mailState.workerProfiles[0];
       const base = (activeProfile?.frontendUrl || "").replace(/\/+$/, "");
       if (!base) {
-        onMiniToast("未配置前端地址，请到设置中填写");
+        onMiniToast("No frontend URL configured. Set it in Settings");
         return;
       }
       const link = `${base}/?jwt=${cred.jwt}`;
       const ok = await copyTextToClipboard(link);
       if (ok) {
-        onMiniToast("登录链接已复制");
+        onMiniToast("Sign-in link copied");
       } else {
-        onMiniToast("复制失败");
+        onMiniToast("Copy failed");
       }
     } catch (err: any) {
-      onMiniToast(err.message || "获取凭证失败");
+      onMiniToast(err.message || "Failed to get credential");
     }
   }, [mailState.workerProfiles, mailState.activeWorkerProfileId, onMiniToast]);
 
@@ -2773,14 +2773,14 @@ function AddressesPanel({
       if (selectedDomainItem.workerProfileId !== mailState.activeWorkerProfileId) {
         clearAllAdminPanelCaches();
         await switchWorkerProfile(selectedDomainItem.workerProfileId);
-        onMiniToast(`已通过 ${selectedDomainItem.workerName} 创建邮箱`);
+        onMiniToast(`Mailbox created via ${selectedDomainItem.workerName}`);
       } else {
-        onMiniToast("已创建邮箱");
+        onMiniToast("Mailbox created");
         await load(0, query, { refresh: true });
         requestAddressIndexIfNeeded({ force: true, quiet: true });
       }
     } catch (err: any) {
-      Alert.alert("创建失败", err.message || "");
+      Alert.alert("Create failed", err.message || "");
     } finally {
       setIsCreating(false);
     }
@@ -2817,9 +2817,9 @@ function AddressesPanel({
   const handleCopySecret = useCallback(async (label: string, value: string) => {
     const ok = await copyTextToClipboard(value);
     if (ok) {
-      onMiniToast(`${label}已复制`);
+      onMiniToast(`${label} copied`);
     } else {
-      Alert.alert("复制失败", value);
+      Alert.alert("Copy failed", value);
     }
   }, [onMiniToast]);
 
@@ -2830,9 +2830,9 @@ function AddressesPanel({
     } else {
       const ok = await copyTextToClipboard(link);
       if (ok) {
-        onMiniToast("链接已复制（无法打开浏览器）");
+        onMiniToast("Link copied (could not open the browser)");
       } else {
-        Alert.alert("登录链接", link);
+        Alert.alert("Sign-in link", link);
       }
     }
   }, [onMiniToast]);
@@ -2847,7 +2847,7 @@ function AddressesPanel({
         await addAddressToGroup(groupScope, options.assignAddress, group.id);
       }
       await loadGroupsState();
-      onMiniToast(options?.assignAddress ? "已创建分组并加入" : "已创建分组");
+      onMiniToast(options?.assignAddress ? "Group created and added" : "Group created");
     },
     [groupScope, loadGroupsState, onMiniToast]
   );
@@ -2856,12 +2856,12 @@ function AddressesPanel({
     async (group: AddressGroup) => {
       const confirmed = await new Promise<boolean>((resolve) => {
         Alert.alert(
-          "删除分组",
-          `删除后不会删除邮箱，只会移除“${group.name}”分组关系。`,
+          "Delete group",
+          `Mailboxes are not deleted; only their membership in "${group.name}" is removed.`,
           [
-            { text: "取消", style: "cancel", onPress: () => resolve(false) },
+            { text: "Cancel", style: "cancel", onPress: () => resolve(false) },
             {
-              text: "删除",
+              text: "Delete",
               style: "destructive",
               onPress: () => resolve(true),
             },
@@ -2872,7 +2872,7 @@ function AddressesPanel({
 
       await deleteAddressGroup(groupScope, group.id);
       await loadGroupsState();
-      onMiniToast("已删除分组");
+      onMiniToast("Group deleted");
     },
     [groupScope, loadGroupsState, onMiniToast]
   );
@@ -2885,7 +2885,7 @@ function AddressesPanel({
         await removeAddressFromGroup(groupScope, address, group.id);
       }
       await loadGroupsState();
-      onMiniToast(nextSelected ? "已加入分组" : "已移出分组");
+      onMiniToast(nextSelected ? "Added to group" : "Removed from group");
     },
     [groupScope, loadGroupsState, onMiniToast]
   );
@@ -2899,13 +2899,13 @@ function AddressesPanel({
     try {
       if (bindMode === "credential") {
         if (!credentialInput.trim()) {
-          Alert.alert("提示", "请输入邮箱凭证");
+          Alert.alert("Notice", "Enter the mailbox credential");
           return;
         }
         await importByCredential(credentialInput.trim());
       } else {
         if (!bindEmail.trim() || !bindPassword.trim()) {
-          Alert.alert("提示", "请输入邮箱和密码");
+          Alert.alert("Notice", "Enter the email and password");
           return;
         }
         await importByPassword(bindEmail.trim(), bindPassword);
@@ -2914,11 +2914,11 @@ function AddressesPanel({
       setCredentialInput("");
       setBindEmail("");
       setBindPassword("");
-      onMiniToast("已绑定地址");
+      onMiniToast("Address bound");
       await load(0, query, { refresh: true });
       requestAddressIndexIfNeeded({ force: true, quiet: true });
     } catch (err: any) {
-      Alert.alert("绑定失败", err.message || "");
+      Alert.alert("Bind failed", err.message || "");
     } finally {
       setIsBinding(false);
     }
@@ -3030,7 +3030,7 @@ function AddressesPanel({
   const selectCurrentFilteredAddresses = useCallback(() => {
     setSelectionMode(true);
     setSelectedAddressIds(new Set(filteredData.map((item) => item.id)));
-    onMiniToast(`已选择 ${filteredData.length} 个地址`);
+    onMiniToast(`Selected ${filteredData.length} addresses`);
   }, [filteredData, onMiniToast]);
 
   const closeBulkModal = useCallback(() => {
@@ -3063,13 +3063,13 @@ function AddressesPanel({
     async (action: AddressBulkActionKind, group?: AddressGroup) => {
       const scopeAddresses = getBulkScopeAddresses(action);
       if (scopeAddresses.length === 0) {
-        onMiniToast(action === "delete_empty" ? "当前范围没有空邮箱" : "没有可操作地址");
+        onMiniToast(action === "delete_empty" ? "No empty mailboxes in the current scope" : "No addresses to act on");
         return;
       }
 
       if ((action === "add_group" || action === "remove_group") && !group) {
         if (addressGroups.length === 0) {
-          onMiniToast("请先创建分组");
+          onMiniToast("Create a group first");
           return;
         }
         setBulkModal({
@@ -3219,7 +3219,7 @@ function AddressesPanel({
           failures.push({
             id: item.id,
             address: item.name,
-            error: err?.message || "操作失败",
+            error: err?.message || "Action failed",
           });
         } finally {
           done += 1;
@@ -3315,14 +3315,14 @@ function AddressesPanel({
       }));
       onMiniToast(
         failures.length > 0
-          ? `完成，${failures.length} 项失败`
-          : `${getAddressBulkActionLabel(action)}完成`
+          ? `Done, ${failures.length} failed`
+          : `${getAddressBulkActionLabel(action)} done`
       );
     } catch (err: any) {
       setBulkModal((prev) => ({
         ...prev,
         mode: "preview",
-        error: err?.message || "批量操作失败",
+        error: err?.message || "Bulk action failed",
       }));
     }
   }, [
@@ -3340,29 +3340,29 @@ function AddressesPanel({
     const shouldShowIndexProgress = selectedUserId === "all" && needsCompleteAddressIndex;
     const indexProgress =
       shouldShowIndexProgress && addressIndexStatus === "loading"
-        ? ` · 索引 ${addressIndexLoaded}/${addressIndexCount || count || "?"}`
+        ? ` · index ${addressIndexLoaded}/${addressIndexCount || count || "?"}`
         : shouldShowIndexProgress && addressIndexStatus === "error"
-          ? ` · 索引失败${addressIndexError ? `：${addressIndexError}` : ""}`
+          ? ` · index failed${addressIndexError ? `: ${addressIndexError}` : ""}`
           : "";
     const pendingText = selectedGroupPendingCount > 0
-      ? ` · ${selectedGroupPendingCount} 个待同步确认`
+      ? ` · ${selectedGroupPendingCount} pending sync`
       : "";
     if (selectionMode) {
-      return `已选 ${selectedAddressIds.size} 个 · 当前 ${filteredData.length} 个${indexProgress}`;
+      return `Selected ${selectedAddressIds.size} · showing ${filteredData.length}${indexProgress}`;
     }
     if (selectedUserId !== "all") {
-      return `${selectedUserLabel} · ${filteredData.length} 个地址${indexProgress}${pendingText}`;
+      return `${selectedUserLabel} · ${filteredData.length} addresses${indexProgress}${pendingText}`;
     }
     if (query.trim()) {
-      return `当前显示 ${filteredData.length} / 总计 ${addressIndexCount || count}${indexProgress}`;
+      return `Showing ${filteredData.length} / ${addressIndexCount || count} total${indexProgress}`;
     }
     if (groupFilter === "ungrouped") {
-      return `未分组 ${filteredData.length} 个${indexProgress}${pendingText}`;
+      return `Ungrouped: ${filteredData.length}${indexProgress}${pendingText}`;
     }
     if (groupFilter !== "all") {
-      return `当前分组 ${filteredData.length} 个${indexProgress}${pendingText}`;
+      return `Current group: ${filteredData.length}${indexProgress}${pendingText}`;
     }
-    return `共 ${count} 个地址${indexProgress}`;
+    return `${count} addresses total${indexProgress}`;
   }, [
     addressIndexCount,
     addressIndexError,
@@ -3432,7 +3432,7 @@ function AddressesPanel({
               style={[styles.searchFieldInput, styles.mailSearchFieldInput, { color: colors.foreground }]}
               value={query}
               onChangeText={setQuery}
-              placeholder="搜地址/域名/ID"
+              placeholder="Search address / domain / ID"
               placeholderTextColor={colors.muted}
               onSubmitEditing={handleSearch}
               returnKeyType="search"
@@ -3517,7 +3517,7 @@ function AddressesPanel({
                   { color: groupFilter === "all" ? colors.primary : colors.muted },
                 ]}
               >
-                全部
+                All
               </Text>
             </Pressable>
             <Pressable
@@ -3543,7 +3543,7 @@ function AddressesPanel({
                   },
                 ]}
               >
-                未分组
+                Ungrouped
               </Text>
             </Pressable>
             {addressGroups.map((group) => (
@@ -3581,7 +3581,7 @@ function AddressesPanel({
           <View style={styles.addressToolbarCopy}>
             <View style={styles.addressToolbarInlineRow}>
               <Text numberOfLines={1} style={styles.addressToolbarStatusLine}>
-                <Text style={{ color: colors.primary }}>地址列表</Text>
+                <Text style={{ color: colors.primary }}>Address list</Text>
                 <Text style={{ color: colors.border }}> · </Text>
                 <Text style={{ color: colors.muted }}>{addressStatusSummary}</Text>
               </Text>
@@ -3603,7 +3603,7 @@ function AddressesPanel({
                   ]}
                 >
                   <Text style={[styles.ghostActionText, { color: colors.foreground }]}>
-                    全选当前
+                    Select all shown
                   </Text>
                 </Pressable>
                 <Pressable
@@ -3619,7 +3619,7 @@ function AddressesPanel({
                   ]}
                 >
                   <Text style={[styles.ghostActionText, { color: colors.muted }]}>
-                    清空
+                    Clear
                   </Text>
                 </Pressable>
                 <Pressable
@@ -3630,7 +3630,7 @@ function AddressesPanel({
                     { backgroundColor: colors.primary, opacity: pressed ? 0.8 : 1 },
                   ]}
                 >
-                  <Text style={styles.primaryActionText}>操作</Text>
+                  <Text style={styles.primaryActionText}>Actions</Text>
                 </Pressable>
                 <Pressable
                   hitSlop={COMPACT_HIT_SLOP}
@@ -3645,7 +3645,7 @@ function AddressesPanel({
                   ]}
                 >
                   <Text style={[styles.ghostActionText, { color: colors.muted }]}>
-                    退出
+                    Exit
                   </Text>
                 </Pressable>
               </>
@@ -3664,7 +3664,7 @@ function AddressesPanel({
                   ]}
                 >
                   <Text style={[styles.ghostActionText, { color: colors.foreground }]}>
-                    批量
+                    Bulk
                   </Text>
                 </Pressable>
             <Pressable
@@ -3680,7 +3680,7 @@ function AddressesPanel({
               ]}
             >
               <Text style={[styles.ghostActionText, { color: colors.foreground }]}>
-                分组
+                Groups
               </Text>
             </Pressable>
             <Pressable
@@ -3696,7 +3696,7 @@ function AddressesPanel({
               ]}
             >
               <Text style={[styles.ghostActionText, { color: colors.foreground }]}>
-                绑定地址
+                Bind address
               </Text>
             </Pressable>
             <Pressable
@@ -3710,7 +3710,7 @@ function AddressesPanel({
                 { backgroundColor: colors.primary, opacity: pressed ? 0.8 : 1 },
               ]}
             >
-              <Text style={styles.primaryActionText}>创建邮箱</Text>
+              <Text style={styles.primaryActionText}>Create mailbox</Text>
             </Pressable>
               </>
             )}
@@ -3742,8 +3742,8 @@ function AddressesPanel({
             >
               <AddressUserFilterOption
                 colors={colors}
-                label="全部用户"
-                subtitle="显示所有地址"
+                label="All users"
+                subtitle="Show all addresses"
                 selected={selectedUserId === "all"}
                 onPress={() => handleSelectUser("all")}
               />
@@ -3756,8 +3756,8 @@ function AddressesPanel({
                     label={getAdminUserDisplayName(user)}
                     subtitle={
                       typeof user.address_count === "number"
-                        ? `${user.address_count} 个地址${user.role_text ? ` · ${user.role_text}` : ""}`
-                        : user.user_email || user.email || `用户 #${userId}`
+                        ? `${user.address_count} addresses${user.role_text ? ` · ${user.role_text}` : ""}`
+                        : user.user_email || user.email || `User #${userId}`
                     }
                     selected={selectedUserId === userId}
                     onPress={() => handleSelectUser(userId)}
@@ -3767,10 +3767,10 @@ function AddressesPanel({
               {inferredUsers.length === 0 ? (
                 <Text style={[styles.addressUserFilterEmpty, { color: colors.muted }]}>
                   {userFetchStatus === "unsupported"
-                    ? "当前 Worker 暂未提供用户列表，将在地址索引完成后从地址中识别用户。"
+                    ? "This Worker does not provide a user list yet; users will be identified from addresses once the address index completes."
                     : userFetchStatus === "error"
-                      ? "用户列表加载失败，点击“全部用户”可重试。"
-                      : "正在识别用户信息。"}
+                      ? "Failed to load the user list. Tap \"All users\" to retry."
+                      : "Identifying users."}
                 </Text>
               ) : null}
             </ScrollView>
@@ -3783,8 +3783,8 @@ function AddressesPanel({
             colors={colors}
             loading
             icon="arrow.clockwise"
-            title="正在获取地址"
-            subtitle="把最近活跃的地址和凭证信息整理成更易读的列表。"
+            title="Loading addresses"
+            subtitle="Organizing recently active addresses and credentials into an easier-to-read list."
           />
         </View>
       ) : error && data.length === 0 ? (
@@ -3792,9 +3792,9 @@ function AddressesPanel({
           <PanelStateCard
             colors={colors}
             icon="exclamationmark.circle.fill"
-            title="地址列表加载失败"
+            title="Failed to load the address list"
             subtitle={error}
-            actionLabel="重新加载"
+            actionLabel="Reload"
             onAction={() => load(0)}
             accentColor={colors.error}
           />
@@ -3837,17 +3837,17 @@ function AddressesPanel({
                 icon={query.trim() ? "magnifyingglass" : "at"}
                 title={
                   query.trim()
-                      ? "没有找到匹配地址"
-                      : "还没有地址"
+                      ? "No matching addresses"
+                      : "No addresses yet"
                 }
                 subtitle={
                   query.trim()
-                    ? "换个关键词试试，或者清空搜索查看全部地址。"
+                    ? "Try another keyword, or clear the search to see all addresses."
                     : selectedUserId !== "all"
-                      ? "这个用户当前没有绑定地址，或者地址已经被筛选条件隐藏。"
-                      : "创建或导入地址后，这里会显示完整列表。"
+                      ? "This user has no bound addresses, or they are hidden by the current filters."
+                      : "Created or imported addresses will appear here."
                 }
-                actionLabel={query.trim() ? "清空搜索" : selectedUserId !== "all" ? "查看全部用户" : undefined}
+                actionLabel={query.trim() ? "Clear search" : selectedUserId !== "all" ? "View all users" : undefined}
                 onAction={
                   query.trim()
                       ? handleResetSearch
@@ -3861,8 +3861,8 @@ function AddressesPanel({
                 colors={colors}
                 loading
                 icon="arrow.clockwise"
-                title="正在准备地址"
-                subtitle="地址列表正在后台预热。"
+                title="Preparing addresses"
+                subtitle="The address list is warming up in the background."
               />
             )
           }
@@ -3897,10 +3897,10 @@ function AddressesPanel({
             <View style={styles.sheetHeader}>
               <View style={styles.sheetHeaderText}>
                 <Text style={[styles.modalTitle, { color: colors.foreground }]}>
-                  创建邮箱
+                  Create mailbox
                 </Text>
                 <Text style={[styles.sheetSubtitle, { color: colors.muted }]}>
-                  管理员可直接创建邮箱、子域名邮箱和随机子域名邮箱
+                  Admins can create mailboxes, subdomain mailboxes and random-subdomain mailboxes directly
                 </Text>
               </View>
               <Pressable onPress={() => setShowCreateModal(false)}>
@@ -3925,12 +3925,12 @@ function AddressesPanel({
                 >
                   <IconSymbol name="exclamationmark.circle.fill" size={16} color={colors.warning} />
                   <Text style={[styles.inlineNoticeText, { color: colors.foreground }]}>
-                    未获取到可用域名，请先检查服务器配置。
+                    No usable domains were found. Check the server configuration first.
                   </Text>
                 </View>
               ) : (
                 <>
-                  <FieldLabel text="邮箱名称" colors={colors} />
+                  <FieldLabel text="Mailbox name" colors={colors} />
                   <TextInput
                     style={[
                       styles.formInput,
@@ -3942,13 +3942,13 @@ function AddressesPanel({
                     ]}
                     value={newName}
                     onChangeText={setNewName}
-                    placeholder="输入邮箱名称"
+                    placeholder="Enter a mailbox name"
                     placeholderTextColor={colors.muted}
                     autoCapitalize="none"
                     autoCorrect={false}
                   />
 
-                  <FieldLabel text="选择域名" colors={colors} />
+                  <FieldLabel text="Domain" colors={colors} />
                   <Pressable
                     onPress={() => setShowDomainPicker(!showDomainPicker)}
                     style={[
@@ -3960,7 +3960,7 @@ function AddressesPanel({
                       style={[styles.domainText, { color: colors.foreground }]}
                       numberOfLines={1}
                     >
-                      @{selectedDomain || "选择域名"}
+                      @{selectedDomain || "Select a domain"}
                       {selectedDomainItem ? ` · ${selectedDomainItem.workerName}` : ""}
                     </Text>
                     <IconSymbol name="chevron.right" size={18} color={colors.muted} />
@@ -4012,12 +4012,12 @@ function AddressesPanel({
                               style={[styles.domainWorkerText, { color: colors.muted }]}
                               numberOfLines={1}
                             >
-                              {item.workerName}{item.conflict ? " · 域名冲突，请确认账号" : ""}
+                              {item.workerName}{item.conflict ? " · domain conflict, confirm the account" : ""}
                             </Text>
                             {item.supportsRandom ? (
                               <View style={[styles.badge, { backgroundColor: `${colors.success}20` }]}>
                                 <Text style={[styles.badgeText, { color: colors.success }]}>
-                                  随机子域名
+                                  Random subdomain
                                 </Text>
                               </View>
                             ) : null}
@@ -4030,10 +4030,10 @@ function AddressesPanel({
                   <View style={[styles.optionRow, { borderColor: colors.border }]}>
                     <View style={styles.optionInfo}>
                       <Text style={[styles.optionLabel, { color: colors.foreground }]}>
-                        自定义子域名
+                        Custom subdomain
                       </Text>
                       <Text style={[styles.optionDesc, { color: colors.muted }]}>
-                        在域名前添加自定义前缀
+                        Add a custom prefix before the domain
                       </Text>
                     </View>
                     <Switch
@@ -4059,7 +4059,7 @@ function AddressesPanel({
                       ]}
                       value={subdomainPrefix}
                       onChangeText={setSubdomainPrefix}
-                      placeholder="子域名前缀，如 team"
+                      placeholder="Subdomain prefix, e.g. team"
                       placeholderTextColor={colors.muted}
                       autoCapitalize="none"
                       autoCorrect={false}
@@ -4070,10 +4070,10 @@ function AddressesPanel({
                     <View style={[styles.optionRow, { borderColor: colors.border }]}>
                       <View style={styles.optionInfo}>
                         <Text style={[styles.optionLabel, { color: colors.foreground }]}>
-                          随机子域名
+                          Random subdomain
                         </Text>
                         <Text style={[styles.optionDesc, { color: colors.muted }]}>
-                          自动挂在随机子域名下
+                          Automatically placed under a random subdomain
                         </Text>
                       </View>
                       <Switch
@@ -4090,10 +4090,10 @@ function AddressesPanel({
 
                   <View style={styles.optionInfo}>
                     <Text style={[styles.optionLabel, { color: colors.foreground }]}>
-                      自定义前缀
+                      Custom prefix
                     </Text>
                     <Text style={[styles.optionDesc, { color: colors.muted }]}>
-                      可选，创建为 {normalizeMailboxPrefix(customPrefix) || "prefix"}.name@domain
+                      Optional, creates {normalizeMailboxPrefix(customPrefix) || "prefix"}.name@domain
                     </Text>
                   </View>
                   <TextInput
@@ -4107,7 +4107,7 @@ function AddressesPanel({
                     ]}
                     value={customPrefix}
                     onChangeText={setCustomPrefix}
-                    placeholder="邮箱名前缀，如 vip"
+                    placeholder="Mailbox name prefix, e.g. vip"
                     placeholderTextColor={colors.muted}
                     autoCapitalize="none"
                     autoCorrect={false}
@@ -4120,7 +4120,7 @@ function AddressesPanel({
                     ]}
                   >
                     <Text style={[styles.previewLabel, { color: colors.muted }]}>
-                      预览地址
+                      Address preview
                     </Text>
                     <Text style={[styles.previewAddress, { color: colors.primary }]}>
                       {previewAddress}
@@ -4150,7 +4150,7 @@ function AddressesPanel({
                     {isCreating ? (
                       <ActivityIndicator size="small" color="#FFFFFF" />
                     ) : (
-                      <Text style={styles.createButtonText}>创建邮箱</Text>
+                      <Text style={styles.createButtonText}>Create mailbox</Text>
                     )}
                   </Pressable>
                 </>
@@ -4170,10 +4170,10 @@ function AddressesPanel({
             <View style={styles.sheetHeader}>
               <View style={styles.sheetHeaderText}>
                 <Text style={[styles.modalTitle, { color: colors.foreground }]}>
-                  绑定地址
+                  Bind address
                 </Text>
                 <Text style={[styles.sheetSubtitle, { color: colors.muted }]}>
-                  把已有邮箱地址导入到当前管理员软件中
+                  Import an existing email address into this admin app
                 </Text>
               </View>
               <Pressable onPress={() => setShowBindModal(false)}>
@@ -4214,7 +4214,7 @@ function AddressesPanel({
                         },
                       ]}
                     >
-                      {item === "credential" ? "凭证绑定" : "密码绑定"}
+                      {item === "credential" ? "Bind with credential" : "Bind with password"}
                     </Text>
                   </Pressable>
                 ))}
@@ -4222,7 +4222,7 @@ function AddressesPanel({
 
               {bindMode === "credential" ? (
                 <>
-                  <FieldLabel text="邮箱凭证 (JWT)" colors={colors} />
+                  <FieldLabel text="Mailbox credential (JWT)" colors={colors} />
                   <TextInput
                     style={[
                       styles.formInput,
@@ -4236,7 +4236,7 @@ function AddressesPanel({
                     ]}
                     value={credentialInput}
                     onChangeText={setCredentialInput}
-                    placeholder="粘贴邮箱凭证"
+                    placeholder="Paste the mailbox credential"
                     placeholderTextColor={colors.muted}
                     multiline
                     autoCapitalize="none"
@@ -4245,7 +4245,7 @@ function AddressesPanel({
                 </>
               ) : (
                 <>
-                  <FieldLabel text="邮箱地址" colors={colors} />
+                  <FieldLabel text="Email address" colors={colors} />
                   <TextInput
                     style={[
                       styles.formInput,
@@ -4263,7 +4263,7 @@ function AddressesPanel({
                     autoCorrect={false}
                   />
 
-                  <FieldLabel text="邮箱密码" colors={colors} />
+                  <FieldLabel text="Mailbox password" colors={colors} />
                   <TextInput
                     style={[
                       styles.formInput,
@@ -4275,7 +4275,7 @@ function AddressesPanel({
                     ]}
                     value={bindPassword}
                     onChangeText={setBindPassword}
-                    placeholder="输入邮箱密码"
+                    placeholder="Enter the mailbox password"
                     placeholderTextColor={colors.muted}
                     secureTextEntry
                     autoCapitalize="none"
@@ -4298,7 +4298,7 @@ function AddressesPanel({
                 {isBinding ? (
                   <ActivityIndicator size="small" color="#FFFFFF" />
                 ) : (
-                  <Text style={styles.createButtonText}>立即绑定</Text>
+                  <Text style={styles.createButtonText}>Bind now</Text>
                 )}
               </Pressable>
             </ScrollView>
@@ -4318,7 +4318,7 @@ function AddressesPanel({
             <View style={styles.sheetHeader}>
               <View style={styles.sheetHeaderText}>
                 <Text style={[styles.modalTitle, { color: colors.foreground }]}>
-                  地址凭证
+                  Address credentials
                 </Text>
                 <Text style={[styles.sheetSubtitle, { color: colors.muted }]}>
                   {showCred?.address}
@@ -4349,13 +4349,13 @@ function AddressesPanel({
                   color={colors.warning}
                 />
                 <Text style={[styles.inlineNoticeText, { color: colors.foreground }]}>
-                  仅在备份、迁移设备或人工排查时查看这些信息，避免在公共环境展示。
+                  Only view this information when backing up, moving devices or troubleshooting; avoid showing it in public.
                 </Text>
               </View>
 
               {showCred?.jwt ? (
                 <AddressCredentialField
-                  label="地址凭证 (JWT)"
+                  label="Address credential (JWT)"
                   value={showCred.jwt}
                   colors={colors}
                   onCopy={() => handleCopySecret("JWT", showCred.jwt!)}
@@ -4364,10 +4364,10 @@ function AddressesPanel({
               ) : null}
               {showCred?.password ? (
                 <AddressCredentialField
-                  label="地址密码"
+                  label="Address password"
                   value={showCred.password}
                   colors={colors}
-                  onCopy={() => handleCopySecret("密码", showCred.password!)}
+                  onCopy={() => handleCopySecret("Password", showCred.password!)}
                 />
               ) : null}
               {showCred?.jwt && (() => {
@@ -4380,7 +4380,7 @@ function AddressesPanel({
                     jwt={showCred.jwt}
                     address={showCred.address}
                     colors={colors}
-                    onCopy={(link) => handleCopySecret("登录链接", link)}
+                    onCopy={(link) => handleCopySecret("Sign-in link", link)}
                     onOpen={(link) => openLoginLink(link)}
                   />
                 ) : null;
@@ -4393,7 +4393,7 @@ function AddressesPanel({
                   { backgroundColor: colors.primary, opacity: pressed ? 0.8 : 1 },
                 ]}
               >
-                <Text style={{ color: "#FFF", fontWeight: "600" }}>完成</Text>
+                <Text style={{ color: "#FFF", fontWeight: "600" }}>Done</Text>
               </Pressable>
             </ScrollView>
           </View>
@@ -4681,7 +4681,7 @@ function MailsPanel({
         offset: nextOffset,
         fetchedAt: Date.now(),
       });
-      // 持久化缓存：只针对主面板（无搜索词、不在搜索数据集模式），用于软件被杀掉重启后秒开
+      // Persistent cache: only for the main panel (no search query, not in search dataset mode), so the app opens instantly after being killed
       if (!queryToken || queryToken === "*") {
         void writeAdminMailCache(
           panelCacheKind as AdminMailPersistedCacheKind,
@@ -4708,7 +4708,7 @@ function MailsPanel({
     const kinds: AdminMailCacheKind[] =
       panelCacheKind === "spam" ? ["spam", "inbox", "unknown"] : [panelCacheKind];
     clearAdminMailCacheKinds(kinds, mailWorkerScope);
-    // 同步清掉持久化缓存
+    // Clear the persistent cache as well
     for (const k of kinds) {
       void clearAdminMailPersistedCache(
         k as AdminMailPersistedCacheKind,
@@ -4730,8 +4730,8 @@ function MailsPanel({
     [address, commitPanelState, mailWorkerScope, panelCacheKind]
   );
 
-  // 启动后一次性：从 AsyncStorage 读出之前缓存的邮件，立即灌入内存缓存
-  // 这样软件被杀掉重启后，主面板第一帧就能看到旧邮件，不会空白
+  // One-time on startup: read previously cached mail from AsyncStorage and load it into the in-memory cache
+  // so after the app is killed and restarted, the first frame of the main panel shows old mail instead of a blank screen
   const persistedHydrateRef = useRef(false);
   useEffect(() => {
     if (persistedHydrateRef.current) return;
@@ -4747,20 +4747,20 @@ function MailsPanel({
           mailWorkerScope
         );
         if (cancelled || !persisted) return;
-        // 已经有数据（来自更上层的内存缓存或本次 fetch）就不要覆盖
+        // If data already exists (from a higher-level memory cache or this fetch), do not overwrite it
         if (dataRef.current.length > 0) return;
         const queryToken = normalizeAdminMailQuery("");
-        // 写入内存缓存，让 hydrateCachedPanel/UI 立即能拿到
+        // Write to the memory cache so hydrateCachedPanel/UI can read it immediately
         adminMailPanelCache.set(
           buildAdminMailCacheKey(panelCacheKind, queryToken, mailWorkerScope),
           {
             count: persisted.count,
             data: persisted.mails,
             offset: persisted.offset,
-            fetchedAt: 0, // fetchedAt=0 → 强制视为过期，进入后台增量刷新
+            fetchedAt: 0, // fetchedAt=0 → treat as stale and trigger a background incremental refresh
           }
         );
-        // 立即渲染
+        // Render immediately
         dataRef.current = persisted.mails;
         countRef.current = persisted.count;
         offsetRef.current = persisted.offset;
@@ -4865,7 +4865,7 @@ function MailsPanel({
         });
       } catch (err: any) {
         if (requestId === requestIdRef.current && !silent) {
-          Alert.alert("加载失败", err.message || "");
+          Alert.alert("Failed to load", err.message || "");
         }
       } finally {
         if (requestId === requestIdRef.current && refresh) {
@@ -4998,7 +4998,7 @@ function MailsPanel({
         });
       } catch (err: any) {
         if (requestId === requestIdRef.current && !silent) {
-          Alert.alert("搜索失败", err.message || "");
+          Alert.alert("Search failed", err.message || "");
         }
       } finally {
         if (requestId === requestIdRef.current && pullRefresh) {
@@ -5298,9 +5298,9 @@ function MailsPanel({
     const ok = await copyTextToClipboard(code);
     if (ok) {
       markMailReadLocally(mail);
-      onMiniToast("验证码已复制");
+      onMiniToast("Code copied");
     } else {
-      Alert.alert("复制失败", code);
+      Alert.alert("Copy failed", code);
     }
   }, [markMailReadLocally, onMiniToast]);
 
@@ -5309,9 +5309,9 @@ function MailsPanel({
     try {
       setUnreadMailKeys(new Set());
       await markAllAdminMailsRead(readStateScope);
-      onMiniToast("已全部标记已读");
+      onMiniToast("All marked as read");
     } catch (err: any) {
-      Alert.alert("操作失败", err?.message || "标记已读失败");
+      Alert.alert("Action failed", err?.message || "Failed to mark as read");
     }
   }, [kind, onMiniToast, readStateScope]);
 
@@ -5319,23 +5319,23 @@ function MailsPanel({
     (mail: ParsedMail) => {
       const sender = getAdminMailSpamSender(mail);
       if (!sender || !readStateScope.trim()) {
-        Alert.alert("无法拒收", "这封邮件没有可识别的发件邮箱地址。");
+        Alert.alert("Cannot block", "This email has no recognizable sender address.");
         return;
       }
 
-      Alert.alert("拒收发件人", `以后来自 ${sender} 的邮件会进入垃圾信箱。`, [
-        { text: "取消", style: "cancel" },
+      Alert.alert("Block sender", `Future mail from ${sender} will go to spam.`, [
+        { text: "Cancel", style: "cancel" },
         {
-          text: "拒收",
+          text: "Block",
           style: "destructive",
           onPress: async () => {
             try {
               await blockAdminMailSender(readStateScope, mail);
               markMailReadLocally(mail);
               clearAdminMailCacheKinds(["inbox", "unknown", "spam"], mailWorkerScope);
-              onMiniToast("已加入垃圾信箱");
+              onMiniToast("Moved to spam");
             } catch (err: any) {
-              Alert.alert("操作失败", err?.message || "拒收失败");
+              Alert.alert("Action failed", err?.message || "Block failed");
             }
           },
         },
@@ -5351,9 +5351,9 @@ function MailsPanel({
       try {
         await unblockAdminMailSender(readStateScope, sender);
         clearAdminMailCacheKinds(["inbox", "unknown", "spam"], mailWorkerScope);
-        onMiniToast("已取消拒收");
+        onMiniToast("Unblocked");
       } catch (err: any) {
-        Alert.alert("操作失败", err?.message || "取消拒收失败");
+        Alert.alert("Action failed", err?.message || "Unblock failed");
       }
     },
     [mailWorkerScope, onMiniToast, readStateScope]
@@ -5375,10 +5375,10 @@ function MailsPanel({
   );
 
   const handleDelete = useCallback((mail: ParsedMail) => {
-    Alert.alert("删除邮件", mail.subject || "(无主题)", [
-      { text: "取消", style: "cancel" },
+    Alert.alert("Delete email", mail.subject || "(No subject)", [
+      { text: "Cancel", style: "cancel" },
       {
-        text: "删除",
+        text: "Delete",
         style: "destructive",
         onPress: async () => {
           try {
@@ -5397,7 +5397,7 @@ function MailsPanel({
               queryRef.current
             );
           } catch (err: any) {
-            Alert.alert("失败", err.message || "");
+            Alert.alert("Failed", err.message || "");
           }
         },
       },
@@ -5410,8 +5410,8 @@ function MailsPanel({
         openMailActionMenu(event, [
           {
             key: "delete",
-            label: "删除邮件",
-            subtitle: "从发件箱移除",
+            label: "Delete email",
+            subtitle: "Remove from the sent folder",
             icon: "trash.fill",
             destructive: true,
             onPress: () => handleDelete(mail),
@@ -5428,14 +5428,14 @@ function MailsPanel({
           isSpamView
             ? {
                 key: "unblock",
-                label: "取消拒收",
+                label: "Unblock",
                 subtitle: sender,
                 icon: "checkmark.circle.fill",
                 onPress: () => void handleUnblockSender(mail),
               }
             : {
                 key: "block",
-                label: "拒收该发件人",
+                label: "Block this sender",
                 subtitle: sender,
                 icon: "xmark.circle.fill",
                 destructive: true,
@@ -5446,8 +5446,8 @@ function MailsPanel({
 
       items.push({
           key: "delete",
-          label: "删除邮件",
-          subtitle: "从列表中移除",
+          label: "Delete email",
+          subtitle: "Remove from the list",
           icon: "trash.fill",
           destructive: true,
           onPress: () => handleDelete(mail),
@@ -5512,7 +5512,7 @@ function MailsPanel({
       const targetAddress = getManagedAddressForMail(mail, kind);
       const parsed = splitMailboxAddress(targetAddress);
       if (!parsed) {
-        Alert.alert("无法创建", "没有从这封邮件里识别到可创建的收件地址。");
+        Alert.alert("Cannot create", "No recipient address that can be created was found in this email.");
         return;
       }
 
@@ -5520,7 +5520,7 @@ function MailsPanel({
       try {
         const workerProfileId = resolveWorkerProfileIdForDomain(parsed.domain);
         if (!workerProfileId) {
-          Alert.alert("无法创建", "这个域名同时存在于多个 Worker，请切到对应账号后再创建。");
+          Alert.alert("Cannot create", "This domain exists on several Workers. Switch to the right account before creating.");
           return;
         }
         await createAddress({
@@ -5532,7 +5532,7 @@ function MailsPanel({
         });
         clearAdminAddressesPanelCache();
         markUnknownAddressCreated(targetAddress);
-        onMiniToast(`已创建 ${targetAddress}`);
+        onMiniToast(`Created ${targetAddress}`);
         if (workerProfileId !== mailState.activeWorkerProfileId) {
           clearAllAdminPanelCaches();
           await switchWorkerProfile(workerProfileId);
@@ -5543,11 +5543,11 @@ function MailsPanel({
         if (isAddressAlreadyExistsError(err)) {
           clearAdminAddressesPanelCache();
           markUnknownAddressCreated(targetAddress);
-          onMiniToast(`已创建 ${targetAddress}`);
+          onMiniToast(`Created ${targetAddress}`);
           await refreshAfterUnknownCreate();
           return;
         }
-        Alert.alert("创建失败", err.message || "");
+        Alert.alert("Create failed", err.message || "");
       } finally {
         setCreatingAddress(null);
       }
@@ -5606,37 +5606,37 @@ function MailsPanel({
     isSpamView
       ? {
           icon: "xmark.circle.fill" as const,
-          title: "垃圾信箱为空",
-          subtitle: "拒收发件人后，命中的收件和未知邮件会显示在这里。",
+          title: "Spam is empty",
+          subtitle: "After you block senders, matching received and unknown mail appears here.",
         }
       : kind === "sendbox"
       ? {
           icon: "paperplane.fill" as const,
-          title: "暂无管理员发件",
-          subtitle: "可以按地址过滤，或查看系统中所有发件记录。",
+          title: "No admin sent mail",
+          subtitle: "Filter by address, or view all sent records in the system.",
         }
       : kind === "unknown"
         ? {
             icon: "exclamationmark.bubble.fill" as const,
-            title: "暂无未知收件",
-            subtitle: "没有发现系统未创建地址的收件。",
+            title: "No unknown mail",
+            subtitle: "No mail to uncreated addresses was found.",
           }
         : {
             icon: "tray.fill" as const,
-            title: "暂无管理员收件",
-            subtitle: "可以按地址过滤，查看系统中的所有收件邮件。",
+            title: "No admin received mail",
+            subtitle: "Filter by address to view all received mail in the system.",
           };
   const summaryText = isSpamView
     ? address.trim()
-      ? `垃圾匹配 ${visibleData.length} 封`
-      : `共 ${visibleData.length} 封`
+      ? `${visibleData.length} spam matches`
+      : `${visibleData.length} total`
     : address.trim()
-      ? `匹配 ${visibleData.length} 封`
+      ? `${visibleData.length} matches`
       : supportsMailGroupFilter && mailGroupFilter === "ungrouped"
-        ? `未分组 ${visibleData.length} 封`
+        ? `Ungrouped: ${visibleData.length}`
         : supportsMailGroupFilter && mailGroupFilter !== "all"
-          ? `${mailGroupFilterLabel} ${visibleData.length} 封`
-          : `共 ${count} 封`;
+          ? `${mailGroupFilterLabel}: ${visibleData.length}`
+          : `${count} total`;
 
   return (
     <View ref={mailPanelRootRef} collapsable={false} style={{ flex: 1 }}>
@@ -5658,7 +5658,7 @@ function MailsPanel({
               ]}
               value={address}
               onChangeText={setAddress}
-              placeholder="搜主题/地址/验证码"
+              placeholder="Search subject / address / code"
               placeholderTextColor={colors.muted}
               returnKeyType="search"
               autoCapitalize="none"
@@ -5727,12 +5727,12 @@ function MailsPanel({
           colors={colors}
           title={
             isSpamView
-              ? "垃圾信箱"
+              ? "Spam"
               : kind === "sendbox"
-                ? "发件箱"
+                ? "Sent"
                 : kind === "unknown"
-                  ? "未知"
-                  : "收件箱"
+                  ? "Unknown"
+                  : "Inbox"
           }
           summary={summaryText}
           isSyncing={false}
@@ -5765,13 +5765,13 @@ function MailsPanel({
           >
             <MailboxViewMenuOption
               colors={colors}
-              label="收件箱"
+              label="Inbox"
               selected={inboxMailboxView === "inbox"}
               onPress={() => handleSwitchInboxMailboxView("inbox")}
             />
             <MailboxViewMenuOption
               colors={colors}
-              label="垃圾信箱"
+              label="Spam"
               selected={inboxMailboxView === "spam"}
               onPress={() => handleSwitchInboxMailboxView("spam")}
             />
@@ -5866,10 +5866,10 @@ function MailsPanel({
             <View style={styles.centerAll}>
               <ActivityIndicator color={colors.primary} />
               <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
-                正在准备邮件
+                Preparing mail
               </Text>
               <Text style={[styles.emptySubtitle, { color: colors.muted }]}>
-                邮件列表正在后台预热。
+                The mail list is warming up in the background.
               </Text>
             </View>
           ) : null
@@ -5907,7 +5907,7 @@ function AddressBulkActionModal({
   onPreview: (action: AddressBulkActionKind, group?: AddressGroup) => void;
   onExecute: () => void;
 }) {
-  const actionLabel = state.action ? getAddressBulkActionLabel(state.action) : "批量操作";
+  const actionLabel = state.action ? getAddressBulkActionLabel(state.action) : "Bulk action";
   const preview = state.preview;
   const affectedAddressCount =
     preview?.address_count ?? state.addresses.length;
@@ -5916,8 +5916,8 @@ function AddressBulkActionModal({
   const failures = state.failures || state.result?.failures || [];
   const scopeText =
     selectedCount > 0
-      ? `当前已选 ${selectedCount} 个地址`
-      : `未手动选择时，将按当前筛选范围 ${fallbackScopeCount} 个地址预览`;
+      ? `${selectedCount} addresses selected`
+      : `Nothing selected manually; previewing ${fallbackScopeCount} addresses in the current filter scope`;
 
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
@@ -5932,14 +5932,14 @@ function AddressBulkActionModal({
           <View style={styles.bulkModalHeader}>
             <View style={styles.bulkModalHeaderCopy}>
               <Text style={[styles.bulkModalTitle, { color: colors.foreground }]}>
-                {state.mode === "actions" ? "批量管理地址" : actionLabel}
+                {state.mode === "actions" ? "Bulk manage addresses" : actionLabel}
               </Text>
               <Text style={[styles.bulkModalSubtitle, { color: colors.muted }]}>
                 {state.mode === "actions"
                   ? scopeText
                   : state.mode === "groupPicker"
-                    ? "选择要批量加入或移出的本地分组。"
-                    : "请先核对影响范围，再执行。"}
+                    ? "Choose the local group to add to or remove from."
+                    : "Review the affected scope before running."}
               </Text>
             </View>
             <Pressable hitSlop={COMPACT_HIT_SLOP} onPress={onClose}>
@@ -6022,7 +6022,7 @@ function AddressBulkActionModal({
                       {group.name}
                     </Text>
                     <Text style={[styles.bulkActionSubtitle, { color: colors.muted }]}>
-                      {state.action === "add_group" ? "加入此分组" : "从此分组移出"}
+                      {state.action === "add_group" ? "Add to this group" : "Remove from this group"}
                     </Text>
                   </View>
                 </Pressable>
@@ -6037,31 +6037,31 @@ function AddressBulkActionModal({
                   <View style={styles.bulkPreviewGrid}>
                     <BulkPreviewMetric
                       colors={colors}
-                      label="地址"
+                      label="Addresses"
                       value={affectedAddressCount}
                     />
                     <BulkPreviewMetric
                       colors={colors}
-                      label="收件"
+                      label="Received"
                       value={preview.mail_count ?? 0}
                     />
                     <BulkPreviewMetric
                       colors={colors}
-                      label="发件"
+                      label="Sent"
                       value={preview.send_count ?? 0}
                     />
                     <BulkPreviewMetric
                       colors={colors}
-                      label="空邮箱"
+                      label="Empty mailboxes"
                       value={preview.empty_address_count ?? 0}
                     />
                   </View>
                   <Text style={[styles.bulkPreviewSampleTitle, { color: colors.muted }]}>
-                    {state.targetGroup ? `目标分组：${state.targetGroup.name}` : "示例地址"}
+                    {state.targetGroup ? `Target group: ${state.targetGroup.name}` : "Sample addresses"}
                   </Text>
                   {state.targetGroup ? (
                     <Text style={[styles.bulkPreviewSampleTitle, { color: colors.muted }]}>
-                      示例地址
+                      Sample addresses
                     </Text>
                   ) : null}
                   <Text
@@ -6092,7 +6092,7 @@ function AddressBulkActionModal({
                       ]}
                     >
                       <Text style={[styles.ghostActionText, { color: colors.muted }]}>
-                        重新预览
+                        Preview again
                       </Text>
                     </Pressable>
                     <Pressable
@@ -6105,7 +6105,7 @@ function AddressBulkActionModal({
                         },
                       ]}
                     >
-                      <Text style={styles.primaryActionText}>确认执行</Text>
+                      <Text style={styles.primaryActionText}>Run</Text>
                     </Pressable>
                   </View>
                 </>
@@ -6113,7 +6113,7 @@ function AddressBulkActionModal({
                 <View style={styles.bulkModalLoading}>
                   <ActivityIndicator color={colors.primary} />
                   <Text style={[styles.bulkModalSubtitle, { color: colors.muted }]}>
-                    正在生成影响预览…
+                    Generating impact preview…
                   </Text>
                 </View>
               )}
@@ -6124,10 +6124,10 @@ function AddressBulkActionModal({
             <View style={styles.bulkModalLoading}>
               <ActivityIndicator color={colors.primary} />
               <Text style={[styles.bulkModalTitle, { color: colors.foreground }]}>
-                正在执行 {progressDone}/{progressTotal}
+                Running {progressDone}/{progressTotal}
               </Text>
               <Text style={[styles.bulkModalSubtitle, { color: colors.muted }]}>
-                执行中会保留失败明细，成功项不会回滚。
+                Failure details are kept while running; successful items are not rolled back.
               </Text>
             </View>
           ) : null}
@@ -6135,11 +6135,11 @@ function AddressBulkActionModal({
           {state.mode === "done" ? (
             <View style={styles.bulkPreviewBox}>
               <Text style={[styles.bulkModalTitle, { color: colors.foreground }]}>
-                操作完成
+                Done
               </Text>
               <Text style={[styles.bulkModalSubtitle, { color: colors.muted }]}>
-                成功 {state.result?.success_count ?? Math.max(0, progressTotal - failures.length)} 项
-                {failures.length > 0 ? `，失败 ${failures.length} 项` : ""}
+                {state.result?.success_count ?? Math.max(0, progressTotal - failures.length)} succeeded
+                {failures.length > 0 ? `, ${failures.length} failed` : ""}
               </Text>
               {failures.length > 0 ? (
                 <Text
@@ -6148,7 +6148,7 @@ function AddressBulkActionModal({
                 >
                   {failures
                     .slice(0, 4)
-                    .map((item) => `${item.address || item.id || "未知地址"}：${item.error || "失败"}`)
+                    .map((item) => `${item.address || item.id || "Unknown address"}: ${item.error || "Failed"}`)
                     .join("\n")}
                 </Text>
               ) : null}
@@ -6159,7 +6159,7 @@ function AddressBulkActionModal({
                   { backgroundColor: colors.primary, opacity: pressed ? 0.82 : 1 },
                 ]}
               >
-                <Text style={styles.createButtonText}>完成</Text>
+                <Text style={styles.createButtonText}>Done</Text>
               </Pressable>
             </View>
           ) : null}
@@ -6288,13 +6288,13 @@ const AddressListItem = React.memo(function AddressListItem({
                 ) : null}
               </>
             ) : (
-              <AddressGroupSummaryChip label="未分组" colors={colors} />
+              <AddressGroupSummaryChip label="Ungrouped" colors={colors} />
             )}
           </View>
         </View>
         <View style={styles.addressStatsRow}>
-          <AddressStatChip colors={colors} label={`${item.mail_count ?? 0} 收件`} />
-          <AddressStatChip colors={colors} label={`${item.send_count ?? 0} 发件`} />
+          <AddressStatChip colors={colors} label={`${item.mail_count ?? 0} received`} />
+          <AddressStatChip colors={colors} label={`${item.send_count ?? 0} sent`} />
         </View>
       </View>
 
@@ -6315,7 +6315,7 @@ const AddressListItem = React.memo(function AddressListItem({
           ]}
         >
           <Text style={[styles.addressCompactActionText, { color: colors.foreground }]}>
-            分组
+            Groups
           </Text>
         </Pressable>
         <Pressable
@@ -6330,7 +6330,7 @@ const AddressListItem = React.memo(function AddressListItem({
           ]}
         >
           <Text style={[styles.addressCompactActionText, { color: colors.primary }]}>
-            凭证
+            Credentials
           </Text>
         </Pressable>
         <Pressable
@@ -6345,7 +6345,7 @@ const AddressListItem = React.memo(function AddressListItem({
           ]}
         >
           <Text style={[styles.addressCompactActionText, { color: colors.primary }]}>
-            登录链接
+            Sign-in link
           </Text>
         </Pressable>
         <Pressable
@@ -6360,7 +6360,7 @@ const AddressListItem = React.memo(function AddressListItem({
           ]}
         >
           <Text style={[styles.addressCompactActionText, { color: colors.foreground }]}>
-            清空收件
+            Empty inbox
           </Text>
         </Pressable>
         <Pressable
@@ -6374,7 +6374,7 @@ const AddressListItem = React.memo(function AddressListItem({
           ]}
         >
           <Text style={[styles.addressCompactActionText, { color: colors.error }]}>
-            删除
+            Delete
           </Text>
         </Pressable>
       </View>
@@ -6412,7 +6412,7 @@ const MailListItem = React.memo(function MailListItem({
   onCopyCode: (mail: ParsedMail, code: string) => void;
   onCreateAddressFromUnknown: (mail: ParsedMail) => void;
 }) {
-  const preview = useMemo(() => getMailPreview(item, 68) || "(无内容)", [item]);
+  const preview = useMemo(() => getMailPreview(item, 68) || "(No content)", [item]);
   const code = useMemo(() => getVerificationCode(item), [item]);
   const senderAddress = item.from?.address || item.ownerAddress || "—";
   const senderLabel = item.from?.name || getSenderDisplay(item);
@@ -6432,15 +6432,15 @@ const MailListItem = React.memo(function MailListItem({
   const formattedDate = formatMailDate(item.createdAt || item.date);
   const tertiaryMeta =
     kind === "sendbox"
-      ? `发件 ${
+      ? `From ${
           formatMailboxDisplay(item.from, { addressFirst: true }) ||
           item.ownerAddress ||
           "—"
         } · ${formattedDate}`
       : kind === "unknown"
-        ? `收件 ${unknownRecipientAddress} · ${formattedDate}`
+        ? `To ${unknownRecipientAddress} · ${formattedDate}`
         : item.ownerAddress
-          ? `收件 ${item.ownerAddress} · ${formattedDate}`
+          ? `To ${item.ownerAddress} · ${formattedDate}`
           : formattedDate;
 
   return (
@@ -6469,7 +6469,7 @@ const MailListItem = React.memo(function MailListItem({
               />
             ) : null}
             <HighlightText
-              text={item.subject || "(无主题)"}
+              text={item.subject || "(No subject)"}
               query={searchQuery}
               style={[
                 styles.compactMailSubject,
@@ -6574,10 +6574,10 @@ const MailListItem = React.memo(function MailListItem({
                 ]}
               >
                 {isUnknownCreated
-                  ? "已创建"
+                  ? "Created"
                   : creatingAddress === managedAddress
-                    ? "创建中"
-                    : "创建"}
+                    ? "Creating"
+                    : "Create"}
               </Text>
             </Pressable>
           ) : null}
@@ -6600,7 +6600,7 @@ function SendAsPanel({ colors }: { colors: ReturnType<typeof useColors> }) {
 
   const handleSend = async () => {
     if (!fromAddress.trim() || !toMail.trim()) {
-      Alert.alert("提示", "请填写发件地址和收件人");
+      Alert.alert("Notice", "Enter the from address and recipient");
       return;
     }
     setIsSending(true);
@@ -6614,13 +6614,13 @@ function SendAsPanel({ colors }: { colors: ReturnType<typeof useColors> }) {
         is_html: isHtml,
         content,
       });
-      Alert.alert("发送成功");
+      Alert.alert("Sent");
       setToMail("");
       setToName("");
       setSubject("");
       setContent("");
     } catch (err: any) {
-      Alert.alert("发送失败", err.message || "");
+      Alert.alert("Send failed", err.message || "");
     } finally {
       setIsSending(false);
     }
@@ -6638,9 +6638,9 @@ function SendAsPanel({ colors }: { colors: ReturnType<typeof useColors> }) {
           { backgroundColor: colors.surface, borderColor: colors.border },
         ]}
       >
-        <Text style={[styles.panelEyebrow, { color: colors.primary }]}>发件身份</Text>
+        <Text style={[styles.panelEyebrow, { color: colors.primary }]}>Sender</Text>
 
-        <FieldLabel text="发件邮箱" colors={colors} />
+        <FieldLabel text="From address" colors={colors} />
         <TextInput
           style={[
             styles.formInput,
@@ -6658,7 +6658,7 @@ function SendAsPanel({ colors }: { colors: ReturnType<typeof useColors> }) {
           keyboardType="email-address"
         />
 
-        <FieldLabel text="显示名称（可选）" colors={colors} />
+        <FieldLabel text="Display name (optional)" colors={colors} />
         <TextInput
           style={[
             styles.formInput,
@@ -6670,7 +6670,7 @@ function SendAsPanel({ colors }: { colors: ReturnType<typeof useColors> }) {
           ]}
           value={fromName}
           onChangeText={setFromName}
-          placeholder="例如：CloudMail Support"
+          placeholder="e.g. CloudMail Support"
           placeholderTextColor={colors.muted}
         />
       </View>
@@ -6681,9 +6681,9 @@ function SendAsPanel({ colors }: { colors: ReturnType<typeof useColors> }) {
           { backgroundColor: colors.surface, borderColor: colors.border },
         ]}
       >
-        <Text style={[styles.panelEyebrow, { color: colors.primary }]}>收件信息</Text>
+        <Text style={[styles.panelEyebrow, { color: colors.primary }]}>Recipient</Text>
 
-        <FieldLabel text="收件邮箱" colors={colors} />
+        <FieldLabel text="To address" colors={colors} />
         <TextInput
           style={[
             styles.formInput,
@@ -6701,7 +6701,7 @@ function SendAsPanel({ colors }: { colors: ReturnType<typeof useColors> }) {
           keyboardType="email-address"
         />
 
-        <FieldLabel text="收件名称（可选）" colors={colors} />
+        <FieldLabel text="Recipient name (optional)" colors={colors} />
         <TextInput
           style={[
             styles.formInput,
@@ -6713,11 +6713,11 @@ function SendAsPanel({ colors }: { colors: ReturnType<typeof useColors> }) {
           ]}
           value={toName}
           onChangeText={setToName}
-          placeholder="例如：Alex Chen"
+          placeholder="e.g. Alex Chen"
           placeholderTextColor={colors.muted}
         />
 
-        <FieldLabel text="主题" colors={colors} />
+        <FieldLabel text="Subject" colors={colors} />
         <TextInput
           style={[
             styles.formInput,
@@ -6729,7 +6729,7 @@ function SendAsPanel({ colors }: { colors: ReturnType<typeof useColors> }) {
           ]}
           value={subject}
           onChangeText={setSubject}
-          placeholder="邮件主题"
+          placeholder="Email subject"
           placeholderTextColor={colors.muted}
         />
       </View>
@@ -6740,7 +6740,7 @@ function SendAsPanel({ colors }: { colors: ReturnType<typeof useColors> }) {
           { backgroundColor: colors.surface, borderColor: colors.border },
         ]}
       >
-        <Text style={[styles.panelEyebrow, { color: colors.primary }]}>内容</Text>
+        <Text style={[styles.panelEyebrow, { color: colors.primary }]}>Content</Text>
 
         <View
           style={[
@@ -6750,7 +6750,7 @@ function SendAsPanel({ colors }: { colors: ReturnType<typeof useColors> }) {
         >
           <View style={styles.toggleCardCopy}>
             <Text style={[styles.toggleCardTitle, { color: colors.foreground }]}>
-              HTML 格式
+              HTML format
             </Text>
           </View>
           <Switch
@@ -6761,7 +6761,7 @@ function SendAsPanel({ colors }: { colors: ReturnType<typeof useColors> }) {
           />
         </View>
 
-        <FieldLabel text="正文" colors={colors} />
+        <FieldLabel text="Body" colors={colors} />
         <TextInput
           style={[
             styles.formInput,
@@ -6774,7 +6774,7 @@ function SendAsPanel({ colors }: { colors: ReturnType<typeof useColors> }) {
           ]}
           value={content}
           onChangeText={setContent}
-          placeholder={isHtml ? "<p>邮件正文</p>" : "邮件正文"}
+          placeholder={isHtml ? "<p>Email body</p>" : "Email body"}
           placeholderTextColor={colors.muted}
           multiline
         />
@@ -6787,31 +6787,31 @@ function SendAsPanel({ colors }: { colors: ReturnType<typeof useColors> }) {
         ]}
       >
         <Text style={[styles.compactInfoTitle, { color: colors.foreground }]}>
-          本次发送摘要
+          Summary
         </Text>
         <View style={styles.compactInfoRows}>
           <View style={styles.compactInfoRow}>
             <Text style={[styles.compactInfoLabel, { color: colors.muted }]}>
-              发件地址
+              From
             </Text>
             <Text style={[styles.compactInfoValue, { color: colors.foreground }]}>
-              {fromAddress.trim() || "待填写"}
+              {fromAddress.trim() || "Not set"}
             </Text>
           </View>
           <View style={styles.compactInfoRow}>
             <Text style={[styles.compactInfoLabel, { color: colors.muted }]}>
-              收件地址
+              To
             </Text>
             <Text style={[styles.compactInfoValue, { color: colors.foreground }]}>
-              {toMail.trim() || "待填写"}
+              {toMail.trim() || "Not set"}
             </Text>
           </View>
           <View style={styles.compactInfoRow}>
             <Text style={[styles.compactInfoLabel, { color: colors.muted }]}>
-              主题
+              Subject
             </Text>
             <Text style={[styles.compactInfoValue, { color: colors.foreground }]}>
-              {subject.trim() || "（无主题）"}
+              {subject.trim() || "(No subject)"}
             </Text>
           </View>
         </View>
@@ -6831,7 +6831,7 @@ function SendAsPanel({ colors }: { colors: ReturnType<typeof useColors> }) {
         {isSending ? (
           <ActivityIndicator color="#FFF" />
         ) : (
-          <Text style={styles.sendPrimaryButtonText}>立即发送</Text>
+          <Text style={styles.sendPrimaryButtonText}>Send now</Text>
         )}
       </Pressable>
     </ScrollView>
@@ -7000,7 +7000,7 @@ function MailPanelStatusBar({
             {isSyncing ? (
               <>
                 <Text style={{ color: colors.border }}> · </Text>
-                <Text style={{ color: colors.primary }}>更新中</Text>
+                <Text style={{ color: colors.primary }}>Updating</Text>
               </>
             ) : null}
           </Text>
@@ -7029,7 +7029,7 @@ function MailPanelStatusBar({
                 { color: hasUnread ? colors.primary : colors.muted },
               ]}
             >
-              全部已读
+              Mark all read
             </Text>
           </Pressable>
         ) : null}
@@ -7190,7 +7190,7 @@ function AddressCredentialField({
           ]}
         >
           <IconSymbol name="doc.on.doc" size={13} color={colors.primary} />
-          <Text style={[styles.credentialCopyText, { color: colors.primary }]}>复制</Text>
+          <Text style={[styles.credentialCopyText, { color: colors.primary }]}>Copy</Text>
         </Pressable>
       </View>
       <View
@@ -7235,7 +7235,7 @@ function AddressLoginLinkField({
     <View style={styles.credentialFieldWrap}>
       <View style={styles.credentialFieldHeader}>
         <Text style={[styles.credentialFieldLabel, { color: colors.muted }]}>
-          一键登录链接
+          One-tap sign-in link
         </Text>
         <View style={styles.credentialFieldActions}>
           <Pressable
@@ -7250,7 +7250,7 @@ function AddressLoginLinkField({
             ]}
           >
             <IconSymbol name="safari" size={13} color={colors.primary} />
-            <Text style={[styles.credentialCopyText, { color: colors.primary }]}>打开</Text>
+            <Text style={[styles.credentialCopyText, { color: colors.primary }]}>Open</Text>
           </Pressable>
           <Pressable
             onPress={() => onCopy(loginLink)}
@@ -7264,7 +7264,7 @@ function AddressLoginLinkField({
             ]}
           >
             <IconSymbol name="doc.on.doc" size={13} color={colors.primary} />
-            <Text style={[styles.credentialCopyText, { color: colors.primary }]}>复制</Text>
+            <Text style={[styles.credentialCopyText, { color: colors.primary }]}>Copy</Text>
           </Pressable>
         </View>
       </View>
@@ -7283,7 +7283,7 @@ function AddressLoginLinkField({
         </Text>
       </View>
       <Text style={[styles.loginLinkHint, { color: colors.muted }]}>
-        在浏览器打开此链接可直接登录 {address}
+        Open this link in a browser to sign in directly as {address}
       </Text>
     </View>
   );

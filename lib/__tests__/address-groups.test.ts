@@ -30,7 +30,7 @@ describe("address-groups persistence", () => {
     const groups = await import("../address-groups");
 
     const group = await groups.createAddressGroup("https://mail.example.com/api", {
-      name: "验证码",
+      name: "Verification codes",
       color: "blue",
     });
     await groups.addAddressToGroup(
@@ -43,7 +43,7 @@ describe("address-groups persistence", () => {
     const matched = groups.getAddressGroupsForAddress(lookup.lookup, "user@mail.example.com");
 
     expect(lookup.groups).toHaveLength(1);
-    expect(matched[0]?.name).toBe("验证码");
+    expect(matched[0]?.name).toBe("Verification codes");
   });
 
   it("can restore legacy single-key data by alias matching and migrate it", async () => {
@@ -51,7 +51,7 @@ describe("address-groups persistence", () => {
       groups: [
         {
           id: "legacy_group",
-          name: "重点用户",
+          name: "Key users",
           color: "teal",
           createdAt: "2026-04-24T00:00:00.000Z",
           updatedAt: "2026-04-24T00:00:00.000Z",
@@ -70,7 +70,7 @@ describe("address-groups persistence", () => {
     const groups = await import("../address-groups");
     const restored = await groups.loadAddressGroupState("http://demo.example.com/base/");
 
-    expect(restored.groups[0]?.name).toBe("重点用户");
+    expect(restored.groups[0]?.name).toBe("Key users");
     expect(
       storage.get("cloudmail_address_groups:http://demo.example.com/base")
     ).toBeTruthy();

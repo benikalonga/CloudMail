@@ -90,7 +90,7 @@ export default function AddressesScreen() {
     () =>
       domains.map((d, i) => ({
         value: d,
-        label: domainLabels[i] && domainLabels[i] !== d ? `${domainLabels[i]}（${d}）` : d,
+        label: domainLabels[i] && domainLabels[i] !== d ? `${domainLabels[i]} (${d})` : d,
         supportsRandom: randomSubdomainDomains.includes(d),
       })),
     [domains, domainLabels, randomSubdomainDomains]
@@ -207,16 +207,16 @@ export default function AddressesScreen() {
   const handleDelete = useCallback(
     (index: number, address: string) => {
       Alert.alert(
-        "移除邮箱",
-        `要移除 ${address} 吗？`,
+        "Remove mailbox",
+        `Remove ${address}?`,
         [
-          { text: "取消", style: "cancel" },
+          { text: "Cancel", style: "cancel" },
           {
-            text: "仅本地移除",
+            text: "Remove locally only",
             onPress: () => deleteAccount(index, { removeOnServer: false }),
           },
           {
-            text: "从服务器删除",
+            text: "Delete from server",
             style: "destructive",
             onPress: () => deleteAccount(index, { removeOnServer: true }),
           },
@@ -262,8 +262,8 @@ export default function AddressesScreen() {
               </Text>
             </View>
             <Text style={[styles.accountDate, { color: colors.muted }]}>
-              创建于 {new Date(item.createdAt).toLocaleDateString("zh-CN")}
-              {item.password ? "  ·  含密码" : ""}
+              Created {new Date(item.createdAt).toLocaleDateString("en-US")}
+              {item.password ? "  ·  has password" : ""}
             </Text>
           </View>
           <View style={styles.accountActions}>
@@ -308,10 +308,10 @@ export default function AddressesScreen() {
           <View style={styles.emptyContainer}>
             <IconSymbol name="gearshape.fill" size={56} color={colors.muted} />
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
-              请先配置服务器
+              Set up a server first
             </Text>
             <Text style={[styles.emptySubtitle, { color: colors.muted }]}>
-              在「设置」中填入 Worker 地址
+              Enter the Worker URL in Settings
             </Text>
           </View>
         </ScreenContainer>
@@ -325,7 +325,7 @@ export default function AddressesScreen() {
       {/* Header */}
       <View style={[styles.header, { borderBottomColor: colors.border }]}>
         <Text style={[styles.headerTitle, { color: colors.foreground }]}>
-          邮箱管理
+          Mailboxes
         </Text>
         <View style={styles.headerActions}>
           <Pressable
@@ -344,7 +344,7 @@ export default function AddressesScreen() {
               color={colors.primary}
             />
             <Text style={[styles.headerButtonText, { color: colors.primary }]}>
-              导入
+              Import
             </Text>
           </Pressable>
           <Pressable
@@ -358,7 +358,7 @@ export default function AddressesScreen() {
             ]}
           >
             <IconSymbol name="plus.circle.fill" size={16} color="#FFFFFF" />
-            <Text style={styles.addButtonText}>新建</Text>
+            <Text style={styles.addButtonText}>New</Text>
           </Pressable>
         </View>
       </View>
@@ -375,10 +375,10 @@ export default function AddressesScreen() {
           <View style={styles.emptyContainer}>
             <IconSymbol name="at" size={56} color={colors.muted} />
             <Text style={[styles.emptyTitle, { color: colors.foreground }]}>
-              暂无邮箱
+              No mailboxes yet
             </Text>
             <Text style={[styles.emptySubtitle, { color: colors.muted }]}>
-              点击右上角「新建」创建，或「导入」已有邮箱
+              Tap "New" in the top right to create one, or "Import" an existing mailbox
             </Text>
           </View>
         }
@@ -400,7 +400,7 @@ export default function AddressesScreen() {
           >
             <View style={styles.modalHeader}>
               <Text style={[styles.modalTitle, { color: colors.foreground }]}>
-                创建邮箱
+                Create mailbox
               </Text>
               <Pressable onPress={() => setShowCreateModal(false)}>
                 <IconSymbol
@@ -431,13 +431,13 @@ export default function AddressesScreen() {
                     color={colors.warning}
                   />
                   <Text style={[styles.warningText, { color: colors.foreground }]}>
-                    服务器未返回可用域名。请到「设置」页点击「测试连接」查看详情，或确认 Worker 的 DOMAINS 环境变量已正确配置。
+                    The server returned no usable domains. Go to Settings and tap "Test connection" for details, or check that the Worker's DOMAINS environment variable is set correctly.
                   </Text>
                 </View>
               ) : (
                 <>
                   <Text style={[styles.inputLabel, { color: colors.foreground }]}>
-                    邮箱名称
+                    Mailbox name
                   </Text>
                   <TextInput
                     style={[
@@ -450,14 +450,14 @@ export default function AddressesScreen() {
                     ]}
                     value={newName}
                     onChangeText={setNewName}
-                    placeholder="输入邮箱名称"
+                    placeholder="Enter a mailbox name"
                     placeholderTextColor={colors.muted}
                     autoCapitalize="none"
                     autoCorrect={false}
                   />
 
                   <Text style={[styles.inputLabel, { color: colors.foreground }]}>
-                    选择域名
+                    Domain
                   </Text>
                   <Pressable
                     onPress={() => setShowDomainPicker(!showDomainPicker)}
@@ -470,7 +470,7 @@ export default function AddressesScreen() {
                     ]}
                   >
                     <Text style={[styles.domainText, { color: colors.foreground }]}>
-                      @{selectedDomain || "选择域名"}
+                      @{selectedDomain || "Select a domain"}
                     </Text>
                     <IconSymbol
                       name="chevron.right"
@@ -536,7 +536,7 @@ export default function AddressesScreen() {
                                     { color: colors.success },
                                   ]}
                                 >
-                                  随机子域名
+                                  Random subdomain
                                 </Text>
                               </View>
                             )}
@@ -550,10 +550,10 @@ export default function AddressesScreen() {
                   <View style={[styles.optionRow, { borderColor: colors.border }]}>
                     <View style={styles.optionInfo}>
                       <Text style={[styles.optionLabel, { color: colors.foreground }]}>
-                        自定义子域名
+                        Custom subdomain
                       </Text>
                       <Text style={[styles.optionDesc, { color: colors.muted }]}>
-                        在域名前添加自定义前缀
+                        Add a custom prefix before the domain
                       </Text>
                     </View>
                     <Switch
@@ -580,7 +580,7 @@ export default function AddressesScreen() {
                       ]}
                       value={subdomainPrefix}
                       onChangeText={setSubdomainPrefix}
-                      placeholder="子域名前缀，如 team"
+                      placeholder="Subdomain prefix, e.g. team"
                       placeholderTextColor={colors.muted}
                       autoCapitalize="none"
                       autoCorrect={false}
@@ -592,10 +592,10 @@ export default function AddressesScreen() {
                     <View style={[styles.optionRow, { borderColor: colors.border }]}>
                       <View style={styles.optionInfo}>
                         <Text style={[styles.optionLabel, { color: colors.foreground }]}>
-                          随机子域名
+                          Random subdomain
                         </Text>
                         <Text style={[styles.optionDesc, { color: colors.muted }]}>
-                          自动挂在随机子域名下（建议仅收件使用）
+                          Automatically placed under a random subdomain (recommended for receiving only)
                         </Text>
                       </View>
                       <Switch
@@ -612,10 +612,10 @@ export default function AddressesScreen() {
 
                   <View style={styles.optionInfo}>
                     <Text style={[styles.optionLabel, { color: colors.foreground }]}>
-                      自定义前缀
+                      Custom prefix
                     </Text>
                     <Text style={[styles.optionDesc, { color: colors.muted }]}>
-                      可选，创建为 {normalizeMailboxPrefix(customPrefix) || "prefix"}.name@domain
+                      Optional, creates {normalizeMailboxPrefix(customPrefix) || "prefix"}.name@domain
                     </Text>
                   </View>
                   <TextInput
@@ -630,7 +630,7 @@ export default function AddressesScreen() {
                     ]}
                     value={customPrefix}
                     onChangeText={setCustomPrefix}
-                    placeholder="邮箱名前缀，如 vip"
+                    placeholder="Mailbox name prefix, e.g. vip"
                     placeholderTextColor={colors.muted}
                     autoCapitalize="none"
                     autoCorrect={false}
@@ -647,7 +647,7 @@ export default function AddressesScreen() {
                     ]}
                   >
                     <Text style={[styles.previewLabel, { color: colors.muted }]}>
-                      预览地址
+                      Address preview
                     </Text>
                     <Text style={[styles.previewAddress, { color: colors.primary }]}>
                       {previewAddress}
@@ -673,7 +673,7 @@ export default function AddressesScreen() {
                     {isCreating ? (
                       <ActivityIndicator size="small" color="#FFFFFF" />
                     ) : (
-                      <Text style={styles.createButtonText}>创建邮箱</Text>
+                      <Text style={styles.createButtonText}>Create mailbox</Text>
                     )}
                   </Pressable>
                 </>
@@ -694,7 +694,7 @@ export default function AddressesScreen() {
           <View style={[styles.modalContent, { backgroundColor: colors.background }]}>
             <View style={styles.modalHeader}>
               <Text style={[styles.modalTitle, { color: colors.foreground }]}>
-                导入邮箱
+                Import mailbox
               </Text>
               <Pressable onPress={() => setShowImportModal(false)}>
                 <IconSymbol
@@ -731,7 +731,7 @@ export default function AddressesScreen() {
                         },
                       ]}
                     >
-                      {m === "credential" ? "凭证导入" : "密码登录"}
+                      {m === "credential" ? "Credential import" : "Password sign-in"}
                     </Text>
                   </Pressable>
                 ))}
@@ -740,7 +740,7 @@ export default function AddressesScreen() {
               {importMode === "credential" ? (
                 <>
                   <Text style={[styles.inputLabel, { color: colors.foreground }]}>
-                    邮箱凭证 (JWT)
+                    Mailbox credential (JWT)
                   </Text>
                   <TextInput
                     style={[
@@ -753,7 +753,7 @@ export default function AddressesScreen() {
                     ]}
                     value={credentialInput}
                     onChangeText={setCredentialInput}
-                    placeholder="粘贴从其他设备导出的邮箱凭证"
+                    placeholder="Paste a mailbox credential exported from another device"
                     placeholderTextColor={colors.muted}
                     multiline
                     autoCapitalize="none"
@@ -763,7 +763,7 @@ export default function AddressesScreen() {
               ) : (
                 <>
                   <Text style={[styles.inputLabel, { color: colors.foreground }]}>
-                    邮箱地址
+                    Email address
                   </Text>
                   <TextInput
                     style={[
@@ -783,7 +783,7 @@ export default function AddressesScreen() {
                     keyboardType="email-address"
                   />
                   <Text style={[styles.inputLabel, { color: colors.foreground }]}>
-                    地址密码
+                    Address password
                   </Text>
                   <TextInput
                     style={[
@@ -796,7 +796,7 @@ export default function AddressesScreen() {
                     ]}
                     value={importPassword}
                     onChangeText={setImportPassword}
-                    placeholder="创建时生成或手动设置的密码"
+                    placeholder="The password generated at creation or set manually"
                     placeholderTextColor={colors.muted}
                     secureTextEntry
                     autoCapitalize="none"
@@ -825,7 +825,7 @@ export default function AddressesScreen() {
                   <ActivityIndicator size="small" color="#FFFFFF" />
                 ) : (
                   <Text style={styles.createButtonText}>
-                    {importMode === "credential" ? "导入凭证" : "登录"}
+                    {importMode === "credential" ? "Import credential" : "Sign in"}
                   </Text>
                 )}
               </Pressable>
@@ -848,7 +848,7 @@ export default function AddressesScreen() {
           <View style={[styles.modalContent, { backgroundColor: colors.background }]}>
             <View style={styles.modalHeader}>
               <Text style={[styles.modalTitle, { color: colors.foreground }]}>
-                {createdInfo ? "邮箱已创建" : "邮箱凭证"}
+                {createdInfo ? "Mailbox created" : "Mailbox credential"}
               </Text>
               <Pressable
                 onPress={() => {
@@ -867,18 +867,18 @@ export default function AddressesScreen() {
             <ScrollView style={styles.modalBody} keyboardShouldPersistTaps="handled">
               {createdInfo && (
                 <Text style={[styles.warningText, { color: colors.warning, marginBottom: 12 }]}>
-                  请把凭证和密码妥善保存，凭证是恢复邮箱的唯一途径。
+                  Keep the credential and password somewhere safe. The credential is the only way to recover the mailbox.
                 </Text>
               )}
 
               <CredField
-                label="邮箱地址"
+                label="Email address"
                 value={createdInfo?.address || viewAccount?.address || ""}
                 onCopy={handleCopyText}
                 colors={colors}
               />
               <CredField
-                label="地址凭证 (JWT)"
+                label="Address credential (JWT)"
                 value={createdInfo?.jwt || viewAccount?.jwt || ""}
                 onCopy={handleCopyText}
                 colors={colors}
@@ -887,7 +887,7 @@ export default function AddressesScreen() {
               />
               {(createdInfo?.password || viewAccount?.password) && (
                 <CredField
-                  label="地址密码"
+                  label="Address password"
                   value={createdInfo?.password || viewAccount?.password || ""}
                   onCopy={handleCopyText}
                   colors={colors}
@@ -896,7 +896,7 @@ export default function AddressesScreen() {
               )}
               {!createdInfo?.password && !viewAccount?.password && (
                 <Text style={[styles.mutedHint, { color: colors.muted, marginTop: 8 }]}>
-                  本地未保存地址密码。若服务端开启了地址密码，请到「设置 → 账户」里查看 send_balance 或修改密码。
+                  No address password is saved locally. If the server has address passwords enabled, check send_balance or change the password under Settings → Account.
                 </Text>
               )}
             </ScrollView>

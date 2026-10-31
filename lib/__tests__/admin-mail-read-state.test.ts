@@ -29,7 +29,7 @@ function makeMail(overrides: Partial<ParsedMail> = {}): ParsedMail {
     messageId: "message-1@example.com",
     from: { address: "sender@example.com" },
     to: [{ address: "target@example.com" }],
-    subject: "验证码",
+    subject: "Verification code",
     text: "Your code is 123456",
     raw: "Your code is 123456",
     createdAt: "2026-04-25T10:00:00.000Z",

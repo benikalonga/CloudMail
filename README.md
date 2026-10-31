@@ -7,7 +7,6 @@
 
 **V1.1.4 · Chinese email decoding fixes for the Cloudflare Temp Email mobile admin app**
 
-[![CI](https://github.com/Lur1N77777/CloudMail/actions/workflows/ci.yml/badge.svg)](https://github.com/Lur1N77777/CloudMail/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![Expo](https://img.shields.io/badge/Expo-54-black.svg)](https://expo.dev/)
 [![React Native](https://img.shields.io/badge/React%20Native-0.81-61DAFB.svg)](https://reactnative.dev/)
@@ -177,7 +176,6 @@ The generated APK should be uploaded to GitHub Releases instead of committed to 
 ## Project docs
 
 - [Build and installation guide](./docs/BUILD.md)
-- [Backup and dual-remote release workflow](./docs/BACKUP_AND_RELEASE.md)
 - [Changelog](./docs/CHANGELOG.md)
 - [Design notes](./docs/design.md)
 - [Mailbox API report](./docs/mailbox-api-report.md)

@@ -21,10 +21,6 @@ node_modules
 android
 ios
 frontend
-scripts/extract_endpoints.mjs
-scripts/inspect_bundle.mjs
-scripts/find_context.mjs
-scripts/endpoint_methods.mjs
 BUILD.md
 build-apk.bat
 todo.md

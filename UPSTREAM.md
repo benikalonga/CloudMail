@@ -16,4 +16,5 @@ Please send issues and contributions to the original project.
 - AI agent configuration files (`.claude/`, `.agents/`, `.codex/`, `AGENTS.md`, `CLAUDE.md`, `.mcp.json`) were removed.
 - All code comments, UI strings and documentation were translated to English. Non-English text that the code must match at runtime (for example server messages or test data for charset decoding) is kept as `\uXXXX` escapes with an English comment.
 - Screenshots, generated output folders and machine-specific scripts were removed, along with README references to them.
+- Automation was removed to keep this a plain source repository: CI/CD workflows (GitHub Actions, EAS workflows, Dependabot), helper/build/release scripts, editor and agent tool configs, and package.json scripts that pointed at removed files. Test suites are kept.
 - The original LICENSE and its copyright notice are unchanged.
